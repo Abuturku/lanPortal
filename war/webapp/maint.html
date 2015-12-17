@@ -1,0 +1,212 @@
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>
+            LAN-Gymnasium online Klassenbuch
+        </title>
+         <link rel="stylesheet" href="style/webpage.css" type="text/css">
+    </head>
+    <body>
+	<script src="javascript/script.js"></script>
+		<header>
+			<nav id="doc_navlist">
+				<ul>
+					<li> </li>
+					<li>
+						<a href="./mylan.html">MyLAN</a>
+					</li> 
+					<li>
+						<a href="./teachers.html">Lehrer</a>
+					</li> 
+					<li>
+						<a href="./classes.html">Klassen</a>
+					</li> 
+					<li>
+						<a href="./pupils.html">Sch&uuml;ler</a>
+					</li>
+					<li id="current">
+						<a href="./maint.html">Verwalten</a>
+					</li>
+					<li> </li>
+					<li id="justifier"> </li>
+				</ul>
+			</nav>
+		</header>
+		
+		
+		<div id="pagecontent">
+			<div id="maintForm">
+				<form>
+					<div>
+						<em id="maintSchoolsFormContentLn1">Schule</em>
+						<select type="institution_ddb"  id="maintSchoolsFormContentLn1">
+							<option value="" disabled selected hidden id="maint_ddb_default">Bestehende Schule bearbeiten</option>
+						</select>
+						<input type="button" value="Neue Schule registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterSchool(this.form)"/>
+						<input type="button" value="Schule speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveSchool(this.form)"/>
+					</div>
+					<div>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Name</label>
+							<input type="text" name="maintFormField" id="maint_inpt_instName"/>
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Vorname Initiallehrer</label>
+							<input type="text" name="maintFormField" id="maint_inpt_instIniTeacher_fName" />
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Nachame Initiallehrer</label>
+							<input type="text" name="maintFormField" id="maint_inpt_instIniTeacher_lName" />
+						</span>
+					</div>
+				</form>
+			</div>
+			<div id="maintForm">
+				<form>
+					<div>
+						<em id="maintSchoolsFormContentLn1">Klasse</em>
+						<select type="teacher_ddb"  id="maintSchoolsFormContentLn1">
+							<option value="" disabled selected hidden id="maint_ddb_default">Bestehende Schule bearbeiten</option>
+						</select>
+						<input type="button" value="Neue Klasse registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterClass(this.form)"/>
+						<input type="button" value="Klasse speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveClass(this.form)"/>
+					</div>
+					<div>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Schule</label>
+							<select type="school_ddb"  id="maintSchoolsFormContentLn1">
+								<option value="" disabled selected hidden id="maint_ddb_default">Schule wählen</option>
+							</select>
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Foto</label>
+							<input type="text" name="maintFormField" id="maint_inpt_class_setPicturePath" />
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Stufe</label>
+							<select type="class_grade_ddb"  id="maintSchoolsFormContentLn1">
+								<option value="" disabled selected hidden id="maint_ddb_default">Stufe wählen</option>
+								<option value="grade1">1</option>
+								<option value="grade2">2</option>
+								<option value="grade3">3</option>
+								<option value="grade4">4</option>
+								<option value="grade5">5</option>
+								<option value="grade6">6</option>
+								<option value="grade7">7</option>
+								<option value="grade8">8</option>
+								<option value="grade9">9</option>
+								<option value="grade10">10</option>
+								<option value="grade11">11</option>
+								<option value="grade12">12</option>
+								<option value="grade13">13</option>
+							</select>
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Kürzel</label>
+							<input type="text" name="maintFormField" id="maint_inpt_cToken"/>
+						</span>
+					</div>
+				</form>
+			</div>
+			<div id="maintForm">
+				<form>
+					<div>
+						<em id="maintSchoolsFormContentLn1">Lehrer</em>
+						<select type="teacher_ddb"  id="maintSchoolsFormContentLn1">
+							<option value="" disabled selected hidden id="maint_ddb_default">Bestehenden Lehrer bearbeiten</option>
+						</select>
+						<input type="button" value="Neuen Lehrer registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterTeacher(this.form)"/>
+						<input type="button" value="Lehrer speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveTeacher(this.form)"/>
+					</div>
+					<div>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Schule</label>
+							<select type="school_ddb"  id="maintSchoolsFormContentLn1">
+								<option value="" disabled selected hidden id="maint_ddb_default">Schule wählen</option>
+							</select>
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Foto</label>
+							<input type="text" name="maintFormField" id="maint_inpt_teacher_setPicturePath" />
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Vorname</label>
+							<input type="text" name="maintFormField" id="maint_inpt_tFirstname"/>
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Nachname</label>
+							<input type="text" name="maintFormField" id="maint_inpt_tLastname" />
+						</span>
+						<div id="maintClassesTable">
+							<label for="maintFormField">Klasse</label>
+							<div id="table">
+								<table>
+									<tr>
+										<td id="header"></td>
+										<td id="header">Klasse</td>
+									</tr>
+									<tr><td>[  ]</td><td>L0L</td></tr>
+									<tr><td>[x]</td><td>L0L</td></tr>
+									<tr><td>[  ]</td><td>L0L</td></tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div id="maintForm">
+				<em>Information</em>
+				<ul>
+					<li>Achtung! Nicht gesicherte &Aumlnderungen gehen verloren!</li>
+					<li>Neue Lehrer/Schüler erhalten das Initialpasswort "1234".</li>
+				</ul>
+			</div>
+			<div id="maintForm">
+				<form>
+					<div>
+						<em id="maintSchoolsFormContentLn1">Schüler</em>
+						<select type="pupil_ddb"  id="maintSchoolsFormContentLn1">
+							<option value="" disabled selected hidden id="maint_ddb_default">Bestehenden Sch&uumler bearbeiten</option>
+						</select>
+						<input type="button" value="Neuen Schüler registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterPupil(this.form)"/>
+						<input type="button" value="Schüler speichern" id="maintSchoolsFormContentLn1" onclick="onclickSavePupil(this.form)"/>
+					</div>
+					<div>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Schule</label>
+							<select type="school_ddb"  id="maintSchoolsFormContentLn1">
+								<option value="" disabled selected hidden id="maint_ddb_default">Schule wählen</option>
+							</select>
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Foto</label>
+							<input type="text" name="maintFormField" id="maint_inpt_pupil_setPicturePath" />
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Vorname</label>
+							<input type="text" name="maintFormField" id="maint_inpt_tFirstname"/>
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Nachname</label>
+							<input type="text" name="maintFormField" id="maint_inpt_tLastname" />
+						</span>
+						<span id="maintSchoolsFormContentLn2">
+							<label for="maintFormField">Klasse</label>
+							<select type="class_ddb"  id="maintSchoolsFormContentLn1">
+								<option value="" disabled selected hidden id="maint_ddb_default">Klasse wählen</option>
+							</select>
+						</span>
+					</div>
+				</form>
+			</div>
+		</div>
+		
+		
+		<footer>
+			<div id="footer_logoutbar">
+				<p id="footer_txt_logininfo">Angemeldet im LAN-Gymnasium als Vorname Nachname.</p>
+				<a href='javascript:;' onclick='onclickLogout();' id="footer_a_logout">> Abmelden &lt;</a>
+			</div>
+		</footer>
+    </body>
+</html>

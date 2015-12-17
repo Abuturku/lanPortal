@@ -1,0 +1,210 @@
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>
+            LAN-Gymnasium online Klassenbuch
+        </title>
+         <link rel="stylesheet" href="style/webpage.css" type="text/css">
+    </head>
+    <body>
+	<script src="javascript/script.js"></script>
+		<header>
+			<ul class="navlist">
+
+				<li> </li>
+				<li>
+					<a href="./mylan.html">MyLAN</a>
+				</li> 
+				<li id="current">
+					<a href="./teachers.html">Lehrer</a>
+				</li> 
+				<li>
+					<a href="./classes.html">Klassen</a>
+				</li> 
+				<li>
+					<a href="./pupils.html">Sch&uuml;ler</a>
+				</li>
+				<li>
+					<a href="./maint.html">Verwalten</a>
+				</li>
+				<li> </li>
+
+				<li id="justifier"> </li>
+			</ul>  
+		</header>
+		
+		
+		<div id="pagecontent">
+			<div id="tablecontent">
+				<div id="tablefilter">
+					<select id="ddb_inst" onclick="onclickTeacher_ddbFilter_inst()">
+						<option value="" disabled selected hidden id="teachers_ddbFilter_inst">Nach Schule filtern</option>
+					</select>
+					<select id="ddb_grade" onclick="onclickTeacher_ddbFilter_grade()">
+						<option value="" disabled selected hidden id="teachers_ddbFilter_grade">Nach Stufe filtern</option>
+					</select>
+					<select id="ddb_class" onclick="onclickTeacher_ddbFilter_class()">
+						<option value="" disabled selected hidden id="teachers_ddbFilter_class">Nach Klasse filtern</option>
+					</select>
+					<select id="ddb_pupil" onclick="onclickTeacher_ddbFilter_pupil()">
+						<option value="" disabled selected hidden id="teachers_ddbFilter_pupil">Nach Schüler filtern</option>
+					</select>
+				</div>
+				<div id="table">
+					<table>
+						<tr>
+							<td id="header">Nachname</td>
+							<td id="header">Vorname</td>
+						</tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+						<tr><td>Test</td><td>L0L</td></tr>
+					</table>
+				</div>
+			</div>
+			<div id="previewcontent">
+				<div id="preview">
+					<div id="picture">
+						<img src="pictures/teacher_def.jpg"/>
+					</div>
+					<div id="info">
+						<div>
+							<label >Schule:</label>
+							<input type="text" value="Schule" id="teachers_inpt_iName" readonly>
+						</div>
+						<div>
+							<label>Vorname:</label>
+							<input type="text" value="Vorname" id="teachers_inpt_fName" readonly>
+						</div>
+						<div>
+							<label>Nachname:</label>
+							<input type="text" value="Vorname" id="teachers_inpt_lName" readonly>
+						</div>
+					</div>
+					<div id="teacher_classes">
+						<label>Klassen:</label>
+						<ul>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+							<li>5a</li>
+						</ul>
+					</div>
+				</div>
+				
+				<div id="notes_table">
+					<span>
+						<label>Erstellte Notizen:</label>
+						<input type="button" value="Öffnen" id="btn_openNote" onclick="onclickTeacher_OpenNote()"/>
+					</span>
+					<div id="table">
+						<table>
+							<tr>
+								<td id="header">Erfassungszeitpunkt</td>
+								<td id="header">Schüler</td>
+								<td id="header">Klasse</td>
+							</tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
+						</table>
+					</div>
+					<label>Vorschau Notiz:</label>
+					<div id="preview_noteContent">
+						<textarea id="note_txtArea_content" readonly></textarea>
+					</div>
+				</div>
+			
+			</div>
+		</div>
+		
+		
+		<footer>
+			<div id="footer_logoutbar">
+				<p id="footer_txt_logininfo">Angemeldet im LAN-Gymnasium als Vorname Nachname.</p>
+				<a href='javascript:;' onclick='onclickLogout();' id="footer_a_logout">> Abmelden &lt;</a>
+			</div>
+		</footer>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

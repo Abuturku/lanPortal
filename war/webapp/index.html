@@ -1,0 +1,75 @@
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>
+            LAN-Gymnasium online Klassenbuch
+        </title>
+         <link rel="stylesheet" href="style/login.css" type="text/css">
+    </head>
+    <body>
+	<script src="javascript/script.js"></script>
+	<script src="javascript/jquery-2.1.4.min.js"></script>
+	<script>
+	
+		window.addEventListener("DOMContentLoaded", function(){
+			getAllSchools();
+		});
+		
+		function appendSchool(school){
+			$('#login_ddb_inst').append($('<option value=\"'+ school.name +'\">'+ school.name +'</option>'));
+		}
+		
+		function getAllSchools(){
+			$.getJSON("/rest/school", function(data) {
+				$("#login_ddb_inst option").remove();
+				$('#login_ddb_inst').append($('<option value="" disabled selected hidden id="login_ddb_default">Schule wählen</option>'));
+				$.each(data, function(index, school) {
+					appendSchool(school);
+				})
+			})
+		}
+		
+		function onclickLogin(form) {
+			var school = form.login_ddb_inst.value;
+			var fname = form.login_inpt_fname.value;
+			var lname = form.login_inpt_lname.value;
+			var passwd = form.login_inpt_passwd.value;
+			
+			$.ajaxSetup({
+			  contentType: "application/json; charset=utf-8"
+			});
+			
+			$.ajax({
+				url: "/rest/user",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(school+"#"+fname+"#"+lname+"#"+passwd),
+
+				method: "POST",
+				mimeType: "application/json"
+			});
+			
+			window.location.href="mylan.html";
+		}
+	</script>
+		<header>
+			<p id="header_txt_great"> WILLKOMMEN IM LAN-PORTAL! </p>
+		</header>
+        <div>
+            <form id="login_frm">
+				<p id="login_txt">Im LAN-Portal anmelden</p>
+				
+				<select type="institution" id="login_ddb_inst" tabindex ="3">
+					<option value="" disabled selected hidden id="login_ddb_default">Schule wählen</option>
+				</select>
+				<input type="text" placeholder ="Vornamen eingeben" id="login_inpt_fname" name="vorname" tabindex ="2"/>
+				<input type="text" placeholder="Nachnamen eingeben" tabindex ="1" name="nachname" id="login_inpt_lname"/>
+				<input type="password" placeholder="Passwort eingeben" id="login_inpt_passwd" name="password" tabindex ="3"/>
+
+                <input type="button" value="Anmelden" id="login_bt" onclick="onclickLogin(this.form)"/>
+            </form>
+        </div>
+		<footer>
+			<a href="adminLogin.html" id="footer_bt_adminlogin">Als Administrator anmelden</a>
+		</footer>
+    </body>
+</html>
