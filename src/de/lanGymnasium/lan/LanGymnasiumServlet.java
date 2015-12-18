@@ -111,14 +111,19 @@ public class LanGymnasiumServlet extends HttpServlet {
 
 	private void initData() throws Exception {
 		IClazz fuenfA = new Clazz(5, 'a', null);
+		
+		School school = new School("LAN-Gymnasium");
+		
+		IUser linda = new User("Linda", "Latreider", "1234", false, null, school.getKey());
+		IUser niklas = new User("Niklas", "Nikisch", "1234", false, null, school.getKey());
 
-		IUser linda = new User("Linda", "Latreider", "1234", false, null);
-		IUser niklas = new User("Niklas", "Nikisch", "1234", false, null);
-
-		IUser einstein = new User("Albert", "Einstein", "1234", true, null);
-		IUser dumbledore = new User("Albus", "Dumbledore", "1234", true, null);
+		IUser einstein = new User("Albert", "Einstein", "1234", true, null, school.getKey());
+		IUser dumbledore = new User("Albus", "Dumbledore", "1234", true, null, school.getKey());
 
 		EntityManager em = EMF.createEntityManager();
+		em.persist(school);
+		em.close();
+		em = EMF.createEntityManager();
 		em.persist(linda);
 		em.close();
 		em = EMF.createEntityManager();

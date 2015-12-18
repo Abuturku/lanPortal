@@ -10,7 +10,8 @@
 	<script src="javascript/script.js"></script>
 	<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
-	
+		
+		
 		window.addEventListener("DOMContentLoaded", function(){
 			getAllSchools();
 		});
@@ -29,26 +30,39 @@
 			})
 		}
 		
+		function getAllUsers(){
+			var userList = [];
+			$.getJSON("/rest/user", function(data) {
+				$.each(data, function(index, user) {
+					userList.push(user);
+				})
+			})
+			return userList;
+		}
+		
 		function onclickLogin(form) {
 			var school = form.login_ddb_inst.value;
 			var fname = form.login_inpt_fname.value;
 			var lname = form.login_inpt_lname.value;
 			var passwd = form.login_inpt_passwd.value;
 			
-			$.ajaxSetup({
-			  contentType: "application/json; charset=utf-8"
-			});
+			var userList = getAllUsers();
 			
-			$.ajax({
-				url: "/rest/user",
-				contentType: "application/json; charset=utf-8",
-				data: JSON.stringify(school+"#"+fname+"#"+lname+"#"+passwd),
+			
+// 			$.ajaxSetup({
+// 			  contentType: "application/json; charset=utf-8"
+// 			});
+			
+// 			$.ajax({
+// 				url: "/rest/user",
+// 				contentType: "application/json; charset=utf-8",
+// 				data: JSON.stringify(school+"#"+fname+"#"+lname+"#"+passwd),
 
-				method: "POST",
-				mimeType: "application/json"
-			});
+// 				method: "GET",
+// 				mimeType: "application/json"
+// 			});
 			
-			window.location.href="mylan.html";
+// 			window.location.href="mylan.html";
 		}
 	</script>
 		<header>

@@ -67,21 +67,21 @@ public class SchoolRestServlet {
 		return school;
 	}
 	
-	@GET
-	@Produces("text/plain")
-	public String getSchools() {
-		EntityManager em = EMF.createEntityManager();
-		Query query = em.createQuery("SELECT s FROM school s");
-
-		@SuppressWarnings("unchecked")
-		List<School> list = (List<School>)query.getResultList();
-		StringBuffer s = new StringBuffer();		
-		for (School school: list) {
-			s.append("\n");
-			s.append(school.getName());
-		}
-		em.close();
-		
-		return s.toString();
-	}
+//	@GET
+//	@Produces("text/plain")
+//	public String getSchools() {
+//		EntityManager em = EMF.createEntityManager();
+//		Query query = em.createQuery("SELECT s FROM school s");
+//
+//		@SuppressWarnings("unchecked")
+//		List<School> list = (List<School>)query.getResultList();
+//		StringBuffer s = new StringBuffer();		
+//		for (School school: list) {
+//			s.append("\n");
+//			s.append(school.getName());
+//		}
+//		em.close();
+//		
+//		return s.toString();
+//	}
 }

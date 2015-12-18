@@ -15,14 +15,17 @@ public class User implements IUser {
 	private String password;
 	private Image picture;
 	private boolean isTeacher;
+	@ManyToOne
+	private Key school;
 
 	public User(String firstName, String familyName, String password,
-			boolean isTeacher, Image picture) {
+			boolean isTeacher, Image picture, Key school) {
 		this.firstName = firstName;
 		this.familyName = familyName;
 		this.password = password;
 		this.isTeacher = isTeacher;
 		this.picture = picture;
+		this.school = school;
 	}
 
 	@Override
@@ -74,5 +77,12 @@ public class User implements IUser {
 	public boolean isTeacher() {
 		return this.isTeacher;
 	}
-
+	
+	public Key getSchool() {
+		return school;
+	}
+	
+	public void setSchool(Key school){
+		this.school = school;
+	}
 }

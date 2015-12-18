@@ -23,4 +23,6 @@ public interface IUser {
 	public void setPicture(Image picture);
 	
 	public boolean isTeacher();
+	
+	public Key getSchool();
 }

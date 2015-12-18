@@ -12,9 +12,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Login</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
-	<welcome-file-list>
-		<welcome-file>start.html</welcome-file>
-	</welcome-file-list>
 	
 	<servlet>
 		<servlet-name>Klassenbuch</servlet-name>
@@ -24,10 +21,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>Klassenbuch</servlet-name>
 		<url-pattern>/klassenbuch</url-pattern>
 	</servlet-mapping>
-	<welcome-file-list>
-		<welcome-file>start.html</welcome-file>
-	</welcome-file-list>
-	
+
 	<servlet>
        <servlet-name>Jersey Web Application</servlet-name>
        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
@@ -45,5 +39,9 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
         <servlet-name>Jersey Web Application</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
+    
+   	<welcome-file-list>
+		<welcome-file>start.html</welcome-file>
+	</welcome-file-list>
     
 </web-app>

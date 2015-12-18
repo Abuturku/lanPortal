@@ -24,4 +24,8 @@ public class School implements ISchool{
 	public School(String name) {
 		this.name = name;
 	}
+	
+	public Key getKey(){
+		return this.key;
+	}
 }
