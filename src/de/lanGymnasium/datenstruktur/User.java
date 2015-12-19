@@ -27,7 +27,20 @@ public class User implements IUser {
 		this.picture = picture;
 		this.school = school;
 	}
-
+	
+	@Override
+	public boolean equals(User user){
+		if (user.getSchool().compareTo(this.school) == 0){
+			if (user.getFirstName().equals(this.firstName)) {
+				if (user.getFamilyName().equals(this.familyName)) {
+					if (user.getPassword().equals(this.password)) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 	@Override
 	public String getFirstName() {
 		return this.firstName;

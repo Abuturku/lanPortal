@@ -30,24 +30,25 @@
 			})
 		}
 		
-		function getAllUsers(){
-			var userList = [];
-			$.getJSON("/rest/user", function(data) {
-				$.each(data, function(index, user) {
-					userList.push(user);
-				})
-			})
-			return userList;
-		}
 		
 		function onclickLogin(form) {
 			var school = form.login_ddb_inst.value;
 			var fname = form.login_inpt_fname.value;
 			var lname = form.login_inpt_lname.value;
 			var passwd = form.login_inpt_passwd.value;
+			var isTeacher = form.login_chkbx_isTeacher.checked;
 			
-			var userList = getAllUsers();
-			
+			$.post("login", 
+				{
+					school: school,
+					firstName: fname, 
+					familyName: lname,
+					password: passwd,
+					isTeacher: isTeacher
+				},
+				function(data, status){
+					
+				});
 			
 // 			$.ajaxSetup({
 // 			  contentType: "application/json; charset=utf-8"
@@ -72,13 +73,15 @@
             <form id="login_frm">
 				<p id="login_txt">Im LAN-Portal anmelden</p>
 				
-				<select type="institution" id="login_ddb_inst" tabindex ="3">
+				<select type="institution" id="login_ddb_inst" tabindex ="1">
 					<option value="" disabled selected hidden id="login_ddb_default">Schule wählen</option>
 				</select>
-				<input type="text" placeholder ="Vornamen eingeben" id="login_inpt_fname" name="vorname" tabindex ="2"/>
-				<input type="text" placeholder="Nachnamen eingeben" tabindex ="1" name="nachname" id="login_inpt_lname"/>
-				<input type="password" placeholder="Passwort eingeben" id="login_inpt_passwd" name="password" tabindex ="3"/>
-
+				<input type="text" placeholder ="Vornamen eingeben" id="login_inpt_fname" name="firstName" tabindex ="2"/>
+				<input type="text" placeholder="Nachnamen eingeben" tabindex ="3" name="familyName" id="login_inpt_lname"/>
+				<input type="password" placeholder="Passwort eingeben" id="login_inpt_passwd" name="password" tabindex ="4"/>
+				
+				<input type="checkbox" name="isTeacher" id="login_chkbx_isTeacher" tabindex="5">Bin Lehrer
+				
                 <input type="button" value="Anmelden" id="login_bt" onclick="onclickLogin(this.form)"/>
             </form>
         </div>

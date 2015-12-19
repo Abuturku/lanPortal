@@ -21,9 +21,10 @@ import de.lanGymnasium.lan.EMF;
 @Path("/school")
 public class SchoolRestServlet {
 	
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<School> getTeachers() {
+	public List<School> getSchool() {
 		EntityManager em = EMF.createEntityManager();
 		Query query = em.createQuery("SELECT s FROM School s");
 

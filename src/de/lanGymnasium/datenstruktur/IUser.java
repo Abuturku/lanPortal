@@ -25,4 +25,6 @@ public interface IUser {
 	public boolean isTeacher();
 	
 	public Key getSchool();
+
+	boolean equals(User user);
 }
