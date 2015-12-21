@@ -31,6 +31,36 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<url-pattern>/mylan</url-pattern>
 	</servlet-mapping>
 	
+	
+	<!--<servlet>
+		<servlet-name>PupilsWeb</servlet-name>
+		<servlet-class>de.lanGymnasium.lan.PupilsWeb</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Pupils</servlet-name>
+		<url-pattern>/pupils</url-pattern>
+	</servlet-mapping>-->
+	
+	<servlet>
+		<servlet-name>ClassWeb</servlet-name>
+		<servlet-class>de.lanGymnasium.lan.ClassWeb</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Classes</servlet-name>
+		<url-pattern>/classes</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>TeacherWeb</servlet-name>
+		<servlet-class>de.lanGymnasium.lan.TeacherWeb</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Teachers</servlet-name>
+		<url-pattern>/teachers</url-pattern>
+	</servlet-mapping>
+	
+	
+	
 	<servlet>
 		<servlet-name>Klassenbuch</servlet-name>
 		<servlet-class>de.lanGymnasium.lan.Klassenbuch</servlet-class>

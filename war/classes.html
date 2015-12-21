@@ -7,25 +7,37 @@
          <link rel="stylesheet" href="style/webpage.css" type="text/css">
     </head>
     <body>
-	<script src="javascript/script.js"></script>
+		<script src="javascript/script.js"></script>
+		<script src="javascript/jquery-2.1.4.min.js"></script>
+		<script>
+			window.addEventListener("DOMContentLoaded", function(){
+				getUser();
+			});
+		
+			function getUser(){
+				$.getJSON("/rest/user/loggedInUser", function(data) {
+					$('#footer_txt_logininfo').text('Angemeldet im LAN-Gymnasium als ' + data.firstName + ' ' + data.familyName);
+				})
+			}
+		</script>
 		<header>
 			<ul class="navlist">
 
 				<li> </li>
 				<li>
-					<a href="./mylan.html">MyLAN</a>
+					<a href="./mylan">MyLAN</a>
 				</li> 
 				<li>
-					<a href="./teachers.html">Lehrer</a>
+					<a href="./teacher">Lehrer</a>
 				</li> 
 				<li id="current">
-					<a href="./classes.html">Klassen</a>
+					<a href="./class">Klassen</a>
 				</li> 
 				<li>
-					<a href="./pupils.html">Sch&uuml;ler</a>
+					<a href="./pupils">Sch&uuml;ler</a>
 				</li>
 				<li>
-					<a href="./maint.html">Verwalten</a>
+					<a href="./maint">Verwalten</a>
 				</li>
 				<li> </li>
 
@@ -134,7 +146,7 @@
 		<footer>
 			<div id="footer_logoutbar">
 				<p id="footer_txt_logininfo">Angemeldet im LAN-Gymnasium als Vorname Nachname.</p>
-				<a href='javascript:;' onclick='onclickLogout();' id="footer_a_logout">> Abmelden &lt;</a>
+				<a href='logout' id="footer_a_logout">> Abmelden &lt;</a>
 			</div>
 		</footer>
     </body>

@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import de.lanGymnasium.datenstruktur.User;
 
 @SuppressWarnings("serial")
-public class MyLan extends HttpServlet{
-	
+public class PupilsWeb extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
@@ -21,7 +20,7 @@ public class MyLan extends HttpServlet{
 					+ "<p><a href=\"login\">Zurück</p>");
 			//Hier kommt noch der Redirect zu Lindas Login Denied Seite.
 		}
-		req.getRequestDispatcher("mylan.html").forward(req, resp);
+		req.getRequestDispatcher("pupils.html").forward(req, resp);
 	}
 	
 	@Override
@@ -29,4 +28,5 @@ public class MyLan extends HttpServlet{
 		System.out.println("bin im logout");
 		LoginChecker.logout(req, resp);
 	}
+
 }
