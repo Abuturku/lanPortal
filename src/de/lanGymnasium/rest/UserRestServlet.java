@@ -14,6 +14,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 import de.lanGymnasium.datenstruktur.User;
 import de.lanGymnasium.lan.EMF;
@@ -47,7 +49,7 @@ public class UserRestServlet {
 	
 	@DELETE
 	@Path("/{id}")
-	public void deleteUser(@PathParam("id") long id) {
+	public void deleteUser(@PathParam("id") String id) {
 		EntityManager em = EMF.createEntityManager();
 		User user = em.find(User.class, KeyFactory.createKey("User", id));
 		System.out.println("remove " + user);
@@ -58,12 +60,23 @@ public class UserRestServlet {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
-	public User getUser(@PathParam("id") long id) {
+	public User getUser(@PathParam("id") String id) {
 		EntityManager em = EMF.createEntityManager();
 		User user = em.find(User.class, KeyFactory.createKey("User", id));
 		System.out.println("get "+user);
 		em.close();
 		
+		return user;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/loggedInUser")
+	public User getLoggedInUser(){
+		UserService userService = UserServiceFactory.getUserService();
+		EntityManager em = EMF.createEntityManager();
+		User user = em.find(User.class, KeyFactory.createKey("User", userService.getCurrentUser().getUserId()));
+		em.close();
 		return user;
 	}
 }

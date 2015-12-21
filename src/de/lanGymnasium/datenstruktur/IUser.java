@@ -12,10 +12,6 @@ public interface IUser {
 
 	public String setFamilyName(String familyName);
 
-	public String getPassword();
-
-	public String setPassword(String password);
-
 	public Key getKey();
 
 	public Image getPicture();

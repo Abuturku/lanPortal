@@ -114,11 +114,11 @@ public class LanGymnasiumServlet extends HttpServlet {
 		
 		School school = new School("LAN-Gymnasium");
 		
-		IUser linda = new User("Linda", "Latreider", "1234", false, null, school.getKey());
-		IUser niklas = new User("Niklas", "Nikisch", "1234", false, null, school.getKey());
+		IUser linda = new User("Linda", "Latreider", false, null, school.getKey());
+		IUser niklas = new User("Niklas", "Nikisch", false, null, school.getKey());
 
-		IUser einstein = new User("Albert", "Einstein", "1234", true, null, school.getKey());
-		IUser dumbledore = new User("Albus", "Dumbledore", "1234", true, null, school.getKey());
+		IUser einstein = new User("Albert", "Einstein", true, null, school.getKey());
+		IUser dumbledore = new User("Albus", "Dumbledore", true, null, school.getKey());
 
 		EntityManager em = EMF.createEntityManager();
 		em.persist(school);

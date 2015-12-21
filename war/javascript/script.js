@@ -37,10 +37,6 @@ function onclickAdminLogin(form) {
 	//window.alert("Falsches Passwort");
 }
 
-//-------------Rahmen von mylan.html, teachers.html, classes.html, pupils.html
-function onclickLogout() {
-	window.location.href="index.html";
-}
 /**
 	TODO: Footer Info einbauen.
 	Fuer Lehrer/Schueler:
