@@ -13,10 +13,13 @@
 			window.addEventListener("DOMContentLoaded", function(){
 				getUser();
 			});
-		
+			
 			function getUser(){
-				$.getJSON("/rest/user/loggedInUser", function(data) {
-					$('#footer_txt_logininfo').text('Angemeldet im LAN-Gymnasium als ' + data.firstName + ' ' + data.familyName);
+				$.getJSON("/rest/user/userSchool", function(school) {
+					$('#footer_txt_logininfo').text('Angemeldet im ' + school.name + ' als ');
+				})
+				$.getJSON("/rest/user/loggedInUser", function(user) {
+					$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
 				})
 			}
 		</script>
@@ -186,7 +189,7 @@
 		
 		<footer>
 			<div id="footer_logoutbar">
-				<p id="footer_txt_logininfo">Angemeldet im LAN-Gymnasium als Vorname Nachname.</p>
+				<p id="footer_txt_logininfo"></p>
 				<a href='logout' id="footer_a_logout">> Abmelden &lt;</a>
 			</div>
 		</footer>

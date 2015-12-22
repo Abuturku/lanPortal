@@ -17,12 +17,12 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import de.lanGymnasium.datenstruktur.School;
 import de.lanGymnasium.datenstruktur.User;
 import de.lanGymnasium.lan.EMF;
 
 @Path("/user")
-public class UserRestServlet {
-
+public class UserRestServlet {	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<User> getUsers() {
@@ -78,5 +78,15 @@ public class UserRestServlet {
 		User user = em.find(User.class, KeyFactory.createKey("User", userService.getCurrentUser().getUserId()));
 		em.close();
 		return user;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/userSchool")
+	public School getUserSchool(){
+		EntityManager em = EMF.createEntityManager();
+		User user = getLoggedInUser();
+		School school = em.find(School.class, user.getSchool());
+		return school;
 	}
 }
