@@ -168,9 +168,7 @@ function onclickClass_ddbFilter_pupil(){
 		- Bei Klick auf Button Open die ausgewählte Notiz in note.html laden
 			(-> Hierzu könnte der bereits geladene Inhalt verwendet werden, statt erneut abzufragen)
 */
-function onclickPupil_ddbFilter_inst(){
-	
-}
+ 
 function onclickPupil_ddbFilter_grade(){
 	
 }

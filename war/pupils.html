@@ -12,6 +12,7 @@
 		<script>
 			window.addEventListener("DOMContentLoaded", function(){
 				getUser();
+				getAllSchools();
 			});
 			
 			function getUser(){
@@ -21,6 +22,38 @@
 				$.getJSON("/rest/user/loggedInUser", function(user) {
 					$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
 				})
+			}
+			
+			function appendSchool(school){
+				$('#ddb_inst').append($('<option value=\"'+ school.name +'\">'+ school.name +'</option>'));
+			}
+		
+			function getAllSchools(){
+				$.getJSON("/rest/school", function(data) {
+					$("#ddb_inst option").remove();
+					$('#ddb_inst').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_inst">Nach Schule filtern</option>'));
+					$.each(data, function(index, school) {
+						appendSchool(school);
+					})
+				})
+			}
+			
+			function appendGrade(grade){
+				$('#ddb_grade').append($('<option value=\"'+ grade +'\">'+ grade +'</option>'));
+			}
+		
+			function getAllGrades(){
+				$.getJSON("/rest/school", function(data) {
+					$("#ddb_grade option").remove();
+					$('#ddb_grade').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_grade">Nach Stufe filtern</option>'));
+					$.each(data, function(index, grade) {
+						appendGrade(grade);
+					})
+				})
+			}
+			
+			function onclickPupil_ddbFilter_inst(){
+				getAllGrades();
 			}
 		</script>
 		<header>
