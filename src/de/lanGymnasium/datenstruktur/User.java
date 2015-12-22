@@ -13,25 +13,20 @@ public class User implements IUser{
 	private String familyName;
 	private Image picture;
 	private boolean isTeacher;
-	@ManyToOne
-	private Key school;
 
 	public User(String firstName, String familyName,
-			boolean isTeacher, Image picture, Key school) {
+			boolean isTeacher, Image picture) {
 		this.firstName = firstName;
 		this.familyName = familyName;
 		this.isTeacher = isTeacher;
 		this.picture = picture;
-		this.school = school;
 	}
 	
 	@Override
 	public boolean equals(User user){
-		if (user.getSchool().compareTo(this.school) == 0){
-			if (user.getFirstName().equals(this.firstName)) {
-				if (user.getFamilyName().equals(this.familyName)) {	
-						return true;
-				}
+		if (user.getFirstName().equals(this.firstName)) {
+			if (user.getFamilyName().equals(this.familyName)) {	
+					return true;
 			}
 		}
 		return false;
@@ -74,13 +69,5 @@ public class User implements IUser{
 	@Override
 	public boolean isTeacher() {
 		return this.isTeacher;
-	}
-	
-	public Key getSchool() {
-		return school;
-	}
-	
-	public void setSchool(Key school){
-		this.school = school;
 	}
 }

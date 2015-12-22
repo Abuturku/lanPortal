@@ -21,6 +21,8 @@ public class Clazz implements IClazz {
 	private ArrayList<Key> students;
 	@OneToMany
 	private ArrayList<Key> teachers;
+	@ManyToOne
+	private Key school;
 
 	public Clazz(int grade, char letter, Image picture) {
 		this.grade = grade;
@@ -69,6 +71,10 @@ public class Clazz implements IClazz {
 		return this.key;
 	}
 
+	public Key getSchool() {
+		return school;
+	}
+	
 	@Override
 	public ArrayList<Key> getStudents() {
 		return students;

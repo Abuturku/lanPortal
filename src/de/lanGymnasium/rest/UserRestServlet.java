@@ -1,6 +1,7 @@
 package de.lanGymnasium.rest;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -13,16 +14,21 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+import de.lanGymnasium.datenstruktur.Clazz;
+import de.lanGymnasium.datenstruktur.ClazzUser;
 import de.lanGymnasium.datenstruktur.School;
 import de.lanGymnasium.datenstruktur.User;
 import de.lanGymnasium.lan.EMF;
 
 @Path("/user")
 public class UserRestServlet {	
+	private static final Logger log = Logger.getLogger(UserRestServlet.class.getName());
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<User> getUsers() {
@@ -76,6 +82,7 @@ public class UserRestServlet {
 		UserService userService = UserServiceFactory.getUserService();
 		EntityManager em = EMF.createEntityManager();
 		User user = em.find(User.class, KeyFactory.createKey("User", userService.getCurrentUser().getUserId()));
+		log.info("User gefunden: " + user.getKey());
 		em.close();
 		return user;
 	}
@@ -86,7 +93,39 @@ public class UserRestServlet {
 	public School getUserSchool(){
 		EntityManager em = EMF.createEntityManager();
 		User user = getLoggedInUser();
-		School school = em.find(School.class, user.getSchool());
-		return school;
+		Clazz clazz = null;
+		
+		Query query = em.createQuery("SELECT c FROM ClazzUser c");
+		log.info("Query ausgeführt: " + query.toString());
+
+		@SuppressWarnings("unchecked")
+		List<ClazzUser> clazzUserList = (List<ClazzUser>)query.getResultList();
+		log.info("Länge: " + clazzUserList.size());
+		
+		
+		for (ClazzUser clazzUser : clazzUserList) {	
+			log.info("clazzUser: " + clazzUser);
+			Key user2 = clazzUser.getUser();
+			Key user3 = user.getKey();
+			log.info("user2: " + user2);
+			log.info("user3: " + user3);
+			if (clazzUser.getUser().compareTo(user.getKey())==0) {
+
+				log.info("getClazz: " + clazzUser.getClazz());
+				log.info("getClazz: " + clazzUser.getClazz().getId());
+				clazz = em.find(Clazz.class, clazzUser.getClazz());
+				em.close();
+				break;
+			}
+		}
+		
+		if (clazz != null) {
+			em = EMF.createEntityManager();
+			School school = em.find(School.class, clazz.getSchool());
+			em.close();
+			return school;
+		}else{
+			return null;
+		}
 	}
 }
