@@ -80,10 +80,10 @@ public class LanGymnasiumServlet extends HttpServlet {
 			List<IClazz> klist = (List<IClazz>) query.getResultList();
 
 			for (IClazz klasse : klist) {
-				writer.write("\nKlasse: " + klasse.getGrade()
-						+ klasse.getLetter() + ", ID: "
-						+ klasse.getKey().getId() + "\n " + klasse.getTeacher()
-						+ "\n " + klasse.getStudents());
+				// writer.write("\nKlasse: " + klasse.getGrade()
+				// + klasse.getLetter() + ", ID: "
+				// + klasse.getKey().getId() + "\n " + klasse.getTeacher()
+				// + "\n " + klasse.getStudents());
 			}
 			em.close();
 
@@ -144,8 +144,8 @@ public class LanGymnasiumServlet extends HttpServlet {
 		lehrer.add(einstein.getKey());
 		lehrer.add(dumbledore.getKey());
 
-		fuenfA.setSchueler(schueler);
-		fuenfA.setLehrer(lehrer);
+//		fuenfA.setSchueler(schueler);
+//		fuenfA.setLehrer(lehrer);
 
 		em = EMF.createEntityManager();
 		em.persist(fuenfA);

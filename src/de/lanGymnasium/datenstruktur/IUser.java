@@ -17,8 +17,12 @@ public interface IUser {
 	public Image getPicture();
 
 	public void setPicture(Image picture);
-	
+
 	public boolean isTeacher();
 
-	boolean equals(User user);
+	public boolean equals(User user);
+
+	public void setGoogleID(String googleID);
+	
+	public String getGoogleID();
 }

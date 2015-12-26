@@ -6,31 +6,35 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.images.Image;
 
 @Entity
-public class User implements IUser{
+public class User implements IUser {
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
 	private String firstName;
 	private String familyName;
 	private Image picture;
 	private boolean isTeacher;
+	private String googleID;
 
-	public User(String firstName, String familyName,
-			boolean isTeacher, Image picture) {
+	public User(String firstName, String familyName, boolean isTeacher,
+			Image picture) {
 		this.firstName = firstName;
 		this.familyName = familyName;
 		this.isTeacher = isTeacher;
 		this.picture = picture;
 	}
-	
+
 	@Override
-	public boolean equals(User user){
+	public boolean equals(User user) {
 		if (user.getFirstName().equals(this.firstName)) {
-			if (user.getFamilyName().equals(this.familyName)) {	
-					return true;
+			if (user.getFamilyName().equals(this.familyName)) {
+				return true;
 			}
 		}
 		return false;
 	}
+
 	@Override
 	public String getFirstName() {
 		return this.firstName;
@@ -69,5 +73,15 @@ public class User implements IUser{
 	@Override
 	public boolean isTeacher() {
 		return this.isTeacher;
+	}
+
+	@Override
+	public void setGoogleID(String googleID) {
+		this.googleID = googleID;
+	}
+
+	@Override
+	public String getGoogleID() {
+		return this.googleID;
 	}
 }

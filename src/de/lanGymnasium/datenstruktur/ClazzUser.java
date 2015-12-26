@@ -14,24 +14,24 @@ public class ClazzUser {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
 	
-	private Key clazz;
-	private Key user;
+	private Long clazzID;
+	private Long userID;
 
 	public Key getKey() {
 		return key;
 	}
 
-	public Key getClazz() {
-		return clazz;
+	public long getClazzID() {
+		return clazzID;
 	}
 
-	public Key getUser() {
+	public long getUserID() {
 		log.info("getUser wurde aufgerufen!");
-		return user;
+		return userID;
 	}
 
-	public ClazzUser(Key clazz, Key user) {
-		this.clazz = clazz;
-		this.user = user;
+	public ClazzUser(Long clazz, Long user) {
+		this.clazzID = clazz;
+		this.userID = user;
 	}
 }

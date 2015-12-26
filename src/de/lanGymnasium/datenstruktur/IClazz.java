@@ -19,12 +19,12 @@ public interface IClazz {
 	public Image setPicture(Image picture);
 
 	public Key getKey();
-
-	public ArrayList<Key> getStudents();
-
-	public void setSchueler(ArrayList<Key> students);
-
-	ArrayList<Key> getTeacher();
-
-	void setLehrer(ArrayList<Key> teacher);
+//
+//	public ArrayList<Long> getStudents();
+//
+//	public void setSchueler(ArrayList<Long> students);
+//
+//	public ArrayList<Long> getTeacher();
+//
+//	public void setLehrer(ArrayList<Long> teacher);
 }

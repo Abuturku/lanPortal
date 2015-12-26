@@ -26,9 +26,10 @@ import de.lanGymnasium.datenstruktur.User;
 import de.lanGymnasium.lan.EMF;
 
 @Path("/user")
-public class UserRestServlet {	
-	private static final Logger log = Logger.getLogger(UserRestServlet.class.getName());
-	
+public class UserRestServlet {
+	private static final Logger log = Logger.getLogger(UserRestServlet.class
+			.getName());
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<User> getUsers() {
@@ -36,12 +37,12 @@ public class UserRestServlet {
 		Query query = em.createQuery("SELECT u FROM User u");
 
 		@SuppressWarnings("unchecked")
-		List<User> list = (List<User>)query.getResultList();
+		List<User> list = (List<User>) query.getResultList();
 		em.close();
-		
+
 		return list;
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -52,7 +53,7 @@ public class UserRestServlet {
 		em.close();
 		return user;
 	}
-	
+
 	@DELETE
 	@Path("/{id}")
 	public void deleteUser(@PathParam("id") String id) {
@@ -62,70 +63,90 @@ public class UserRestServlet {
 		em.remove(user);
 		em.close();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
 	public User getUser(@PathParam("id") String id) {
 		EntityManager em = EMF.createEntityManager();
 		User user = em.find(User.class, KeyFactory.createKey("User", id));
-		System.out.println("get "+user);
+		System.out.println("get " + user);
 		em.close();
-		
+
 		return user;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/loggedInUser")
-	public User getLoggedInUser(){
+	public User getLoggedInUser() {
 		UserService userService = UserServiceFactory.getUserService();
 		EntityManager em = EMF.createEntityManager();
-		User user = em.find(User.class, KeyFactory.createKey("User", userService.getCurrentUser().getUserId()));
-		log.info("User gefunden: " + user.getKey());
+		String queryString = "SELECT u FROM User u  WHERE googleID = '"
+				+ userService.getCurrentUser().getUserId() + "'";
+
+		System.out.println("Suche user: " + queryString);
+		Query query = em.createQuery(queryString);
+
+		@SuppressWarnings("unchecked")
+		List<User> list = (List<User>) query.getResultList();
 		em.close();
-		return user;
+
+		System.out.println("User gefunden: " + list.get(0).getKey());
+
+		return list.get(0);
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/userSchool")
-	public School getUserSchool(){
-		EntityManager em = EMF.createEntityManager();
-		User user = getLoggedInUser();
-		Clazz clazz = null;
-		
-		Query query = em.createQuery("SELECT c FROM ClazzUser c");
-		log.info("Query ausgeführt: " + query.toString());
+	public School getUserSchool() {
+//
+//		User user = getLoggedInUser();
+//		EntityManager em = EMF.createEntityManager();
+//		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = "
+//				+ user.getKey().getId();
+//		System.out.println("Query: " + queryString);
+//		Query query = em.createQuery(queryString);
+//		em.clear();
+//		@SuppressWarnings("unchecked")
+//		List<ClazzUser> clazzUserList = (List<ClazzUser>) query.getResultList();
+//		log.info("Laenge: " + clazzUserList.size());
+//
+//		queryString = "SELECT c FROM Clazz c";
+//		System.out.println("Query: " + queryString);
+//
+//		query = em.createQuery(queryString);
+//		em.clear();
+//		@SuppressWarnings("unchecked")
+//		List<Clazz> clazzList = (List<Clazz>) query.getResultList();
+//		log.info("Laenge: " + clazzList.size());
+//
+//		for (Clazz clazz : clazzList) {
+//			log.info("Pruefe: " + clazz.getKey().getId() + " == "
+//					+ clazzUserList.get(0).getClazzID());
+//			if (clazz.getKey().getId() == clazzUserList.get(0).getClazzID()) {
+//
+//				queryString = "SELECT s FROM School s";
+//				System.out.println("Query: " + queryString);
+//
+//				query = em.createQuery(queryString);
+//				em.clear();
+//				@SuppressWarnings("unchecked")
+//				List<School> schoolList = (List<School>) query.getResultList();
+//				log.info("Laenge: " + schoolList.size());
+//
+//				for (School school : schoolList) {
+//					log.info("Pruefe: " + school.getKey().getId() + " == "
+//							+ clazz.getSchool());
+//					if (school.getKey().getId() == clazz.getSchool()) {
+//						return school;
+//					}
+//				}
+//			}
+//		}
+		return null;
 
-		@SuppressWarnings("unchecked")
-		List<ClazzUser> clazzUserList = (List<ClazzUser>)query.getResultList();
-		log.info("Länge: " + clazzUserList.size());
-		
-		
-		for (ClazzUser clazzUser : clazzUserList) {	
-			log.info("clazzUser: " + clazzUser);
-			Key user2 = clazzUser.getUser();
-			Key user3 = user.getKey();
-			log.info("user2: " + user2);
-			log.info("user3: " + user3);
-			if (clazzUser.getUser().compareTo(user.getKey())==0) {
 
-				log.info("getClazz: " + clazzUser.getClazz());
-				log.info("getClazz: " + clazzUser.getClazz().getId());
-				clazz = em.find(Clazz.class, clazzUser.getClazz());
-				em.close();
-				break;
-			}
-		}
-		
-		if (clazz != null) {
-			em = EMF.createEntityManager();
-			School school = em.find(School.class, clazz.getSchool());
-			em.close();
-			return school;
-		}else{
-			return null;
-		}
 	}
 }

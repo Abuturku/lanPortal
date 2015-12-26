@@ -1,7 +1,5 @@
 package de.lanGymnasium.datenstruktur;
 
-import java.util.ArrayList;
-
 import javax.persistence.*;
 
 import com.google.appengine.api.datastore.Key;
@@ -17,12 +15,11 @@ public class Clazz implements IClazz {
 	private int grade;
 	private char letter;
 	private Image picture;
-	@OneToMany
-	private ArrayList<Key> students;
-	@OneToMany
-	private ArrayList<Key> teachers;
-	@ManyToOne
-	private Key school;
+	// @OneToMany
+	// private ArrayList<Long> students;
+	// @OneToMany
+	// private ArrayList<Long> teachers;
+	private Long school;
 
 	public Clazz(int grade, char letter, Image picture) {
 		this.grade = grade;
@@ -30,11 +27,12 @@ public class Clazz implements IClazz {
 		this.picture = picture;
 	}
 
-	public Clazz(int grade, char letter, Image picture, ArrayList<Key> students, ArrayList<Key> teachers) {
-		this(grade, letter, picture);
-		this.students = students;
-		this.teachers = teachers;
-	}
+	// public Clazz(int grade, char letter, Image picture, ArrayList<Long>
+	// students, ArrayList<Long> teachers) {
+	// this(grade, letter, picture);
+	// this.students = students;
+	// this.teachers = teachers;
+	// }
 
 	@Override
 	public int getGrade() {
@@ -71,27 +69,27 @@ public class Clazz implements IClazz {
 		return this.key;
 	}
 
-	public Key getSchool() {
+	public Long getSchool() {
 		return school;
 	}
-	
-	@Override
-	public ArrayList<Key> getStudents() {
-		return students;
-	}
 
-	@Override
-	public void setSchueler(ArrayList<Key> students) {
-		this.students = students;
-	}
-
-	@Override
-	public ArrayList<Key> getTeacher() {
-		return teachers;
-	}
-
-	@Override
-	public void setLehrer(ArrayList<Key> teachers) {
-		this.teachers = teachers;
-	}
+	// @Override
+	// public ArrayList<Long> getStudents() {
+	// return students;
+	// }
+	//
+	// @Override
+	// public void setSchueler(ArrayList<Long> students) {
+	// this.students = students;
+	// }
+	//
+	// @Override
+	// public ArrayList<Long> getTeacher() {
+	// return teachers;
+	// }
+	//
+	// @Override
+	// public void setLehrer(ArrayList<Long> teachers) {
+	// this.teachers = teachers;
+	// }
 }
