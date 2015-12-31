@@ -21,11 +21,10 @@ public class Clazz implements IClazz {
 	// private ArrayList<Long> teachers;
 	private Long school;
 
-	public Clazz(int grade, char letter, long school, Image picture) {
+	public Clazz(int grade, char letter, Image picture) {
 		this.grade = grade;
 		this.letter = letter;
 		this.picture = picture;
-		this.school = school;
 	}
 
 	// public Clazz(int grade, char letter, Image picture, ArrayList<Long>

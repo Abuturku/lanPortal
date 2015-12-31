@@ -2,57 +2,27 @@ package de.lanGymnasium.lan;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-import de.lanGymnasium.datenstruktur.Clazz;
-import de.lanGymnasium.datenstruktur.ClazzUser;
-import de.lanGymnasium.datenstruktur.IClazz;
-import de.lanGymnasium.datenstruktur.ISchool;
-import de.lanGymnasium.datenstruktur.IUser;
-import de.lanGymnasium.datenstruktur.School;
 import de.lanGymnasium.datenstruktur.User;
 
 public class LoginChecker {
-	public static void iniData() {
-		// IClazz neunA = new Clazz(9, 'a', 6614661952700416L, null);
-		// IClazz vierC = new Clazz(4, 'c', 1234, null);
-		// EntityManager em = EMF.createEntityManager();
-		// em.persist(neunA);
-		// em.close();
-		// em = EMF.createEntityManager();
-		// em.persist(vierC);
-		// em.close();
-		
-		// IUser niklas = new User("Niklas", "Nikisch","185804764220139124118",
-		// false, null);
-		// em = EMF.createEntityManager();
-		// em.persist(niklas);
-		// em.close();
-		
-		// ISchool school = new School("LAN-Gymnasium");
-		// em = EMF.createEntityManager();
-		// em.persist(school);
-		// em.close();
-
-		// ClazzUser clazzUser = new ClazzUser(4573968371548160L,
-		// 5488762045857792L);
-		// em = EMF.createEntityManager();
-		// em.persist(clazzUser);
-		// em.close();
-
-	}
+	// private static final Logger log = Logger.getLogger(LoginChecker.class
+	// .getName());
 
 	public static User checkLogin(HttpServletRequest req,
 			HttpServletResponse resp) throws IOException {
 		UserService userService = UserServiceFactory.getUserService();
-		iniData();
+
 		String thisURL = req.getRequestURI();
 
 		if (userService.isUserLoggedIn()) {

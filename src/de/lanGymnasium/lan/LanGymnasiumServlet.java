@@ -110,65 +110,65 @@ public class LanGymnasiumServlet extends HttpServlet {
 	}
 
 	private void initData() throws Exception {
-//		IClazz fuenfA = new Clazz(5, 'a', null);
-//		
-//		School school = new School("LAN-Gymnasium");
-//		
-//		IUser linda = new User("Linda", "Latreider", false, null);
-//		IUser niklas = new User("Niklas", "Nikisch", false, null);
-//
-//		IUser einstein = new User("Albert", "Einstein", true, null);
-//		IUser dumbledore = new User("Albus", "Dumbledore", true, null);
-//
-//		EntityManager em = EMF.createEntityManager();
-//		em.persist(school);
-//		em.close();
-//		em = EMF.createEntityManager();
-//		em.persist(linda);
-//		em.close();
-//		em = EMF.createEntityManager();
-//		em.persist(niklas);
-//		em.close();
-//		em = EMF.createEntityManager();
-//		em.persist(einstein);
-//		em.close();
-//		em = EMF.createEntityManager();
-//		em.persist(dumbledore);
-//		em.close();
-//
-//		ArrayList<Key> schueler = new ArrayList<Key>();
-//		schueler.add(linda.getKey());
-//		schueler.add(niklas.getKey());
-//
-//		ArrayList<Key> lehrer = new ArrayList<Key>();
-//		lehrer.add(einstein.getKey());
-//		lehrer.add(dumbledore.getKey());
-//
-////		fuenfA.setSchueler(schueler);
-////		fuenfA.setLehrer(lehrer);
-//
-//		em = EMF.createEntityManager();
-//		em.persist(fuenfA);
-//		em.close();
-//
-//		INote notiz1 = new Note(dumbledore.getKey(), niklas.getKey(), new Date(
-//				System.currentTimeMillis()), "5 Punkte f�r Gryffindor");
-//		INote notiz2 = new Note(einstein.getKey(), niklas.getKey(), new Date(
-//				System.currentTimeMillis()), "E=mc^2");
-//		INote notiz3 = new Note(
-//				einstein.getKey(),
-//				linda.getKey(),
-//				new Date(System.currentTimeMillis()),
-//				"Insanity: doing the same thing over and over again and expecting different results.");
-//		em = EMF.createEntityManager();
-//		em.persist(notiz1);
-//		em.close();
-//		em = EMF.createEntityManager();
-//		em.persist(notiz2);
-//		em.close();
-//		em = EMF.createEntityManager();
-//		em.persist(notiz3);
-//		em.close();
+		IClazz fuenfA = new Clazz(5, 'a', null);
+		
+		School school = new School("LAN-Gymnasium");
+		
+		IUser linda = new User("Linda", "Latreider", false, null);
+		IUser niklas = new User("Niklas", "Nikisch", false, null);
+
+		IUser einstein = new User("Albert", "Einstein", true, null);
+		IUser dumbledore = new User("Albus", "Dumbledore", true, null);
+
+		EntityManager em = EMF.createEntityManager();
+		em.persist(school);
+		em.close();
+		em = EMF.createEntityManager();
+		em.persist(linda);
+		em.close();
+		em = EMF.createEntityManager();
+		em.persist(niklas);
+		em.close();
+		em = EMF.createEntityManager();
+		em.persist(einstein);
+		em.close();
+		em = EMF.createEntityManager();
+		em.persist(dumbledore);
+		em.close();
+
+		ArrayList<Key> schueler = new ArrayList<Key>();
+		schueler.add(linda.getKey());
+		schueler.add(niklas.getKey());
+
+		ArrayList<Key> lehrer = new ArrayList<Key>();
+		lehrer.add(einstein.getKey());
+		lehrer.add(dumbledore.getKey());
+
+//		fuenfA.setSchueler(schueler);
+//		fuenfA.setLehrer(lehrer);
+
+		em = EMF.createEntityManager();
+		em.persist(fuenfA);
+		em.close();
+
+		INote notiz1 = new Note(dumbledore.getKey(), niklas.getKey(), new Date(
+				System.currentTimeMillis()), "5 Punkte f�r Gryffindor");
+		INote notiz2 = new Note(einstein.getKey(), niklas.getKey(), new Date(
+				System.currentTimeMillis()), "E=mc^2");
+		INote notiz3 = new Note(
+				einstein.getKey(),
+				linda.getKey(),
+				new Date(System.currentTimeMillis()),
+				"Insanity: doing the same thing over and over again and expecting different results.");
+		em = EMF.createEntityManager();
+		em.persist(notiz1);
+		em.close();
+		em = EMF.createEntityManager();
+		em.persist(notiz2);
+		em.close();
+		em = EMF.createEntityManager();
+		em.persist(notiz3);
+		em.close();
 	}
 	/*
 	 * private void initData() throws Exception { // IKlasse klasse = new
