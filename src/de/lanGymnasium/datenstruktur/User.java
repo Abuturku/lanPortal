@@ -17,11 +17,12 @@ public class User implements IUser {
 	private boolean isTeacher;
 	private String googleID;
 
-	public User(String firstName, String familyName, boolean isTeacher,
-			Image picture) {
+	public User(String firstName, String familyName, String googleID,
+			boolean isTeacher, Image picture) {
 		this.firstName = firstName;
 		this.familyName = familyName;
 		this.isTeacher = isTeacher;
+		this.googleID = googleID;
 		this.picture = picture;
 	}
 
