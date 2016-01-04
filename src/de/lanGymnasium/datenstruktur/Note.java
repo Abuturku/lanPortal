@@ -4,22 +4,20 @@ import java.util.Date;
 
 import javax.persistence.*;
 
-import com.google.appengine.api.datastore.Key;
-
 @Entity
 public class Note implements INote {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Key key;
+	private long key;
 	
 	@OneToOne
-	private Key teacher;
+	private long teacher;
 	@OneToOne
-	private Key student;
+	private long student;
 	private Date timestamp;
 	private String text;
 
-	public Note(Key teacher, Key student, Date date, String text) {
+	public Note(long teacher, long student, Date date, String text) {
 		this.teacher = teacher;
 		this.student = student;
 		this.timestamp = date;
@@ -27,12 +25,12 @@ public class Note implements INote {
 	}
 
 	@Override
-	public Key getTeacher() {
+	public long getTeacher() {
 		return this.teacher;
 	}
 
 	@Override
-	public Key getStudent() {
+	public long getStudent() {
 		return this.student;
 	}
 
@@ -47,7 +45,7 @@ public class Note implements INote {
 	}
 
 	@Override
-	public Key getKey() {
+	public long getKey() {
 		return this.key;
 	}
 }
