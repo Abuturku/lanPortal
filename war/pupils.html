@@ -22,6 +22,7 @@
 				$.getJSON("/rest/user/userSchool", function(school) {
 					$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + school.name + ' als '));
 				})
+				
 				$.getJSON("/rest/user/loggedInUser", function(user) {
 					$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
 				})
@@ -29,13 +30,13 @@
 
 			
 			function appendSchool(school){
-				$('#ddb_inst').append($('<option value=\"'+ school.name +'\">'+ school.name +'</option>'));
+				$('#ddb_inst').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
 			}
 		
 			function getAllSchools(){
 				$.getJSON("/rest/school", function(data) {
 					$("#ddb_inst option").remove();
-					$('#ddb_inst').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_inst">Nach Schule filtern</option>'));
+					$('#ddb_inst').append($('<option value="null" selected id="pupils_ddbFilter_inst">Nach Schule filtern</option>'));
 					$.each(data, function(index, school) {
 						appendSchool(school);
 					})
@@ -43,13 +44,13 @@
 			}
 			
 			function appendGrade(grade){
-				$('#ddb_grade').append($('<option value=\"'+ grade.value +'\">'+ grade +'</option>'));
+				$('#ddb_grade').append($('<option value=\"'+ grade +'\">'+ grade +'</option>'));
 			}
 		
 			function getAllGrades(){
 				$.getJSON("/rest/clazz/grades", function(data) {
 					$("#ddb_grade option").remove();
-					$('#ddb_grade').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_grade">Nach Stufe filtern</option>'));
+					$('#ddb_grade').append($('<option value="0" selected id="pupils_ddbFilter_grade">Nach Stufe filtern</option>'));
 					$.each(data, function(index, grade) {
 						appendGrade(grade);
 					})
@@ -57,13 +58,13 @@
 			}
 			
 			function appendLetters(letter){
-				$('#ddb_class').append($('<option value=\"'+ letter.value +'\">'+ letter +'</option>'));
+				$('#ddb_class').append($('<option value=\"'+ letter +'\">'+ letter +'</option>'));
 			}
 		
 			function getAllLetters(){
 				$.getJSON("/rest/clazz/letters", function(data) {
 					$("#ddb_class option").remove();
-					$('#ddb_class').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_class">Nach Klasse filtern</option>'));
+					$('#ddb_class').append($('<option value="null" selected id="pupils_ddbFilter_class">Nach Klasse filtern</option>'));
 					$.each(data, function(index, letter) {
 						appendLetters(letter);
 					})
@@ -71,21 +72,58 @@
 			}
 			
 			function appendTeachers(teacher){
-				$('#ddb_teacher').append($('<option value=\"'+ teacher +'\">'+ teacher.firstName + ' ' +teacher.familyName +'</option>'));
+				$('#ddb_teacher').append($('<option value=\"'+ teacher.key.id +'\">'+ teacher.firstName + ' ' +teacher.familyName +'</option>'));
 			}
 		
 			function getAllTeachers(){
 				$.getJSON("/rest/user/teachers", function(data) {
 					$("#ddb_teacher option").remove();
-					$('#ddb_teacher').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
+					$('#ddb_teacher').append($('<option value="null" selected id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
+					filter();
 					$.each(data, function(index, teacher) {
 						appendTeachers(teacher);
 					})
 				})
+				
+			}
+			
+			function appendStudent(student){
+				$('#studentTable').append($('<tr id="' + student.key.id + '"><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
 			}
 			
 			function filter(){
-			
+				var schoolSelect = document.getElementById('ddb_inst');
+				var gradeSelect = document.getElementById('ddb_grade');
+				var letterSelect = document.getElementById('ddb_class');
+				var teacherSelect = document.getElementById('ddb_teacher');
+				
+				var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+				var filterGrade = gradeSelect.options[gradeSelect.selectedIndex].value;
+				var filterLetter = letterSelect.options[letterSelect.selectedIndex].value;
+				var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
+				
+				var filterObject = {schoolID:filterSchool, grade:filterGrade, letter:filterLetter, teacherID:filterTeacher, studentID:null};
+				
+				$.ajaxSetup({
+					  contentType: "application/json; charset=utf-8"
+				});
+				$.ajax({
+					url: "/rest/filter/students",
+					contentType: "application/json; charset=utf-8",
+					data: JSON.stringify(filterObject),
+					success: function(data) {
+						$('#studentTable tr').remove();
+						$('#studentTable').append('<tr><td id="header">Nachname</td><td id="header">Vorname</td></tr>');
+						$.each(data, function(index, student) { 
+							appendStudent(student);
+						})
+					},
+					error: function() {
+						alert("Fehler!");
+					},
+					method: "POST",
+					mimeType: "application/json"
+				});
 			}
 			 
 		</script>
@@ -118,57 +156,25 @@
 		<div id="pagecontent">
 			<div id="tablecontent">
 				<div id="tablefilter">
-					<select id="ddb_inst" onclick="">
+					<select id="ddb_inst" onchange="filter()">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_inst">Nach Schule filtern</option>
 					</select>
-					<select id="ddb_grade" onclick="">
+					<select id="ddb_grade" onchange="filter()">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_grade">Nach Stufe filtern</option>
 					</select>
-					<select id="ddb_class" onclick="">
+					<select id="ddb_class" onchange="filter()">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_class">Nach Klasse filtern</option>
 					</select>
-					<select id="ddb_teacher" onclick="">
+					<select id="ddb_teacher" onchange="filter()">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>
 					</select>
 				</div>
 				<div id="table">
-					<table>
+					<table id="studentTable">
 						<tr>
 							<td id="header">Nachname</td>
 							<td id="header">Vorname</td>
 						</tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
 					</table>
 				</div>
 			</div>
@@ -211,36 +217,6 @@
 							<tr id="pupils_addNote">
 								<td colspan="2" onclick="onclickPupil_noteTable_addNote()"><em>--- Notiz hinzufügen ---</em></td>
 							</tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
-							<tr><td>01.01.01</td><td>Max Mustermann</td></tr>
 						</table>
 					</div>
 					<label>Vorschau Notiz:</label>

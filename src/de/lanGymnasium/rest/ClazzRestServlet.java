@@ -2,6 +2,7 @@ package de.lanGymnasium.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -17,11 +18,13 @@ import javax.ws.rs.core.MediaType;
 import com.google.appengine.api.datastore.KeyFactory;
 
 import de.lanGymnasium.datenstruktur.Clazz;
+import de.lanGymnasium.datenstruktur.ClazzUser;
 import de.lanGymnasium.lan.EMF;
 
 @Path("/clazz")
 public class ClazzRestServlet {
-
+	private static final Logger log = Logger.getLogger(UserRestServlet.class.getName());
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Clazz> getClazzes() {
@@ -123,6 +126,23 @@ public class ClazzRestServlet {
 			}
 		}
 		return letters;
-
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Clazz> getClazzesBySchoolId(Long schoolID){
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery("SELECT c FROM Clazz c WHERE schoolID = " + schoolID);
+		List<Clazz> clazzes = (List<Clazz>) query.getResultList();
+		em.close();
+		return clazzes;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<ClazzUser> getClazzUsersByClazzId(Long clazzID){
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery("SELECT c FROM ClazzUser c WHERE clazzID = " + clazzID);
+		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
+		em.close();
+		return clazzUsers;
 	}
 }

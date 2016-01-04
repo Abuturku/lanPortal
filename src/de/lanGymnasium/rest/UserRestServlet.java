@@ -99,7 +99,7 @@ public class UserRestServlet {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/userSchool")
-	public School getUserSchool() {		
+	public School getUserSchool() {
 		User user = getLoggedInUser();
 		
 		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = "
@@ -116,8 +116,6 @@ public class UserRestServlet {
 		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
 		
 		return school;
-
-
 	}
 	
 	@GET
@@ -139,6 +137,5 @@ public class UserRestServlet {
 			}
 		}
 		return teachers;
-
 	}
 }
