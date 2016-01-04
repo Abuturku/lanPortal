@@ -13,7 +13,7 @@
 			window.addEventListener("DOMContentLoaded", function(){
 				getUser();
 			});
-			
+		
 			function getUser(){
 				$.getJSON("/rest/user/userSchool", function(school) {
 					$('#footer_txt_logininfo').text('Angemeldet im ' + school.name + ' als ');

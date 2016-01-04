@@ -1,7 +1,6 @@
 package de.lanGymnasium.rest;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -14,7 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
@@ -27,8 +25,8 @@ import de.lanGymnasium.lan.EMF;
 
 @Path("/user")
 public class UserRestServlet {
-	private static final Logger log = Logger.getLogger(UserRestServlet.class
-			.getName());
+//	private static final Logger log = Logger.getLogger(UserRestServlet.class
+//			.getName());
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -85,14 +83,14 @@ public class UserRestServlet {
 		String queryString = "SELECT u FROM User u  WHERE googleID = '"
 				+ userService.getCurrentUser().getUserId() + "'";
 
-		System.out.println("Suche user: " + queryString);
+//		System.out.println("Suche user: " + queryString);
 		Query query = em.createQuery(queryString);
 
 		@SuppressWarnings("unchecked")
 		List<User> list = (List<User>) query.getResultList();
 		em.close();
 
-		System.out.println("User gefunden: " + list.get(0).getKey());
+//		System.out.println("User gefunden: " + list.get(0).getKey());
 
 		return list.get(0);
 	}
@@ -100,52 +98,23 @@ public class UserRestServlet {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/userSchool")
-	public School getUserSchool() {
-//
-//		User user = getLoggedInUser();
-//		EntityManager em = EMF.createEntityManager();
-//		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = "
-//				+ user.getKey().getId();
-//		System.out.println("Query: " + queryString);
-//		Query query = em.createQuery(queryString);
-//		em.clear();
-//		@SuppressWarnings("unchecked")
-//		List<ClazzUser> clazzUserList = (List<ClazzUser>) query.getResultList();
-//		log.info("Laenge: " + clazzUserList.size());
-//
-//		queryString = "SELECT c FROM Clazz c";
-//		System.out.println("Query: " + queryString);
-//
-//		query = em.createQuery(queryString);
-//		em.clear();
-//		@SuppressWarnings("unchecked")
-//		List<Clazz> clazzList = (List<Clazz>) query.getResultList();
-//		log.info("Laenge: " + clazzList.size());
-//
-//		for (Clazz clazz : clazzList) {
-//			log.info("Pruefe: " + clazz.getKey().getId() + " == "
-//					+ clazzUserList.get(0).getClazzID());
-//			if (clazz.getKey().getId() == clazzUserList.get(0).getClazzID()) {
-//
-//				queryString = "SELECT s FROM School s";
-//				System.out.println("Query: " + queryString);
-//
-//				query = em.createQuery(queryString);
-//				em.clear();
-//				@SuppressWarnings("unchecked")
-//				List<School> schoolList = (List<School>) query.getResultList();
-//				log.info("Laenge: " + schoolList.size());
-//
-//				for (School school : schoolList) {
-//					log.info("Pruefe: " + school.getKey().getId() + " == "
-//							+ clazz.getSchool());
-//					if (school.getKey().getId() == clazz.getSchool()) {
-//						return school;
-//					}
-//				}
-//			}
-//		}
-		return null;
+	public School getUserSchool() {		
+		User user = getLoggedInUser();
+		
+		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = "
+				+ user.getKey().getId();
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery(queryString);
+		em.clear();
+		
+		ClazzUser clazzUser = (ClazzUser) query.getSingleResult();
+
+		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+		em.clear();
+		
+		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
+		
+		return school;
 
 
 	}

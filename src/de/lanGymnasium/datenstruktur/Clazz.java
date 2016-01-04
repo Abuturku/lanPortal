@@ -13,18 +13,19 @@ public class Clazz implements IClazz {
 	private Key key;
 
 	private int grade;
-	private char letter;
+	private String letter;
 	private Image picture;
 	// @OneToMany
 	// private ArrayList<Long> students;
 	// @OneToMany
 	// private ArrayList<Long> teachers;
-	private Long school;
+	private Long schoolID;
 
-	public Clazz(int grade, char letter, Image picture) {
+	public Clazz(int grade, String letter, Image picture, Long schoolID) {
 		this.grade = grade;
 		this.letter = letter;
 		this.picture = picture;
+		this.schoolID = schoolID;
 	}
 
 	// public Clazz(int grade, char letter, Image picture, ArrayList<Long>
@@ -40,7 +41,7 @@ public class Clazz implements IClazz {
 	}
 
 	@Override
-	public char getLetter() {
+	public String getLetter() {
 		return this.letter;
 	}
 
@@ -55,7 +56,7 @@ public class Clazz implements IClazz {
 	}
 
 	@Override
-	public char setLetter(char letter) {
+	public String setLetter(String letter) {
 		return this.letter = letter;
 	}
 
@@ -69,8 +70,8 @@ public class Clazz implements IClazz {
 		return this.key;
 	}
 
-	public Long getSchool() {
-		return school;
+	public Long getSchoolID() {
+		return schoolID;
 	}
 
 	// @Override

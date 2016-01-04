@@ -1,20 +1,18 @@
 package de.lanGymnasium.datenstruktur;
 
-import java.util.ArrayList;
-
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.images.Image;
 
 public interface IClazz {
 	public int getGrade();
 
-	public char getLetter();
+	public String getLetter();
 
 	public Image getPicture();
 
 	public void setGrade(int grade);
 
-	public char setLetter(char letter);
+	public String setLetter(String letter);
 
 	public Image setPicture(Image picture);
 

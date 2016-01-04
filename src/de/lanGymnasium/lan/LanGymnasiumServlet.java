@@ -76,15 +76,15 @@ public class LanGymnasiumServlet extends HttpServlet {
 			s = "SELECT k FROM Klasse k";
 			query = em.createQuery(s);
 
-			@SuppressWarnings("unchecked")
-			List<IClazz> klist = (List<IClazz>) query.getResultList();
+//			@SuppressWarnings("unchecked")
+//			List<IClazz> klist = (List<IClazz>) query.getResultList();
 
-			for (IClazz klasse : klist) {
-				// writer.write("\nKlasse: " + klasse.getGrade()
-				// + klasse.getLetter() + ", ID: "
-				// + klasse.getKey().getId() + "\n " + klasse.getTeacher()
-				// + "\n " + klasse.getStudents());
-			}
+//			for (IClazz klasse : klist) {
+//				// writer.write("\nKlasse: " + klasse.getGrade()
+//				// + klasse.getLetter() + ", ID: "
+//				// + klasse.getKey().getId() + "\n " + klasse.getTeacher()
+//				// + "\n " + klasse.getStudents());
+//			}
 			em.close();
 
 			writer.write("\n");
@@ -110,7 +110,7 @@ public class LanGymnasiumServlet extends HttpServlet {
 	}
 
 	private void initData() throws Exception {
-		IClazz fuenfA = new Clazz(5, 'a', null);
+//		IClazz fuenfA = new Clazz(5, 'a', null);
 		
 		School school = new School("LAN-Gymnasium");
 		
@@ -148,7 +148,7 @@ public class LanGymnasiumServlet extends HttpServlet {
 //		fuenfA.setLehrer(lehrer);
 
 		em = EMF.createEntityManager();
-		em.persist(fuenfA);
+//		em.persist(fuenfA);
 		em.close();
 
 		INote notiz1 = new Note(dumbledore.getKey(), niklas.getKey(), new Date(

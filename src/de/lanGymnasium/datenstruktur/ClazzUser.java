@@ -21,11 +21,11 @@ public class ClazzUser {
 		return key;
 	}
 
-	public long getClazzID() {
+	public Long getClazzID() {
 		return clazzID;
 	}
 
-	public long getUserID() {
+	public Long getUserID() {
 		log.info("getUser wurde aufgerufen!");
 		return userID;
 	}
