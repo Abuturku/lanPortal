@@ -20,8 +20,7 @@ import de.lanGymnasium.lan.EMF;
 
 @Path("/school")
 public class SchoolRestServlet {
-	
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<School> getSchool() {
@@ -29,12 +28,12 @@ public class SchoolRestServlet {
 		Query query = em.createQuery("SELECT s FROM School s");
 
 		@SuppressWarnings("unchecked")
-		List<School> list = (List<School>)query.getResultList();
+		List<School> list = (List<School>) query.getResultList();
 		em.close();
-		
+
 		return list;
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -45,44 +44,30 @@ public class SchoolRestServlet {
 		em.close();
 		return school;
 	}
-	
+
 	@DELETE
 	@Path("/{id}")
 	public void deleteSchool(@PathParam("id") long id) {
 		EntityManager em = EMF.createEntityManager();
-		School school = em.find(School.class, KeyFactory.createKey("School", id));
-		System.out.println("remove "+school);
+		School school = em.find(School.class,
+				KeyFactory.createKey("School", id));
+		System.out.println("remove " + school);
 		em.remove(school);
 		em.close();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
 	public School getSchool(@PathParam("id") long id) {
 		EntityManager em = EMF.createEntityManager();
-		School school = em.find(School.class, KeyFactory.createKey("School", id));
-		System.out.println("get "+school);
+		School school = em.find(School.class,
+				KeyFactory.createKey("School", id));
+		System.out.println("get " + school);
 		em.close();
-		
+
 		return school;
 	}
+
 	
-//	@GET
-//	@Produces("text/plain")
-//	public String getSchools() {
-//		EntityManager em = EMF.createEntityManager();
-//		Query query = em.createQuery("SELECT s FROM school s");
-//
-//		@SuppressWarnings("unchecked")
-//		List<School> list = (List<School>)query.getResultList();
-//		StringBuffer s = new StringBuffer();		
-//		for (School school: list) {
-//			s.append("\n");
-//			s.append(school.getName());
-//		}
-//		em.close();
-//		
-//		return s.toString();
-//	}
 }

@@ -1,5 +1,6 @@
 package de.lanGymnasium.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -116,6 +117,28 @@ public class UserRestServlet {
 		
 		return school;
 
+
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/teachers")
+	public List<User> getTeachers() {
+		String queryString = "SELECT u FROM User u";
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery(queryString);
+		em.clear();
+
+		@SuppressWarnings("unchecked")
+		List<User> userList = (List<User>) query.getResultList();
+
+		ArrayList<User> teachers = new ArrayList<User>();
+		for (User user : userList) {
+			if(user.isTeacher()){
+				teachers.add(user);
+			}
+		}
+		return teachers;
 
 	}
 }

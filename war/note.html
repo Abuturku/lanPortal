@@ -15,8 +15,10 @@
 		});
 		
 		function getUser(){
+		
+		
 			$.getJSON("/rest/user/userSchool", function(school) {
-				$('#footer_txt_logininfo').text('Angemeldet im ' + school.name + ' als ');
+				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + school.name + ' als '));
 			})
 			$.getJSON("/rest/user/loggedInUser", function(user) {
 				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));

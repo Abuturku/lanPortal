@@ -1,5 +1,6 @@
 package de.lanGymnasium.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -28,12 +29,12 @@ public class ClazzRestServlet {
 		Query query = em.createQuery("SELECT c FROM Clazz c");
 
 		@SuppressWarnings("unchecked")
-		List<Clazz> list = (List<Clazz>)query.getResultList();
+		List<Clazz> list = (List<Clazz>) query.getResultList();
 		em.close();
-		
+
 		return list;
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -44,26 +45,84 @@ public class ClazzRestServlet {
 		em.close();
 		return clazz;
 	}
-	
+
 	@DELETE
 	@Path("/{id}")
 	public void deleteClazz(@PathParam("id") long id) {
 		EntityManager em = EMF.createEntityManager();
 		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", id));
-		System.out.println("remove "+clazz);
+		System.out.println("remove " + clazz);
 		em.remove(clazz);
 		em.close();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
 	public Clazz getClazz(@PathParam("id") long id) {
 		EntityManager em = EMF.createEntityManager();
 		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", id));
-		System.out.println("get "+clazz);
+		System.out.println("get " + clazz);
 		em.close();
-		
+
 		return clazz;
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/grades")
+	public List<Integer> getGrades() {
+		String queryString = "SELECT c FROM Clazz c";
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery(queryString);
+		em.clear();
+
+		@SuppressWarnings("unchecked")
+		List<Clazz> clazzList = (List<Clazz>) query.getResultList();
+
+		ArrayList<Integer> grades = new ArrayList<Integer>();
+		for (Clazz clazz : clazzList) {
+			boolean inList = false;
+			for (Integer grade : grades) {
+				if (clazz.getGrade() == grade.intValue()) {
+					inList = true;
+					break;
+				}
+			}
+			if (!inList) {
+				grades.add(clazz.getGrade());
+			}
+		}
+		return grades;
+
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/letters")
+	public List<String> getLetters() {
+		String queryString = "SELECT c FROM Clazz c";
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery(queryString);
+		em.clear();
+
+		@SuppressWarnings("unchecked")
+		List<Clazz> clazzList = (List<Clazz>) query.getResultList();
+
+		ArrayList<String> letters = new ArrayList<String>();
+		for (Clazz clazz : clazzList) {
+			boolean inList = false;
+			for (String letter : letters) {
+				if (clazz.getLetter().equals(letter)) {
+					inList = true;
+					break;
+				}
+			}
+			if (!inList) {
+				letters.add(clazz.getLetter());
+			}
+		}
+		return letters;
+
 	}
 }

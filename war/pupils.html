@@ -13,16 +13,20 @@
 			window.addEventListener("DOMContentLoaded", function(){
 				getUser();
 				getAllSchools();
+				getAllGrades();
+				getAllLetters();
+				getAllTeachers();
 			});
 			
 			function getUser(){
 				$.getJSON("/rest/user/userSchool", function(school) {
-					$('#footer_txt_logininfo').text('Angemeldet im ' + school.name + ' als ');
+					$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + school.name + ' als '));
 				})
 				$.getJSON("/rest/user/loggedInUser", function(user) {
 					$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
 				})
 			}
+
 			
 			function appendSchool(school){
 				$('#ddb_inst').append($('<option value=\"'+ school.name +'\">'+ school.name +'</option>'));
@@ -39,11 +43,11 @@
 			}
 			
 			function appendGrade(grade){
-				$('#ddb_grade').append($('<option value=\"'+ grade +'\">'+ grade +'</option>'));
+				$('#ddb_grade').append($('<option value=\"'+ grade.value +'\">'+ grade +'</option>'));
 			}
 		
 			function getAllGrades(){
-				$.getJSON("/rest/school", function(data) {
+				$.getJSON("/rest/clazz/grades", function(data) {
 					$("#ddb_grade option").remove();
 					$('#ddb_grade').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_grade">Nach Stufe filtern</option>'));
 					$.each(data, function(index, grade) {
@@ -52,9 +56,38 @@
 				})
 			}
 			
-			function onclickPupil_ddbFilter_inst(){
-				getAllGrades();
+			function appendLetters(letter){
+				$('#ddb_class').append($('<option value=\"'+ letter.value +'\">'+ letter +'</option>'));
 			}
+		
+			function getAllLetters(){
+				$.getJSON("/rest/clazz/letters", function(data) {
+					$("#ddb_class option").remove();
+					$('#ddb_class').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_class">Nach Klasse filtern</option>'));
+					$.each(data, function(index, letter) {
+						appendLetters(letter);
+					})
+				})
+			}
+			
+			function appendTeachers(teacher){
+				$('#ddb_teacher').append($('<option value=\"'+ teacher +'\">'+ teacher.firstName + ' ' +teacher.familyName +'</option>'));
+			}
+		
+			function getAllTeachers(){
+				$.getJSON("/rest/user/teachers", function(data) {
+					$("#ddb_teacher option").remove();
+					$('#ddb_teacher').append($('<option value="" disabled selected hidden id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
+					$.each(data, function(index, teacher) {
+						appendTeachers(teacher);
+					})
+				})
+			}
+			
+			function filter(){
+			
+			}
+			 
 		</script>
 		<header>
 			<nav id="doc_navlist">
@@ -85,16 +118,16 @@
 		<div id="pagecontent">
 			<div id="tablecontent">
 				<div id="tablefilter">
-					<select id="ddb_inst" onclick="onclickPupil_ddbFilter_inst()">
+					<select id="ddb_inst" onclick="">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_inst">Nach Schule filtern</option>
 					</select>
-					<select id="ddb_grade" onclick="onclickPupil_ddbFilter_grade()">
+					<select id="ddb_grade" onclick="">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_grade">Nach Stufe filtern</option>
 					</select>
-					<select id="ddb_class" onclick="onclickPupil_ddbFilter_class()">
+					<select id="ddb_class" onclick="">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_class">Nach Klasse filtern</option>
 					</select>
-					<select id="ddb_teacher" onclick="onclickPupil_ddbFilter_teacher()">
+					<select id="ddb_teacher" onclick="">
 						<option value="" disabled selected hidden id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>
 					</select>
 				</div>
