@@ -16,7 +16,7 @@
 			getAllGrades();
 			getAllTeachers();
 			getAllPupils();
-			filter();
+			
 		});
 		
 		function getUser(){
@@ -35,7 +35,7 @@
 		function getAllSchools(){
 				$.getJSON("/rest/school", function(data) {
 					$("#ddb_inst option").remove();
-					$('#ddb_inst').append($('<option value="null" selected id="classes_ddbFilter_inst">Nach Schule filtern</option>'));
+					$('#ddb_inst').append($('<option value="null" selected id="classes_ddbFilter_inst">Bitte eine Schule auswählen</option>'));
 					$.each(data, function(index, school) {
 						appendSchool(school);
 					})
@@ -79,6 +79,7 @@
 				$.getJSON("/rest/user/pupils", function(data) {
 					$("#ddb_pupil option").remove();
 					$('#ddb_pupil').append($('<option value="null" selected id="classes_ddbFilter_pupil">Nach Schueler filtern</option>'));
+					filter();
 					$.each(data, function(index, pupil) {
 						appendPupil(pupil);
 					})
@@ -154,24 +155,24 @@
 		<div id="pagecontent">
 			<div id="tablecontent">
 				<div id="tablefilter">
-					<select id="ddb_inst" onclick="filter()">
-						<option value="" disabled selected hidden id="classes_ddbFilter_inst">Nach Schule filtern</option>
+					<select id="ddb_inst" onchange="filter()">
+						<option value="" disabled selected hidden id="classes_ddbFilter_inst">Bitte eine Schule auswaehlen</option>
 					</select>
-					<select id="ddb_grade" onclick="filter()">
+					<select id="ddb_grade" onchange="filter()">
 						<option value="" disabled selected hidden id="classes_ddbFilter_grade">Nach Stufe filtern</option>
 					</select>
-					<select id="ddb_teacher" onclick="filter()">
+					<select id="ddb_teacher" onchange="filter()">
 						<option value="" disabled selected hidden id="classes_ddbFilter_teacher">Nach Lehrer filtern</option>
 					</select>
-					<select id="ddb_pupil" onclick="filter()">
-						<option value="" disabled selected hidden id="classes_ddbFilter_pupil">Nach Schüler filtern</option>
+					<select id="ddb_pupil" onchange="filter()">
+						<option value="" disabled selected hidden id="classes_ddbFilter_pupil">Nach Schueler filtern</option>
 					</select>
 				</div>
 				<div id="table">
 					<table  id="classTable">
 						<tr>
-							<td id="header">Klasse</td>
-							<td id="header">Schülerzahl</td>
+							<td id="header">Stufe</td>
+							<td id="header">Buchstabe</td>
 						</tr>
 					</table>
 				</div>

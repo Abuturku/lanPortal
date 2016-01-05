@@ -16,7 +16,8 @@ public class Filter {
 		this.teacherID = teacherID;
 		this.studentID = studentID;
 	}
-
+	
+	
 	public Filter() {
 
 	}
@@ -43,7 +44,7 @@ public class Filter {
 
 	@Override
 	public String toString() {
-		return "Filter: SchoolID: " + schoolID + " | Grade: " + grade
-				+ "| Letter: " + letter + " | TeacherID: " + teacherID;
+		return "Filter: schoolID: " + schoolID + " | grade: " + grade
+				+ " | letter: " + letter + " | teacherID: " + teacherID + "studentID: " + studentID;
 	}
 }

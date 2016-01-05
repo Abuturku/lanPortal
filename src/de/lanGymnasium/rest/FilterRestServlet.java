@@ -34,15 +34,14 @@ public class FilterRestServlet {
 	public List<User> filterStudents(Filter filter) {
 
 		EntityManager em = EMF.createEntityManager();
-		log.info(filter.toString());
+		log.info("Suche Schueler: " + filter.toString());
 		// Falls kein Feld gesetzt ist
-		if (filter.getSchoolID().equals("null") && filter.getGrade() == 0
+		if (filter.getSchoolID().equals("null") 
+				&& filter.getGrade() == 0
 				&& filter.getLetter().equals("null")
 				&& filter.getTeacherID().equals("null")) {
-			Query query = em
-					.createQuery("SELECT u FROM User u WHERE isTeacher = false");
+			Query query = em.createQuery("SELECT u FROM User u WHERE isTeacher = false");
 			em.clear();
-			log.info("Alle user werden zurueck gegeben");
 			return (List<User>) query.getResultList();
 		}
 		// Falls Schule gesetzt ist
@@ -90,8 +89,7 @@ public class FilterRestServlet {
 					}
 					// ...falls Lehrer nicht gesetzt ist
 					else {
-						log.info("Fhre filterBySchool() aus");
-						return filterBySchool(filter);
+						return filterUsersBySchool(filter);
 					}
 				}
 			}
@@ -105,17 +103,15 @@ public class FilterRestServlet {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/teachers")
 	public List<User> filterTeachers(Filter filter) {
-		log.info("Suche Lehrer");
 		EntityManager em = EMF.createEntityManager();
-		log.info(filter.toString());
+		log.info("Suche Lehrer: " + filter.toString());
 		// Falls kein Feld gesetzt ist
-		if (filter.getSchoolID().equals("null") && filter.getGrade() == 0
+		if (filter.getSchoolID().equals("null") 
+				&& filter.getGrade() == 0
 				&& filter.getLetter().equals("null")
 				&& filter.getStudentID().equals("null")) {
-			Query query = em
-					.createQuery("SELECT u FROM User u WHERE isTeacher = true");
+			Query query = em.createQuery("SELECT u FROM User u WHERE isTeacher = true");
 			em.clear();
-			log.info("Alle user werden zurueck gegeben");
 			return (List<User>) query.getResultList();
 		}
 		// Falls Schule gesetzt ist
@@ -163,8 +159,9 @@ public class FilterRestServlet {
 					}
 					// ...falls Lehrer nicht gesetzt ist
 					else {
-						log.info("Fuehre filterBySchool() aus");
-						return filterBySchool(filter);
+						List<User> users = filterUsersBySchool(filter);
+						User.removeTeachers(users);
+						return users;
 					}
 				}
 			}
@@ -178,31 +175,84 @@ public class FilterRestServlet {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/clazzes")
 	public List<Clazz> filterClazzes(Filter filter) {
-		log.info("Suche Klassen");
+		//Hier MUSS Schule gesetzt sein, damit überhaupt gefiltert wird. Eine Filterung ohne Berücksichtigung der Schule würde das ganze
+		//nur unübersichtlich machen
 		EntityManager em = EMF.createEntityManager();
-		log.info(filter.toString());
-		// Falls kein Feld gesetzt ist
-		if (filter.getSchoolID().equals("null") && filter.getGrade() == 0
+		log.info("Suche Klassen: " + filter.toString());
+		//Falls Stufe gesetzt
+		if (!filter.getSchoolID().equals("null") 
+				&& filter.getGrade() != 0 
 				&& filter.getStudentID().equals("null")
 				&& filter.getTeacherID().equals("null")) {
-			Query query = em.createQuery("SELECT c FROM Clazz u");
+			
+		}
+		//Falls Schueler gesetzt
+		else if (!filter.getSchoolID().equals("null") 
+				&& filter.getGrade() == 0
+				&& !filter.getStudentID().equals("null")
+				&& filter.getTeacherID().equals("null")) {
+			
+		}
+		//Falls Lehrer gesetzt
+		else if (!filter.getSchoolID().equals("null") 
+				&& filter.getGrade() == 0
+				&& filter.getStudentID().equals("null")
+				&& !filter.getTeacherID().equals("null")) {
+			
+		}
+		//Falls Stufe und Schueler gesetzt sind
+		else if (!filter.getSchoolID().equals("null") 
+				&& filter.getGrade() != 0 
+				&& !filter.getStudentID().equals("null")
+				&& filter.getTeacherID().equals("null")) {
+			
+		}
+		//Falls Stufe und Lehrer gesetzt
+		else if (!filter.getSchoolID().equals("null") 
+				&& filter.getGrade() != 0 
+				&& filter.getStudentID().equals("null")
+				&& !filter.getTeacherID().equals("null")) {
+			
+		}
+		//Falls Schueler und Lehrer gesetzt
+		else if (!filter.getSchoolID().equals("null") 
+				&& filter.getGrade() == 0 
+				&& !filter.getStudentID().equals("null")
+				&& !filter.getTeacherID().equals("null")) {
+			
+		}
+		//Falls alle gesetzt sind
+		else if (!filter.getSchoolID().equals("null") 
+				&& filter.getGrade() != 0 
+				&& !filter.getStudentID().equals("null")
+				&& !filter.getTeacherID().equals("null")) {
+			
+		}
+		//Falls Stufe, Lehrer und Schueler nicht gesetzt sind
+		else if (!filter.getSchoolID().equals("null")
+				&& filter.getGrade() == 0
+				&& filter.getStudentID().equals("null")
+				&& filter.getTeacherID().equals("null")){
+			
+			Query query = em.createQuery("SELECT c FROM Clazz c WHERE schoolID = " + filter.getSchoolID());
 			em.clear();
-			log.info("Alle klassen werden zurueck gegeben");
 			return (List<Clazz>) query.getResultList();
+		}
+		else {
+			return new ArrayList<Clazz>();
 		}
 		
 		return null;
 	}
 
-	public List<User> filterBySchool(Filter filter) {
+	public List<User> filterUsersBySchool(Filter filter) {
 		Long schoolID = Long.valueOf(filter.getSchoolID());
 
 		List<Clazz> clazzes = ClazzRestServlet.getClazzesBySchoolId(schoolID);
 
 		List<Long> userIDs = new ArrayList<Long>();
 		for (Clazz clazz : clazzes) {
-			List<ClazzUser> clazzUsers = ClazzRestServlet
-					.getClazzUsersByClazzId(clazz.getKey().getId());
+			List<ClazzUser> clazzUsers = ClazzRestServlet.getClazzUsersByClazzId(clazz.getKey().getId());
 
 			for (ClazzUser clazzUser : clazzUsers) {
 				userIDs.add(clazzUser.getUserID());
@@ -212,12 +262,10 @@ public class FilterRestServlet {
 
 		EntityManager em = EMF.createEntityManager();
 		for (Long userID : userIDs) {
-			User user = em.find(User.class,
-					KeyFactory.createKey("User", userID));
+			User user = em.find(User.class, KeyFactory.createKey("User", userID));
 			users.add(user);
 		}
 
 		return users;
-
 	}
 }

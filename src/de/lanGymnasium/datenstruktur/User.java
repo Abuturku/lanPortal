@@ -1,5 +1,8 @@
 package de.lanGymnasium.datenstruktur;
 
+import java.util.Iterator;
+import java.util.List;
+
 import javax.persistence.*;
 
 import com.google.appengine.api.datastore.Key;
@@ -84,4 +87,25 @@ public class User implements IUser {
 	public String getGoogleID() {
 		return this.googleID;
 	}
+	
+	public static List<User> removeTeachers(List<User> users){
+		for (Iterator<User> iter = users.listIterator();  iter.hasNext();) {
+			User u = iter.next();
+			if (!u.isTeacher()) {
+				iter.remove();
+			}
+		}
+		return users;
+	}
+	
+//	Mal schauen, ob das benötigt wird
+//	public static List<User> removeStudents(List<User> users){
+//		for (Iterator<User> iter = users.listIterator();  iter.hasNext();) {
+//			User u = iter.next();
+//			if (u.isTeacher()) {
+//				iter.remove();
+//			}
+//		}
+//		return users;
+//	}
 }
