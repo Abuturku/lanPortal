@@ -138,4 +138,25 @@ public class UserRestServlet {
 		}
 		return teachers;
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/pupils")
+	public List<User> getPupils() {
+		String queryString = "SELECT u FROM User u";
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery(queryString);
+		em.clear();
+
+		@SuppressWarnings("unchecked")
+		List<User> userList = (List<User>) query.getResultList();
+
+		ArrayList<User> pupil = new ArrayList<User>();
+		for (User user : userList) {
+			if(!user.isTeacher()){
+				pupil.add(user);
+			}
+		}
+		return pupil;
+	}
 }

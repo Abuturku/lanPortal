@@ -12,6 +12,11 @@
 	<script>
 		window.addEventListener("DOMContentLoaded", function(){
 			getUser();
+			getAllSchools();
+			getAllGrades();
+			getAllLetters();
+			getAllPupils();
+			filter();
 		});
 		
 		function getUser(){
@@ -24,6 +29,102 @@
 				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
 			})
 		}
+		
+			function appendSchool(school){
+				$('#ddb_inst').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
+			}
+		
+			function getAllSchools(){
+				$.getJSON("/rest/school", function(data) {
+					$("#ddb_inst option").remove();
+					$('#ddb_inst').append($('<option value="null" selected id="teachers_ddbFilter_inst">Nach Schule filtern</option>'));
+					$.each(data, function(index, school) {
+						appendSchool(school);
+					})
+				})
+			}
+			
+			function appendGrade(grade){
+				$('#ddb_grade').append($('<option value=\"'+ grade +'\">'+ grade +'</option>'));
+			}
+		
+			function getAllGrades(){
+				$.getJSON("/rest/clazz/grades", function(data) {
+					$("#ddb_grade option").remove();
+					$('#ddb_grade').append($('<option value="0" selected id="teachers_ddbFilter_grade">Nach Stufe filtern</option>'));
+					$.each(data, function(index, grade) {
+						appendGrade(grade);
+					})
+				})
+			}
+			
+			function appendLetters(letter){
+				$('#ddb_class').append($('<option value=\"'+ letter +'\">'+ letter +'</option>'));
+			}
+		
+			function getAllLetters(){
+				$.getJSON("/rest/clazz/letters", function(data) {
+					$("#ddb_class option").remove();
+					$('#ddb_class').append($('<option value="null" selected id="teachers_ddbFilter_class">Nach Klasse filtern</option>'));
+					$.each(data, function(index, letter) {
+						appendLetters(letter);
+					})
+				})
+			}
+			
+			function appendPupil(pupil){
+				$('#ddb_pupil').append($('<option value=\"'+ pupil.key.id +'\">'+ pupil.firstName + ' ' +pupil.familyName +'</option>'));
+			}
+		
+			function getAllPupils(){
+				$.getJSON("/rest/user/pupils", function(data) {
+					$("#ddb_pupil option").remove();
+					$('#ddb_pupil').append($('<option value="null" selected id="teachers_ddbFilter_pupil">Nach Schueler filtern</option>'));
+					$.each(data, function(index, pupil) {
+						appendPupil(pupil);
+					})
+				})
+			}
+			
+			function filter(){
+				var schoolSelect = document.getElementById('ddb_inst');
+				var gradeSelect = document.getElementById('ddb_grade');
+				var letterSelect = document.getElementById('ddb_class');
+				var pupilSelect = document.getElementById('ddb_pupil');
+				
+				var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+				var filterGrade = gradeSelect.options[gradeSelect.selectedIndex].value;
+				var filterLetter = letterSelect.options[letterSelect.selectedIndex].value;
+				var filterPupil = pupilSelect.options[pupilSelect.selectedIndex].value;
+				
+				var filterObject = {schoolID:filterSchool, grade:filterGrade, letter:filterLetter, teacherID:null, studentID:filterPupil};
+				
+				$.ajaxSetup({
+					  contentType: "application/json; charset=utf-8"
+				});
+				$.ajax({
+					url: "/rest/filter/teachers",
+					contentType: "application/json; charset=utf-8",
+					data: JSON.stringify(filterObject),
+					success: function(data) {
+						$('#teacherTable tr').remove();
+						$('#teacherTable').append('<tr><td id="header">Nachname</td><td id="header">Vorname</td></tr>');
+						$.each(data, function(index, teacher) { 
+							appendTeacher(teacher);
+						})
+					},
+					error: function() {
+						alert("Fehler!");
+					},
+					method: "POST",
+					mimeType: "application/json"
+				});
+			}
+			
+			function appendTeacher(teacher){
+				$('#teacherTable').append($('<tr id="' + teacher.key.id + '"><td>' + teacher.familyName + '</td><td>' + teacher.firstName + '</td></tr>'))
+			}
+			
 	</script>
 		<header>
 			<nav id="doc_navlist">
@@ -54,57 +155,25 @@
 		<div id="pagecontent">
 			<div id="tablecontent">
 				<div id="tablefilter">
-					<select id="ddb_inst" onclick="onclickTeacher_ddbFilter_inst()">
+					<select id="ddb_inst" onclick="filter()">
 						<option value="" disabled selected hidden id="teachers_ddbFilter_inst">Nach Schule filtern</option>
 					</select>
-					<select id="ddb_grade" onclick="onclickTeacher_ddbFilter_grade()">
+					<select id="ddb_grade" onclick="filter()">
 						<option value="" disabled selected hidden id="teachers_ddbFilter_grade">Nach Stufe filtern</option>
 					</select>
-					<select id="ddb_class" onclick="onclickTeacher_ddbFilter_class()">
+					<select id="ddb_class" onclick="filter()">
 						<option value="" disabled selected hidden id="teachers_ddbFilter_class">Nach Klasse filtern</option>
 					</select>
-					<select id="ddb_pupil" onclick="onclickTeacher_ddbFilter_pupil()">
+					<select id="ddb_pupil" onclick="filter()">
 						<option value="" disabled selected hidden id="teachers_ddbFilter_pupil">Nach Schüler filtern</option>
 					</select>
 				</div>
 				<div id="table">
-					<table>
+					<table  id="teacherTable">
 						<tr>
 							<td id="header">Nachname</td>
 							<td id="header">Vorname</td>
 						</tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
-						<tr><td>Test</td><td>L0L</td></tr>
 					</table>
 				</div>
 			</div>

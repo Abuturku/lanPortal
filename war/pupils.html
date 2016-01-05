@@ -16,6 +16,7 @@
 				getAllGrades();
 				getAllLetters();
 				getAllTeachers();
+				filter();
 			});
 			
 			function getUser(){
@@ -79,7 +80,6 @@
 				$.getJSON("/rest/user/teachers", function(data) {
 					$("#ddb_teacher option").remove();
 					$('#ddb_teacher').append($('<option value="null" selected id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
-					filter();
 					$.each(data, function(index, teacher) {
 						appendTeachers(teacher);
 					})
