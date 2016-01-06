@@ -35,21 +35,11 @@ public class FilterRestServlet {
 
 		EntityManager em = EMF.createEntityManager();
 		log.info("Suche Schueler: " + filter.toString());
-<<<<<<< Updated upstream
-		// Falls kein Feld gesetzt ist
-		if (filter.getSchoolID().equals("null") 
-				&& filter.getGrade() == 0
-				&& filter.getLetter().equals("null")
-				&& filter.getTeacherID().equals("null")) {
-			Query query = em.createQuery("SELECT u FROM User u WHERE teacher = false");
-			em.clear();
-			return (List<User>) query.getResultList();
-=======
+
 		Query query = em
 				.createQuery("SELECT u FROM User u WHERE teacher = false");
 		List<User> users = (List<User>) query.getResultList();
 		em.close();
-		System.out.println(users.size());
 		if (!filter.getSchoolID().equals("null")) {
 			log.info("Filtere nach Schule");
 			users = filterSchool(filter.getSchoolID(), users);
@@ -65,7 +55,6 @@ public class FilterRestServlet {
 		if (!filter.getTeacherID().equals("null")) {
 			log.info("Filtere nach Lehrer");
 			users = filterTeacher(filter.getTeacherID(), users);
->>>>>>> Stashed changes
 		}
 
 		log.info("Gebe " + users.size() + " Schueler zurueck");
@@ -197,12 +186,10 @@ public class FilterRestServlet {
 		if (filter.getSchoolID().equals("null") && filter.getGrade() == 0
 				&& filter.getLetter().equals("null")
 				&& filter.getStudentID().equals("null")) {
-<<<<<<< Updated upstream
-			Query query = em.createQuery("SELECT u FROM User u WHERE teacher = true");
-=======
+
 			Query query = em
-					.createQuery("SELECT u FROM User u WHERE isTeacher = true");
->>>>>>> Stashed changes
+					.createQuery("SELECT u FROM User u WHERE teacher = true");
+
 			em.clear();
 			return (List<User>) query.getResultList();
 		}
