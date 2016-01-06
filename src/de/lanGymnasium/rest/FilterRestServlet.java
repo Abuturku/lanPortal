@@ -199,7 +199,7 @@ public class FilterRestServlet {
 			log.info("Filtere nach Buchstabe");
 			users = filterLetter(filter.getLetter(), users);
 		}
-		if (!filter.getTeacherID().equals("null")) {
+		if (!filter.getStudentID().equals("null")) {
 			log.info("Filtere nach Schueler");
 			users = filterStudent(filter.getStudentID(), users);
 		}
