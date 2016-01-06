@@ -2,6 +2,7 @@ package de.lanGymnasium.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -26,8 +27,7 @@ import de.lanGymnasium.lan.EMF;
 
 @Path("/user")
 public class UserRestServlet {
-//	private static final Logger log = Logger.getLogger(UserRestServlet.class
-//			.getName());
+	private static final Logger log = Logger.getLogger(UserRestServlet.class.getName());
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +66,7 @@ public class UserRestServlet {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
-	public User getUser(@PathParam("id") String id) {
+	public User getUser(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
 		User user = em.find(User.class, KeyFactory.createKey("User", id));
 		System.out.println("get " + user);
@@ -99,7 +99,7 @@ public class UserRestServlet {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/userSchool")
-	public School getUserSchool() {
+	public School getLoggedInUserSchool() {
 		User user = getLoggedInUser();
 		
 		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = "
@@ -116,6 +116,50 @@ public class UserRestServlet {
 		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
 		
 		return school;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/userSchool/{id}")
+	public School getUserSchool(@PathParam("id") Long id) {
+		
+		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = " + id;
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery(queryString);
+		em.clear();
+		
+		ClazzUser clazzUser = (ClazzUser) query.getSingleResult();
+		log.info("clazzUser: " + clazzUser.getKey());
+		
+		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+		em.clear();
+		log.info("clazz: " + clazz.getKey());
+		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
+		
+		return school;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/userClasses/{id}")
+	public List<Clazz> getUserClazzes(@PathParam("id") Long id){
+		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = " + id;
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery(queryString);
+		em.clear();
+		
+		@SuppressWarnings("unchecked")
+		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
+		
+		List<Clazz> clazzes = new ArrayList<Clazz>();
+		
+		for (ClazzUser clazzUser : clazzUsers) {
+			Clazz c = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+			em.clear();
+			clazzes.add(c);
+		}
+		
+		return clazzes;
 	}
 	
 	@GET

@@ -11,12 +11,13 @@
 		<script src="javascript/jquery-2.1.4.min.js"></script>
 		<script>
 			window.addEventListener("DOMContentLoaded", function(){
+				$('#notes_table').hide();
+				$('#previewcontent').hide();
 				getUser();
 				getAllSchools();
 				getAllGrades();
 				getAllLetters();
 				getAllTeachers();
-				
 			});
 			
 			function getUser(){
@@ -80,7 +81,7 @@
 				$.getJSON("/rest/user/teachers", function(data) {
 					$("#ddb_teacher option").remove();
 					$('#ddb_teacher').append($('<option value="null" selected id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
-					filter();
+					setTimeout(filter(), 500);
 					$.each(data, function(index, teacher) {
 						appendTeachers(teacher);
 					})
@@ -89,7 +90,49 @@
 			}
 			
 			function appendStudent(student){
-				$('#studentTable').append($('<tr id="' + student.key.id + '"><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
+				$('#studentTable').append($('<tr onclick="selectStudent(' + student.key.id + ')" id="' + student.key.id + '"><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
+			}
+			
+			function selectStudent(studentID){
+				
+				
+				$.getJSON("/rest/user/userSchool/" + studentID, function(school){
+					$('#pupils_inpt_iName').prop("value", school.name);
+				})
+				
+				$.getJSON("/rest/user/" + studentID, function(student) {
+					$('#pupils_inpt_fName').prop("value", student.firstName);
+					$('#pupils_inpt_lName').prop("value", student.familyName);
+					
+					
+				})
+				
+				$.getJSON("/rest/user/userClasses/" + studentID, function(data) {
+					$.each(data, function(index, clazz) {
+						$('#pupils_inpt_class').prop("value", "" + clazz.grade + clazz.letter);
+					})
+				})
+				
+				$.getJSON("/rest/user/loggedInUser", function(user) {
+					$('#pupils_addNote').remove();
+					if(user.teacher){
+						$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"onclickPupil_noteTable_addNote(' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
+					}
+				})
+				
+				$.getJSON("/rest/note/studentNotes/" + studentID, function(data) {
+					$.each(data, function(index, note) { 
+						$.getJSON("rest/user/" + note.teacher, function(teacher) { 
+							$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
+									+ note.timestamp + '</td><td>' + teacher.firstName + ' ' + teacher.familyName + '</td></tr>');
+						})
+						
+					})
+				})
+				
+				$('#notes_table').show();
+				$('#previewcontent').show();
+				
 			}
 			
 			function filter(){
@@ -187,37 +230,35 @@
 					<div id="info">
 						<div>
 							<label>Schule:</label>
-							<input type="text" value="Schule" id="pupils_inpt_iName" readonly>
+							<input type="text" value="" id="pupils_inpt_iName" readonly>
 						</div>
 						<div>
 							<label>Vorname:</label>
-							<input type="text" value="Vorname" id="pupils_inpt_fName" readonly>
+							<input type="text" value="" id="pupils_inpt_fName" readonly>
 						</div>
 						<div>
 							<label>Nachname:</label>
-							<input type="text" value="Vorname" id="pupils_inpt_lName" readonly>
+							<input type="text" value="" id="pupils_inpt_lName" readonly>
 						</div>
 						<div>
 							<label>Klasse:</label>
-							<input type="text" value="Klasse" id="pupils_inpt_class" readonly>
+							<input type="text" value="" id="pupils_inpt_class" readonly>
 						</div>
 					</div>
 				</div>
 				
-				<div id="notes_table">
+				<div id="div_notes_table">
 					<span>
 						<label>Vorhandene Notizen:</label>
 						<input type="button" value="Öffnen" id="btn_openNote" onclick="onclickPupil_OpenNote()"/>
 					</span>
 					<div id="table">
-						<table>
+						<table id="tab_notes_table">
 							<tr>
 								<td id="header">Erfassungszeitpunkt</td>
 								<td id="header">Lehrer</td>
 							</tr>
-							<tr id="pupils_addNote">
-								<td colspan="2" onclick="onclickPupil_noteTable_addNote()"><em>--- Notiz hinzufügen ---</em></td>
-							</tr>
+							
 						</table>
 					</div>
 					<label>Vorschau Notiz:</label>

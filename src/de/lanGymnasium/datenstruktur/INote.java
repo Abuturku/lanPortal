@@ -2,14 +2,16 @@ package de.lanGymnasium.datenstruktur;
 
 import java.util.Date;
 
-public interface INote {
-	public long getTeacher();
+import com.google.appengine.api.datastore.Key;
 
-	public long getStudent();
+public interface INote {
+	public Long getTeacher();
+
+	public Long getStudent();
 
 	public Date getTimestamp();
 
 	public String getText();
 
-	public long getKey();
+	public Key getKey();
 }

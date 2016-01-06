@@ -80,7 +80,7 @@
 				$.getJSON("/rest/user/pupils", function(data) {
 					$("#ddb_pupil option").remove();
 					$('#ddb_pupil').append($('<option value="null" selected id="teachers_ddbFilter_pupil">Nach Schueler filtern</option>'));
-					filter();
+					setTimeout(filter(), 500);
 					$.each(data, function(index, pupil) {
 						appendPupil(pupil);
 					})

@@ -40,7 +40,7 @@ public class FilterRestServlet {
 				&& filter.getGrade() == 0
 				&& filter.getLetter().equals("null")
 				&& filter.getTeacherID().equals("null")) {
-			Query query = em.createQuery("SELECT u FROM User u WHERE isTeacher = false");
+			Query query = em.createQuery("SELECT u FROM User u WHERE teacher = false");
 			em.clear();
 			return (List<User>) query.getResultList();
 		}
@@ -110,7 +110,7 @@ public class FilterRestServlet {
 				&& filter.getGrade() == 0
 				&& filter.getLetter().equals("null")
 				&& filter.getStudentID().equals("null")) {
-			Query query = em.createQuery("SELECT u FROM User u WHERE isTeacher = true");
+			Query query = em.createQuery("SELECT u FROM User u WHERE teacher = true");
 			em.clear();
 			return (List<User>) query.getResultList();
 		}

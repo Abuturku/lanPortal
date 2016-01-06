@@ -17,14 +17,15 @@ public class User implements IUser {
 	private String firstName;
 	private String familyName;
 	private Image picture;
-	private boolean isTeacher;
+	private boolean teacher;
 	private String googleID;
+	
 	public User(String firstName, String familyName,String googleID, boolean isTeacher,
 			Image picture) {
 		this.firstName = firstName;
 		this.familyName = familyName;
 		this.googleID = googleID;
-		this.isTeacher = isTeacher;
+		this.teacher = isTeacher;
 		this.picture = picture;
 	}
 
@@ -75,7 +76,7 @@ public class User implements IUser {
 
 	@Override
 	public boolean isTeacher() {
-		return this.isTeacher;
+		return this.teacher;
 	}
 
 	@Override

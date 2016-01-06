@@ -209,7 +209,7 @@ div#preview div#info input {
 	text-align: center;
 	margin: 0 0 0.7em 1em;
 	padding: 0.5em;
-	width: 15em;
+	width: 20em;
 	font-weight: bold;
 }
 div#preview div#teacher_classes {
@@ -230,15 +230,15 @@ div#teacher_classes li:nth-child(2n+1){
 	background-color: #E6E6E6;
 }
 
-div#previewcontent div#notes_table{
+div#previewcontent div#div_notes_table{
 	height: 50%;
 	padding: 1em;
     background: rgba(242, 242, 242, 0.3);
 }
-div#notes_table input#btn_openNote{
+div#div_notes_table input#btn_openNote{
 	float: right;
 }
-div#notes_table div#table{
+div#div_notes_table div#table{
 	height: 60%;
 }
 div#preview_noteContent {

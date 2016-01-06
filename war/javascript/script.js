@@ -7,7 +7,7 @@ function onclickLogin(form) {
 	var fname = form.login_inpt_fname.value;
 	var lname = form.login_inpt_lname.value;
 	var passwd = form.login_inpt_passwd.value;
-	window.location.href="mylan.html";
+	window.location.href="mylan";
 }
 /**
 	TODO
@@ -33,7 +33,7 @@ function onclickLogin(form) {
 //-------------adminLogin.html
 function onclickAdminLogin(form) {
 	var passwd = form.login_inpt_passwd.value;
-	window.location.href="mylan.html";
+	window.location.href="mylan";
 	//window.alert("Falsches Passwort");
 }
 
@@ -56,10 +56,7 @@ function onclickAdminLogin(form) {
 */
 //Admin Funktionen
 function onclickMaintenance_mylan(){
-	window.location.href="maint.html";
-}
-function onclickResetPasswd_mylan(){
-	window.location.href="resetPasswd.html";
+	window.location.href="maint";
 }
 //Lehrer, Schueler
 function onclickMyProfile_mylan(){
@@ -73,32 +70,29 @@ function onclickMyProfile_mylan(){
 }
 //Schueler
 function onclickMyTeachers_mylan(){
-	window.location.href="teachers.html";
+	window.location.href="teachers";
 /**
 	TODO: Filter Schüler setzen
 */
 }
 //Lehrer, Schueler
 function onclickMyClasses_mylan(){
-	window.location.href="classes.html";
+	window.location.href="classes";
 /**
 	TODO: Filter Lehrer bzw. Schüler (je nach angemeldetem Benutzer) setzen
 */
 }
 //Lehrer
 function onclickMyPupils_mylan(){
-	window.location.href="pupils.html";
+	window.location.href="pupils";
 /**
 	TODO: Filter Lehrer setzen
 */
 }
-//Admin, Lehrer, Schueler
-function onclickChangePasswd_mylan(){
-	window.location.href="newPasswd.html";
-}
+
 //Lehrer, Schuler
 function onclickChangeMe_mylan(){
-	window.location.href="maint.html";
+	window.location.href="maint";
 /**
 	TODO: Alles bis auf das relevante div ausblenden
 */
@@ -109,7 +103,6 @@ function onclickChangeMe_mylan(){
 //-------------teachers.html
 /**
 	TODO:
-	- Filter-Funktionen implementieren
 	- Bei Klick auf Tabellenzeile Inhalte des entsprechenden Lehrers in der Preview laden
 		- Bevor dies erfolgt ist: Preview Fenster leer lassen
 	- Preview Notizen:
@@ -118,21 +111,9 @@ function onclickChangeMe_mylan(){
 		- Bei Klick auf Button Open die ausgewählte Notiz in note.html laden
 			(-> Hierzu könnte der bereits geladene Inhalt verwendet werden, statt erneut abzufragen)
 */
-function onclickTeacher_ddbFilter_inst(){
-	
-}
-function onclickTeacher_ddbFilter_grade(){
-	
-}
-function onclickTeacher_ddbFilter_class(){
-	
-}
-function onclickTeacher_ddbFilter_pupil(){
-	
-}
 
 function onclickTeacher_OpenNote(){
-	window.location.href="note.html";
+	window.location.href="note";
 }
 
 //-----------------classes.html
@@ -159,7 +140,6 @@ function onclickClass_ddbFilter_pupil(){
 //------------------pupils.html
 /**
 	TODO:
-	- Filter-Funktionen implementieren
 	- Bei Klick auf Tabellenzeile Inhalte des entsprechenden Schülers in der Preview laden
 		- Bevor dies erfolgt ist: Preview Fenster leer lassen
 	- Preview Notizen:
@@ -168,23 +148,12 @@ function onclickClass_ddbFilter_pupil(){
 		- Bei Klick auf Button Open die ausgewählte Notiz in note.html laden
 			(-> Hierzu könnte der bereits geladene Inhalt verwendet werden, statt erneut abzufragen)
 */
- 
-function onclickPupil_ddbFilter_grade(){
-	
-}
-function onclickPupil_ddbFilter_class(){
-	
-}
-function onclickPupil_ddbFilter_teacher(){
-	
-}
-
 
 function onclickPupil_OpenNote(){
-	window.location.href="note.html";
+	window.location.href="note";
 }
 function onclickPupil_noteTable_addNote(){
-	window.location.href="note.html";
+	window.location.href="note";
 /**
 	TODO
 	- Diese Funktion steht nur Lehrern zur Verfügung
@@ -196,12 +165,12 @@ function onclickPupil_noteTable_addNote(){
 
 //-----------------Sonderseiten--------------------
 function onclickReturnToMyLAN(){
-	window.location.href="mylan.html";
+	window.location.href="mylan";
 }
 
 //note.html
 function onclickReturnToPupils(){
-	window.location.href="pupil.html";
+	window.location.href="pupils";
 }
 function onclickSaveNote(form){
 	var noteTeacher = form.note_inpt_tName.value;
@@ -213,48 +182,3 @@ function onclickSaveNote(form){
 	TODO: Inhalt abspeichern/updaten
 */
 }
-
-//newPasswd.html
-function onclickSaveNewPw(form){
-	var old_passwd = form.chngPw_inpt_oldPw.value;
-	var new_passwd1 = form.chngPw_inpt_newPw1.value;
-	var new_passwd2 = form.chngPw_inpt_newPw2.value;
-/**
-	TODO
-	- Prüfen, ob altes Passwort korrekt
-	- Prüfen, ob neue Passwörter übereinstimmen
-	- Bei Fehler, entsprechende Meldung per Popup
-	- Falls alles Korrekt: Passwort des Benutzers ändern + Popup mit Bestätigung
-*/
-	window.location.href="mylan.html";
-}
-
-//resetPasswd.html
-function onclickResetPw(form){
-	var school = form.login_ddb_inst.value;
-	var fname = form.rstPw_inpt_fname.value;
-	var lname = form.rstPw_inpt_lname.value;
-/**
-	TODO
-	- Prüfen, ob Benutzer vorhanden
-	- Bei Fehler, entsprechende Meldung per Popup
-	- Falls alles Korrekt: Passwort des Benutzers ändern + Popup mit Bestätigung
-*/
-	window.location.href="mylan.html";
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
