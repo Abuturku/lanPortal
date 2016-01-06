@@ -80,11 +80,13 @@ public class FilterRestServlet {
 						.createQuery("SELECT c FROM ClazzUser c WHERE userID = "
 								+ user.getKey().getId()
 								+ " AND clazzID = "
-								+ clazzUser.getUserID());
-				em.close();
+								+ clazzUser.getClazzID());
+
 				if (query.getResultList().size() > 0) {
 					returnUserList.add(user);
 				}
+
+				em.close();
 			}
 		}
 		return returnUserList;
