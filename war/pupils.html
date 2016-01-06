@@ -1,15 +1,13 @@
 <html>
-    <head>
-        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        <title>
-            LAN-Gymnasium online Klassenbuch
-        </title>
-         <link rel="stylesheet" href="style/webpage.css" type="text/css">
-    </head>
-    <body>
-		<script src="javascript/script.js"></script>
-		<script src="javascript/jquery-2.1.4.min.js"></script>
-		<script>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>LAN-Gymnasium online Klassenbuch</title>
+<link rel="stylesheet" href="style/webpage.css" type="text/css">
+</head>
+<body>
+	<script src="javascript/script.js"></script>
+	<script src="javascript/jquery-2.1.4.min.js"></script>
+	<script>
 			window.addEventListener("DOMContentLoaded", function(){
 				$('#notes_table').hide();
 				$('#previewcontent').hide();
@@ -173,112 +171,110 @@
 			}
 			
 			function showNote(noteID){
+				$.getJSON("/rest/note/" + noteID, function(note) {
+					$('#note_txtArea_content').text(note.text);
+					$('#btn_openNote').attr("onclick","openNote("+noteID+")");
+				})
 				
-			}
+				
+			}		 
 			 
+			function openNote(noteID){
+				$.post("note",{noteID:noteID});
+			}
 		</script>
-		<header>
-			<nav id="doc_navlist">
-				<ul>
-					<li> </li>
-					<li>
-						<a href="./mylan">MyLAN</a>
-					</li> 
-					<li>
-						<a href="./teachers">Lehrer</a>
-					</li> 
-					<li>
-						<a href="./classes">Klassen</a>
-					</li> 
-					<li id="current">
-						<a href="./pupils">Sch&uuml;ler</a>
-					</li>
-					<li>
-						<a href="./maint">Verwalten</a>
-					</li>
-					<li> </li>
-					<li id="justifier"> </li>
-				</ul>
-			</nav>
-		</header>
-		
-		
-		<div id="pagecontent">
-			<div id="tablecontent">
-				<div id="tablefilter">
-					<select id="ddb_inst" onchange="filter()">
-						<option value="" disabled selected hidden id="pupils_ddbFilter_inst">Nach Schule filtern</option>
-					</select>
-					<select id="ddb_grade" onchange="filter()">
-						<option value="" disabled selected hidden id="pupils_ddbFilter_grade">Nach Stufe filtern</option>
-					</select>
-					<select id="ddb_class" onchange="filter()">
-						<option value="" disabled selected hidden id="pupils_ddbFilter_class">Nach Klasse filtern</option>
-					</select>
-					<select id="ddb_teacher" onchange="filter()">
-						<option value="" disabled selected hidden id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>
-					</select>
-				</div>
-				<div id="table">
-					<table id="studentTable">
-						
-					</table>
-				</div>
+	<header>
+		<nav id="doc_navlist">
+			<ul>
+				<li></li>
+				<li><a href="./mylan">MyLAN</a></li>
+				<li><a href="./teachers">Lehrer</a></li>
+				<li><a href="./classes">Klassen</a></li>
+				<li id="current"><a href="./pupils">Sch&uuml;ler</a></li>
+				<li><a href="./maint">Verwalten</a></li>
+				<li></li>
+				<li id="justifier"></li>
+			</ul>
+		</nav>
+	</header>
+
+
+	<div id="pagecontent">
+		<div id="tablecontent">
+			<div id="tablefilter">
+				<select id="ddb_inst" onchange="filter()">
+					<option value="" disabled selected hidden
+						id="pupils_ddbFilter_inst">Nach Schule filtern</option>
+				</select> <select id="ddb_grade" onchange="filter()">
+					<option value="" disabled selected hidden
+						id="pupils_ddbFilter_grade">Nach Stufe filtern</option>
+				</select> <select id="ddb_class" onchange="filter()">
+					<option value="" disabled selected hidden
+						id="pupils_ddbFilter_class">Nach Klasse filtern</option>
+				</select> <select id="ddb_teacher" onchange="filter()">
+					<option value="" disabled selected hidden
+						id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>
+				</select>
 			</div>
-			<div id="previewcontent">
-				<div id="preview">
-					<div id="picture">
-						<img src="pictures/pupil_def.png"/>
-					</div>
-					<div id="info">
-						<div>
-							<label>Schule:</label>
-							<input type="text" value="" id="pupils_inpt_iName" readonly>
-						</div>
-						<div>
-							<label>Vorname:</label>
-							<input type="text" value="" id="pupils_inpt_fName" readonly>
-						</div>
-						<div>
-							<label>Nachname:</label>
-							<input type="text" value="" id="pupils_inpt_lName" readonly>
-						</div>
-						<div>
-							<label>Klasse:</label>
-							<input type="text" value="" id="pupils_inpt_class" readonly>
-						</div>
-					</div>
-				</div>
-				
-				<div id="div_notes_table">
-					<span>
-						<label>Vorhandene Notizen:</label>
-						<input type="button" value="Öffnen" id="btn_openNote" onclick="onclickPupil_OpenNote()"/>
-					</span>
-					<div id="table">
-						<table id="tab_notes_table">
-							<tr>
-								<td id="header">Erfassungszeitpunkt</td>
-								<td id="header">Lehrer</td>
-							</tr>
-							
-						</table>
-					</div>
-					<label>Vorschau Notiz:</label>
-					<div id="preview_noteContent">
-						<textarea id="note_txtArea_content" readonly></textarea>
-					</div>
-				</div>
-			
+			<div id="table">
+				<table id="studentTable">
+
+				</table>
 			</div>
 		</div>
-		
-		
-		<footer>
-			<div id="footer_logoutbar">
-				<p id="footer_txt_logininfo"></p>
-				<a href='logout' id="footer_a_logout">> Abmelden &lt;</a>
+		<div id="previewcontent">
+			<div id="preview">
+				<div id="picture">
+					<img src="pictures/pupil_def.png" />
+				</div>
+				<div id="info">
+					<div>
+						<label>Schule:</label> <input type="text" value=""
+							id="pupils_inpt_iName" readonly>
+					</div>
+					<div>
+						<label>Vorname:</label> <input type="text" value=""
+							id="pupils_inpt_fName" readonly>
+					</div>
+					<div>
+						<label>Nachname:</label> <input type="text" value=""
+							id="pupils_inpt_lName" readonly>
+					</div>
+					<div>
+						<label>Klasse:</label> <input type="text" value=""
+							id="pupils_inpt_class" readonly>
+					</div>
+				</div>
 			</div>
-		</footer>
-    </body>
+
+			<div id="div_notes_table">
+				<span> <label>Vorhandene Notizen:</label> <input
+					type="button" value="Öffnen" id="btn_openNote" onclick="" />
+				</span>
+				<div id="table">
+					<table id="tab_notes_table">
+						<tr>
+							<td id="header">Erfassungszeitpunkt</td>
+							<td id="header">Lehrer</td>
+						</tr>
+
+					</table>
+				</div>
+				<label>Vorschau Notiz:</label>
+				<div id="preview_noteContent">
+					<textarea id="note_txtArea_content" readonly></textarea>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<footer>
+		<div id="footer_logoutbar">
+			<p id="footer_txt_logininfo"></p>
+			<a href='logout' id="footer_a_logout">> Abmelden &lt;</a>
+		</div>
+	</footer>
+</body>
 </html>
