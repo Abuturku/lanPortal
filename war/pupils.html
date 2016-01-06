@@ -112,19 +112,21 @@
 						$('#pupils_inpt_class').prop("value", "" + clazz.grade + clazz.letter);
 					})
 				})
-				
-				$.getJSON("/rest/user/loggedInUser", function(user) {
-					$('#pupils_addNote').remove();
-					if(user.teacher){
-						$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"onclickPupil_noteTable_addNote(' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
-					}
-				})
-				
+								
 				$.getJSON("/rest/note/studentNotes/" + studentID, function(data) {
+					$('#tab_notes_table tr').remove();
+					$('#tab_notes_table').append('<tr><td id="header">Nachname</td><td id="header">Vorname</td></tr>');
+					$.getJSON("/rest/user/loggedInUser", function(user) {
+						$('#pupils_addNote').remove();
+						if(user.teacher){
+							$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"onclickPupil_noteTable_addNote(' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
+						}
+					})
 					$.each(data, function(index, note) { 
 						$.getJSON("rest/user/" + note.teacher, function(teacher) { 
+							var date = new Date(note.timestamp);
 							$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
-									+ note.timestamp + '</td><td>' + teacher.firstName + ' ' + teacher.familyName + '</td></tr>');
+									+ date.toLocaleString() + '</td><td>' + teacher.firstName + ' ' + teacher.familyName + '</td></tr>');
 						})
 						
 					})
@@ -215,10 +217,7 @@
 				</div>
 				<div id="table">
 					<table id="studentTable">
-						<tr>
-							<td id="header">Nachname</td>
-							<td id="header">Vorname</td>
-						</tr>
+						
 					</table>
 				</div>
 			</div>

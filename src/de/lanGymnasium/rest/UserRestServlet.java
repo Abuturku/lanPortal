@@ -108,9 +108,10 @@ public class UserRestServlet {
 		Query query = em.createQuery(queryString);
 		em.clear();
 		
-		ClazzUser clazzUser = (ClazzUser) query.getSingleResult();
+		@SuppressWarnings("unchecked")
+		List<ClazzUser> clazzUser = (List<ClazzUser>) query.getResultList();
 
-		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.get(0).getClazzID()));
 		em.clear();
 		
 		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
