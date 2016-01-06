@@ -45,6 +45,6 @@ public class Filter {
 	@Override
 	public String toString() {
 		return "Filter: schoolID: " + schoolID + " | grade: " + grade
-				+ " | letter: " + letter + " | teacherID: " + teacherID + "studentID: " + studentID;
+				+ " | letter: " + letter + " | teacherID: " + teacherID + " | studentID: " + studentID;
 	}
 }
