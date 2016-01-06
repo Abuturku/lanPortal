@@ -89,4 +89,19 @@ public class NoteRestServlet {
 		
 		return notes;
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("teacherNotes/{id}")
+	public List<Note> getTeacherNotes(@PathParam("id") Long id) {
+		EntityManager em = EMF.createEntityManager();
+		Query q = em.createQuery("SELECT n FROM Note n WHERE teacherID = " + id);
+		log.info("Query: SELECT n FROM Note n WHERE teacherID = " + id);
+		@SuppressWarnings("unchecked")
+		List<Note> notes = (List<Note>) q.getResultList();
+		log.info("Notizenliste Größe: " + notes.size());
+		em.close();
+		
+		return notes;
+	}
 }

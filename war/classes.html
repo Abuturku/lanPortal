@@ -11,12 +11,12 @@
 		<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
 		window.addEventListener("DOMContentLoaded", function(){
+			$('#previewcontent').hide();
 			getUser();
 			getAllSchools();
 			getAllGrades();
 			getAllTeachers();
 			getAllPupils();
-			
 		});
 		
 		function getUser(){
@@ -123,8 +123,32 @@
 			}
 			
 			function appendClass(clazz){
-				$('#classTable').append($('<tr id="' + clazz.key.id + '"><td>' + clazz.grade + '</td><td>' + clazz.letter + '</td></tr>'))
+				$('#classTable').append($('<tr onclick="selectClazz(' + clazz.key.id + ')" id="' + clazz.key.id + '"><td>' + clazz.grade + '</td><td>' + clazz.letter + '</td></tr>'))
 			}
+			
+			function selectClazz(clazzID){
+				$('#list_teacher_classes li').remove();
+				
+				$.getJSON("/rest/clazz/schoolByClazz/" + clazzID, function(school){
+					$('#classes_inpt_iName').prop("value", school.name);
+				})
+				
+				$.getJSON("/rest/clazz/" + clazzID, function(clazz){ 
+					$('#classes_inpt_grade').prop("value", clazz.grade);
+					$('#classes_inpt_token').prop("value", clazz.letter);
+				})
+				
+				$.getJSON("/rest/clazz/usersByClazz/" + clazzID, function(user){
+					$.each(user, function(index, user) {
+						if(user.teacher){
+							$('#list_teacher_classes').append('<li>' + user.firstName + ' ' + user.familyName + '</li');
+						}
+					})
+				})
+				
+				$('#previewcontent').show();
+			}
+			
 	</script>
 		<header>
 			<nav id="doc_navlist">
@@ -198,17 +222,7 @@
 					</div>
 					<div id="teacher_classes">
 						<label>Lehrer:</label>
-						<ul>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
-							<li>Max Mustermann</li>
+						<ul id="list_teacher_classes">
 						</ul>
 					</div>
 				</div>

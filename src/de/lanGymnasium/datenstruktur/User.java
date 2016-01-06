@@ -92,21 +92,20 @@ public class User implements IUser {
 	public static List<User> removeTeachers(List<User> users){
 		for (Iterator<User> iter = users.listIterator();  iter.hasNext();) {
 			User u = iter.next();
-			if (!u.isTeacher()) {
+			if (u.isTeacher()) {
 				iter.remove();
 			}
 		}
 		return users;
 	}
 	
-//	Mal schauen, ob das benötigt wird
-//	public static List<User> removeStudents(List<User> users){
-//		for (Iterator<User> iter = users.listIterator();  iter.hasNext();) {
-//			User u = iter.next();
-//			if (u.isTeacher()) {
-//				iter.remove();
-//			}
-//		}
-//		return users;
-//	}
+	public static List<User> removeStudents(List<User> users){
+		for (Iterator<User> iter = users.listIterator();  iter.hasNext();) {
+			User u = iter.next();
+			if (!u.isTeacher()) {
+				iter.remove();
+			}
+		}
+		return users;
+	}
 }

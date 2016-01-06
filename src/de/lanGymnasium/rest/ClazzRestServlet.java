@@ -19,6 +19,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 
 import de.lanGymnasium.datenstruktur.Clazz;
 import de.lanGymnasium.datenstruktur.ClazzUser;
+import de.lanGymnasium.datenstruktur.School;
+import de.lanGymnasium.datenstruktur.User;
 import de.lanGymnasium.lan.EMF;
 
 @Path("/clazz")
@@ -51,7 +53,7 @@ public class ClazzRestServlet {
 
 	@DELETE
 	@Path("/{id}")
-	public void deleteClazz(@PathParam("id") long id) {
+	public void deleteClazz(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
 		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", id));
 		System.out.println("remove " + clazz);
@@ -62,7 +64,7 @@ public class ClazzRestServlet {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
-	public Clazz getClazz(@PathParam("id") long id) {
+	public Clazz getClazz(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
 		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", id));
 		System.out.println("get " + clazz);
@@ -126,6 +128,37 @@ public class ClazzRestServlet {
 			}
 		}
 		return letters;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/schoolByClazz/{id}")
+	public School getSchoolByClazzId(@PathParam("id") Long id){
+		EntityManager em = EMF.createEntityManager();
+		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", id));
+		em.clear();
+		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
+		em.close();
+		return school;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/usersByClazz/{id}")
+	public List<User> getUsersByClazz(@PathParam("id") Long id){
+		
+		List<ClazzUser> clazzUsers = getClazzUsersByClazzId(id);
+		List<User> users = new ArrayList<User>();
+		
+		EntityManager em = EMF.createEntityManager();
+		for (ClazzUser clazzUser : clazzUsers) {
+			User u = em.find(User.class, KeyFactory.createKey("User", clazzUser.getUserID()));
+			users.add(u);
+		}
+		log.info("users länge: " + users.size());
+		
+		
+		return users;
 	}
 	
 	@SuppressWarnings("unchecked")

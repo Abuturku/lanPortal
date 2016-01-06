@@ -109,9 +109,9 @@ public class UserRestServlet {
 		em.clear();
 		
 		@SuppressWarnings("unchecked")
-		List<ClazzUser> clazzUser = (List<ClazzUser>) query.getResultList();
+		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
 
-		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.get(0).getClazzID()));
+		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUsers.get(0).getClazzID()));
 		em.clear();
 		
 		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
@@ -129,10 +129,11 @@ public class UserRestServlet {
 		Query query = em.createQuery(queryString);
 		em.clear();
 		
-		ClazzUser clazzUser = (ClazzUser) query.getSingleResult();
-		log.info("clazzUser: " + clazzUser.getKey());
+		@SuppressWarnings("unchecked")
+		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
+		log.info("clazzUser: " + clazzUsers.get(0).getKey());
 		
-		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUsers.get(0).getClazzID()));
 		em.clear();
 		log.info("clazz: " + clazz.getKey());
 		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));

@@ -18,7 +18,16 @@
 				getAllGrades();
 				getAllLetters();
 				getAllTeachers();
+				
+				setTimeout(checkPage, 3000);
 			});
+			
+			function checkPage(){
+				if($('#studentTable tr').length < 2){
+					filter();
+					setTimeout(checkPage, 1500);
+				}
+			}
 			
 			function getUser(){
 				$.getJSON("/rest/user/userSchool", function(school) {
@@ -81,7 +90,7 @@
 				$.getJSON("/rest/user/teachers", function(data) {
 					$("#ddb_teacher option").remove();
 					$('#ddb_teacher').append($('<option value="null" selected id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
-					setTimeout(filter(), 500);
+					setTimeout(filter, 500);
 					$.each(data, function(index, teacher) {
 						appendTeachers(teacher);
 					})
@@ -94,8 +103,6 @@
 			}
 			
 			function selectStudent(studentID){
-				
-				
 				$.getJSON("/rest/user/userSchool/" + studentID, function(school){
 					$('#pupils_inpt_iName').prop("value", school.name);
 				})
@@ -103,8 +110,6 @@
 				$.getJSON("/rest/user/" + studentID, function(student) {
 					$('#pupils_inpt_fName').prop("value", student.firstName);
 					$('#pupils_inpt_lName').prop("value", student.familyName);
-					
-					
 				})
 				
 				$.getJSON("/rest/user/userClasses/" + studentID, function(data) {
@@ -115,7 +120,7 @@
 								
 				$.getJSON("/rest/note/studentNotes/" + studentID, function(data) {
 					$('#tab_notes_table tr').remove();
-					$('#tab_notes_table').append('<tr><td id="header">Nachname</td><td id="header">Vorname</td></tr>');
+					$('#tab_notes_table').append('<tr><td id="header">Erfassungszeitpunkt</td><td id="header">Lehrer</td></tr>');
 					$.getJSON("/rest/user/loggedInUser", function(user) {
 						$('#pupils_addNote').remove();
 						if(user.teacher){
@@ -123,7 +128,7 @@
 						}
 					})
 					$.each(data, function(index, note) { 
-						$.getJSON("rest/user/" + note.teacher, function(teacher) { 
+						$.getJSON("/rest/user/" + note.teacher, function(teacher) { 
 							var date = new Date(note.timestamp);
 							$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
 									+ date.toLocaleString() + '</td><td>' + teacher.firstName + ' ' + teacher.familyName + '</td></tr>');
@@ -165,7 +170,8 @@
 						})
 					},
 					error: function() {
-						alert("Fehler!");
+						filter();
+						
 					},
 					method: "POST",
 					mimeType: "application/json"
@@ -221,7 +227,10 @@
 				</div>
 				<div id="table">
 					<table id="studentTable">
-						
+						<tr>
+							<td id="header">Nachname</td>
+							<td id="header">Vorname</td>
+						</tr>
 					</table>
 				</div>
 			</div>

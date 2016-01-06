@@ -11,13 +11,23 @@
 		<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
 		window.addEventListener("DOMContentLoaded", function(){
+			$('#notes_table').hide();
+			$('#previewcontent').hide();
 			getUser();
 			getAllSchools();
 			getAllGrades();
 			getAllLetters();
 			getAllPupils();
 			
+			setTimeout(checkPage, 3000);
 		});
+		
+		function checkPage(){
+			if($('#teacherTable tr').length < 2){
+				filter();
+				setTimeout(checkPage, 1500);
+			}
+		}
 		
 		function getUser(){
 		
@@ -115,7 +125,7 @@
 						})
 					},
 					error: function() {
-						alert("Fehler!");
+						filter();
 					},
 					method: "POST",
 					mimeType: "application/json"
@@ -123,7 +133,44 @@
 			}
 			
 			function appendTeacher(teacher){
-				$('#teacherTable').append($('<tr id="' + teacher.key.id + '"><td>' + teacher.familyName + '</td><td>' + teacher.firstName + '</td></tr>'))
+				$('#teacherTable').append($('<tr id="' + teacher.key.id + '" onclick="selectTeacher(' + teacher.key.id + ')"><td>' + teacher.familyName + '</td><td>' + teacher.firstName + '</td></tr>'))
+			}
+			
+			function selectTeacher(teacherID){
+				$.getJSON("/rest/user/userSchool/" + teacherID, function(school){
+					$('#teachers_inpt_iName').prop("value", school.name);
+				})
+				
+				$.getJSON("/rest/user/" + teacherID, function(teacher) {
+					$('#teachers_inpt_fName').prop("value", teacher.firstName);
+					$('#teachers_inpt_lName').prop("value", teacher.familyName);
+				})
+				
+				$.getJSON("/rest/user/userClasses/" + teacherID, function(data) {
+					$('#ul_teacher_classes li').remove();
+					$.each(data, function(index, clazz) {
+						$('#ul_teacher_classes').append('<li>' + clazz.grade + clazz.letter + '</li>');
+					})
+				})
+				
+				$.getJSON("/rest/note/teacherNotes/" + teacherID, function(data) {
+					$('#tab_notes_table tr').remove();
+					$('#tab_notes_table').append('<tr><td id="header">Erfassungszeitpunkt</td><td id="header">Schüler</td><td id="header">Klasse</td></tr>');
+					$.each(data, function(index, note) { 
+						$.getJSON("/rest/user/" + note.student, function(student) { 
+							$.getJSON("/rest/user/userClasses/" + student.key.id, function(clazz){
+								$.each(clazz, function(index, clazz) {
+									var date = new Date(note.timestamp);
+									$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
+											+ date.toLocaleString() + '</td><td>' + student.firstName + ' ' + student.familyName + '</td><td>' + clazz.grade + clazz.letter + '</tr>');
+								})
+								
+							})
+						})
+					})
+				})
+				$('#notes_table').show();
+				$('#previewcontent').show();				
 			}
 			
 	</script>
@@ -199,67 +246,23 @@
 					</div>
 					<div id="teacher_classes">
 						<label>Klassen:</label>
-						<ul>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
-							<li>5a</li>
+						<ul id="ul_teacher_classes">
 						</ul>
 					</div>
 				</div>
 				
-				<div id="notes_table">
+				<div id="div_notes_table">
 					<span>
 						<label>Erstellte Notizen:</label>
 						<input type="button" value="Öffnen" id="btn_openNote" onclick="onclickTeacher_OpenNote()"/>
 					</span>
 					<div id="table">
-						<table>
+						<table id="tab_notes_table">
 							<tr>
 								<td id="header">Erfassungszeitpunkt</td>
 								<td id="header">Schüler</td>
 								<td id="header">Klasse</td>
 							</tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
-							<tr><td>01.01.01</td><td>Fritz Fischer</td><td>1a</td></tr>
 						</table>
 					</div>
 					<label>Vorschau Notiz:</label>
