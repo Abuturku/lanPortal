@@ -27,7 +27,7 @@ public class NotesWeb extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("MUH:" + req + "BUH" + getParameter("noteID"));
+		System.out.println("MUH:" + req + "BUH" + req.getParameter("noteID"));
 		// req.getRequestDispatcher("note.html#" + req.getParameter("noteID"))
 		// .forward(req, resp);
 	}

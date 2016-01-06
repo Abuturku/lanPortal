@@ -1,6 +1,5 @@
 package de.lanGymnasium.rest;
 
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -76,18 +75,13 @@ public class NoteRestServlet {
 	@Path("studentNotes/{id}")
 	public List<Note> getStudentNotes(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
-		Date d = new Date();
-		Note note = new Note(Long.valueOf("5688424874901504"),
-				Long.valueOf("5695872079757312"), d, "Ist ein netter Genosse");
-		em.persist(note);
-		em.clear();
 
 		Query q = em
 				.createQuery("SELECT n FROM Note n WHERE studentID = " + id);
 		log.info("Query: SELECT n FROM Note n WHERE studentID = " + id);
 		@SuppressWarnings("unchecked")
 		List<Note> notes = (List<Note>) q.getResultList();
-		log.info("Notizenliste Grï¿½ï¿½e: " + notes.size());
+		log.info("Notizenliste Größe: " + notes.size());
 		em.close();
 
 		return notes;
