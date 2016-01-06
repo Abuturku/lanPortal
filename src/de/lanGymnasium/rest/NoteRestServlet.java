@@ -22,8 +22,9 @@ import de.lanGymnasium.lan.EMF;
 
 @Path("/note")
 public class NoteRestServlet {
-	private static final Logger log = Logger.getLogger(NoteRestServlet.class.getName());
-	
+	private static final Logger log = Logger.getLogger(NoteRestServlet.class
+			.getName());
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Note> getNotes() {
@@ -31,12 +32,12 @@ public class NoteRestServlet {
 		Query query = em.createQuery("SELECT n FROM Note n");
 
 		@SuppressWarnings("unchecked")
-		List<Note> list = (List<Note>)query.getResultList();
+		List<Note> list = (List<Note>) query.getResultList();
 		em.close();
-		
+
 		return list;
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -47,46 +48,48 @@ public class NoteRestServlet {
 		em.close();
 		return note;
 	}
-	
+
 	@DELETE
 	@Path("/{id}")
 	public void deleteNote(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
 		Note note = em.find(Note.class, KeyFactory.createKey("Note", id));
-		System.out.println("remove "+note);
+		System.out.println("remove " + note);
 		em.remove(note);
 		em.close();
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{id}")
 	public Note getNote(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
 		Note note = em.find(Note.class, KeyFactory.createKey("Note", id));
-		System.out.println("get "+note);
+		System.out.println("get " + note);
 		em.close();
-		
+
 		return note;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("studentNotes/{id}")
 	public List<Note> getStudentNotes(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
 		Date d = new Date();
-		Note note = new Note(Long.valueOf("5688424874901504"), Long.valueOf("5695872079757312"), d, "Ist ein netter Genosse");
+		Note note = new Note(Long.valueOf("5688424874901504"),
+				Long.valueOf("5695872079757312"), d, "Ist ein netter Genosse");
 		em.persist(note);
 		em.clear();
-		
-		Query q = em.createQuery("SELECT n FROM Note n WHERE studentID = " + id);
+
+		Query q = em
+				.createQuery("SELECT n FROM Note n WHERE studentID = " + id);
 		log.info("Query: SELECT n FROM Note n WHERE studentID = " + id);
 		@SuppressWarnings("unchecked")
 		List<Note> notes = (List<Note>) q.getResultList();
-		log.info("Notizenliste Größe: " + notes.size());
+		log.info("Notizenliste Grï¿½ï¿½e: " + notes.size());
 		em.close();
-		
+
 		return notes;
 	}
 	
