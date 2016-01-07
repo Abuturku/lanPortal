@@ -8,10 +8,35 @@
 	<script src="javascript/script.js"></script>
 	<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
+			var user;
+			var userSchool;
+			var footerEventCount;
+			
+			window.addEventListener("OnFooterLoaded", function(e) {
+				if(footerEventCount >= 1){ 
+					$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
+					
+					$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
+				}
+				else{
+					footerEventCount++;
+				}
+			})
+			
 			window.addEventListener("DOMContentLoaded", function(){
+				$.getJSON("/rest/user/loggedInUser", function(user) {
+					setUser(user);
+				})
+				
+				$.getJSON("/rest/user/userSchool", function(school) {
+					setUserSchool(school);
+					var evt = new CustomEvent("OnFooterLoaded", {});
+					window.dispatchEvent(evt);
+				})
+				
 				$('#notes_table').hide();
 				$('#previewcontent').hide();
-				getUser();
+				
 				getAllSchools();
 				getAllGrades();
 				getAllLetters();
@@ -20,23 +45,20 @@
 				setTimeout(checkPage, 3000);
 			});
 			
+			function setUser(user){
+				this.user = user;
+			}
+			
+			function setUserSchool(school){
+				this.userSchool = school;
+			}
+			
 			function checkPage(){
 				if($('#studentTable tr').length < 2){
 					filter();
 					setTimeout(checkPage, 1500);
 				}
 			}
-			
-			function getUser(){
-				$.getJSON("/rest/user/userSchool", function(school) {
-					$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + school.name + ' als '));
-				})
-				
-				$.getJSON("/rest/user/loggedInUser", function(user) {
-					$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
-				})
-			}
-
 			
 			function appendSchool(school){
 				$('#ddb_inst').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
@@ -122,12 +144,10 @@
 				$.getJSON("/rest/note/studentNotes/" + studentID, function(data) {
 					$('#tab_notes_table tr').remove();
 					$('#tab_notes_table').append('<tr><td id="header">Erfassungszeitpunkt</td><td id="header">Lehrer</td></tr>');
-					$.getJSON("/rest/user/loggedInUser", function(user) {
-						$('#pupils_addNote').remove();
-						if(user.teacher){
-							$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"onclickPupil_noteTable_addNote(' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
-						}
-					})
+					$('#pupils_addNote').remove();
+					if(user.teacher){
+						$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"openNote(new, ' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
+					}
 					$.each(data, function(index, note) { 
 						$.getJSON("/rest/user/" + note.teacher, function(teacher) { 
 							var date = new Date(note.timestamp);
@@ -187,13 +207,12 @@
 				})
 			}		 
 			
-			function openNote(noteID){
+			function openNote(noteID, studentID){
 				if(noteID==0){
 					alert("Bitte zuerst eine Notiz auswählen!");
 				}else{
-					location.href = "note?noteID=" + noteID;
+					location.href = "note?noteID=" + noteID + "studentID=" + studentID;
 				}
-				
 			}
 		</script>
 	<header>

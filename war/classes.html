@@ -10,22 +10,63 @@
 		<script src="javascript/script.js"></script>
 		<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
-		window.addEventListener("DOMContentLoaded", function(){
+		var user;
+		var userSchool;
+		var footerEventCount;
+		
+		window.addEventListener("OnFooterLoaded", function(e) {
+			if(footerEventCount >= 1){ 
+				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
+				
+				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
+			}
+			else{
+				footerEventCount++;
+			}
+		})
+		
+		window.addEventListener("OnDataLoaded", function(e) {
+			$('#ddb_inst').val(userSchool.key.id);
+			filter();
+		})
+	
+		window.addEventListener("DOMContentLoaded", function(){	
+			footerEventCount = 0;
+			
+			$.getJSON("/rest/user/loggedInUser", function(user) {
+				setUser(user);
+				var evt = new CustomEvent("OnFooterLoaded", {});
+				window.dispatchEvent(evt);
+			})
+			
+			$.getJSON("/rest/user/userSchool", function(school) {
+				setUserSchool(school);
+				var evt = new CustomEvent("OnFooterLoaded", {});
+				window.dispatchEvent(evt);
+			})
+			
 			$('#previewcontent').hide();
-			getUser();
 			getAllSchools();
 			getAllGrades();
 			getAllTeachers();
 			getAllPupils();
+			
+			setTimeout(checkPage, 3000);
 		});
 		
-		function getUser(){
-			$.getJSON("/rest/user/userSchool", function(school) {
-				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + school.name + ' als '));
-			})
-			$.getJSON("/rest/user/loggedInUser", function(user) {
-				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
-			})
+		function setUser(user){
+			this.user = user;
+		}
+		
+		function setUserSchool(school){
+			this.userSchool = school;
+		}
+		
+		function checkPage(){
+			if($('#classTable tr').length < 2){
+				filter();
+				setTimeout(checkPage, 1500);
+			}
 		}
 		
 		function appendSchool(school){
@@ -39,6 +80,7 @@
 					$.each(data, function(index, school) {
 						appendSchool(school);
 					})
+					
 				})
 		}
 		
@@ -71,83 +113,87 @@
 				
 		}
 		
-			function appendPupil(pupil){
-				$('#ddb_pupil').append($('<option value=\"'+ pupil.key.id +'\">'+ pupil.firstName + ' ' +pupil.familyName +'</option>'));
-			}
+		function appendPupil(pupil){
+			$('#ddb_pupil').append($('<option value=\"'+ pupil.key.id +'\">'+ pupil.firstName + ' ' +pupil.familyName +'</option>'));
+		}
+	
+		function getAllPupils(){
+			$.getJSON("/rest/user/pupils", function(data) {
+				$("#ddb_pupil option").remove();
+				$('#ddb_pupil').append($('<option value="null" selected id="classes_ddbFilter_pupil">Nach Schueler filtern</option>'));
+				$.each(data, function(index, pupil) {
+					appendPupil(pupil);
+				})
+				setTimeout(filter, 500);
+				var evt = new CustomEvent("OnDataLoaded", {});
+				window.dispatchEvent(evt);
+			})
+		}
 		
-			function getAllPupils(){
-				$.getJSON("/rest/user/pupils", function(data) {
-					$("#ddb_pupil option").remove();
-					$('#ddb_pupil').append($('<option value="null" selected id="classes_ddbFilter_pupil">Nach Schueler filtern</option>'));
-					setTimeout(filter(), 500);
-					$.each(data, function(index, pupil) {
-						appendPupil(pupil);
+		
+		function filter(){
+			var schoolSelect = document.getElementById('ddb_inst');
+			var gradeSelect = document.getElementById('ddb_grade');
+			var pupilSelect = document.getElementById('ddb_pupil');
+			var teacherSelect = document.getElementById('ddb_teacher');
+			
+			var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+			var filterGrade = gradeSelect.options[gradeSelect.selectedIndex].value;
+			var filterPupil = pupilSelect.options[pupilSelect.selectedIndex].value;
+			var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
+			
+			var filterObject = {schoolID:filterSchool, grade:filterGrade, letter:null, teacherID:filterTeacher, studentID:filterPupil};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			$.ajax({
+				url: "/rest/filter/clazzes",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(filterObject),
+				success: function(data) {
+					$('#classTable tr').remove();
+					$('#classTable').append('<tr><td id="header">Stufe</td><td id="header">Buchstabe</td></tr>');
+					$.each(data, function(index, clazz) { 
+						appendClass(clazz);
 					})
-				})
-			}
+				},
+				error: function() {
+					alert("Fehler!");
+				},
+				method: "POST",
+				mimeType: "application/json"
+			});
 			
 			
-			function filter(){
-				var schoolSelect = document.getElementById('ddb_inst');
-				var gradeSelect = document.getElementById('ddb_grade');
-				var pupilSelect = document.getElementById('ddb_pupil');
-				var teacherSelect = document.getElementById('ddb_teacher');
-				
-				var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
-				var filterGrade = gradeSelect.options[gradeSelect.selectedIndex].value;
-				var filterPupil = pupilSelect.options[pupilSelect.selectedIndex].value;
-				var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
-				
-				var filterObject = {schoolID:filterSchool, grade:filterGrade, letter:null, teacherID:filterTeacher, studentID:filterPupil};
-				
-				$.ajaxSetup({
-					  contentType: "application/json; charset=utf-8"
-				});
-				$.ajax({
-					url: "/rest/filter/clazzes",
-					contentType: "application/json; charset=utf-8",
-					data: JSON.stringify(filterObject),
-					success: function(data) {
-						$('#classTable tr').remove();
-						$('#classTable').append('<tr><td id="header">Stufe</td><td id="header">Buchstabe</td></tr>');
-						$.each(data, function(index, clazz) { 
-							appendClass(clazz);
-						})
-					},
-					error: function() {
-						alert("Fehler!");
-					},
-					method: "POST",
-					mimeType: "application/json"
-				});
-			}
+		}
+		
+		function appendClass(clazz){
+			$('#classTable').append($('<tr onclick="selectClazz(' + clazz.key.id + ')" id="' + clazz.key.id + '"><td>' + clazz.grade + '</td><td>' + clazz.letter + '</td></tr>'))
+		}
+		
+		function selectClazz(clazzID){
+			$('#list_teacher_classes li').remove();
 			
-			function appendClass(clazz){
-				$('#classTable').append($('<tr onclick="selectClazz(' + clazz.key.id + ')" id="' + clazz.key.id + '"><td>' + clazz.grade + '</td><td>' + clazz.letter + '</td></tr>'))
-			}
+			$.getJSON("/rest/clazz/schoolByClazz/" + clazzID, function(school){
+				$('#classes_inpt_iName').prop("value", school.name);
+			})
 			
-			function selectClazz(clazzID){
-				$('#list_teacher_classes li').remove();
-				
-				$.getJSON("/rest/clazz/schoolByClazz/" + clazzID, function(school){
-					$('#classes_inpt_iName').prop("value", school.name);
+			$.getJSON("/rest/clazz/" + clazzID, function(clazz){ 
+				$('#classes_inpt_grade').prop("value", clazz.grade);
+				$('#classes_inpt_token').prop("value", clazz.letter);
+			})
+			
+			$.getJSON("/rest/clazz/usersByClazz/" + clazzID, function(user){
+				$.each(user, function(index, user) {
+					if(user.teacher){
+						$('#list_teacher_classes').append('<li>' + user.firstName + ' ' + user.familyName + '</li');
+					}
 				})
-				
-				$.getJSON("/rest/clazz/" + clazzID, function(clazz){ 
-					$('#classes_inpt_grade').prop("value", clazz.grade);
-					$('#classes_inpt_token').prop("value", clazz.letter);
-				})
-				
-				$.getJSON("/rest/clazz/usersByClazz/" + clazzID, function(user){
-					$.each(user, function(index, user) {
-						if(user.teacher){
-							$('#list_teacher_classes').append('<li>' + user.firstName + ' ' + user.familyName + '</li');
-						}
-					})
-				})
-				
-				$('#previewcontent').show();
-			}
+			})
+			
+			$('#previewcontent').show();
+		}
 			
 	</script>
 		<header>

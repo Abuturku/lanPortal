@@ -10,20 +10,41 @@
 	<script src="javascript/script.js"></script>
 	<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
+		var user;
+		var userSchool;
+		var footerEventCount;
+		
+		window.addEventListener("OnFooterLoaded", function(e) {
+			if(footerEventCount >= 1){ 
+				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
+				
+				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
+			}
+			else{
+				footerEventCount++;
+			}
+		})
+		
 		window.addEventListener("DOMContentLoaded", function(){
-			getUser();
+			$.getJSON("/rest/user/loggedInUser", function(user) {
+				setUser(user);
+			})
+			
+			$.getJSON("/rest/user/userSchool", function(school) {
+				setUserSchool(school);
+				var evt = new CustomEvent("OnFooterLoaded", {});
+				window.dispatchEvent(evt);
+			})
 		});
 		
-		function getUser(){
-		
-		
-			$.getJSON("/rest/user/userSchool", function(school) {
-				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + school.name + ' als '));
-			})
-			$.getJSON("/rest/user/loggedInUser", function(user) {
-				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
-			})
+		function setUser(user){
+			this.user = user;
 		}
+		
+		function setUserSchool(school){
+			this.userSchool = school;
+		}
+		
 	</script>
 		<header>
 			<nav id="doc_navlist">
@@ -60,15 +81,15 @@
 				<div id="note_inpt_metadata">
 					<span>
 						<label for="teacher">Lehrer:</label>
-						<input type="text" name="teacher" value="Lehrer" id="note_inpt_tName" readonly>
+						<input type="text" name="teacher" value="" id="note_inpt_tName" readonly>
 					</span>
 					<span>
 						<label for="timestamp">Erfassungszeitpunkt:</label>
-						<input type="text" name="timestamp" value="Erfassungszeitpunkt" id="note_inpt_ts" readonly>
+						<input type="text" name="timestamp" value="" id="note_inpt_ts" readonly>
 					</span>
 					<span>
 						<label for="pupil">Sch&uumller: </label>
-						<input type="text" name="pupil" value="Schüler" id="note_inpt_pName" readonly>
+						<input type="text" name="pupil" value="" id="note_inpt_pName" readonly>
 					</span>
 					<div id="note_btn_sla">
 						<input type="button" value="Abbrechen" id="login_bt" onclick="onclickReturnToPupils()"/>
@@ -77,7 +98,7 @@
 				</div>
 			
 				<div id="note_content">
-					<textarea id="note_txtArea_content">Beispielnotiz</textarea>
+					<textarea id="note_txtArea_content"></textarea>
 				</div>
 			</form>
 		</div>

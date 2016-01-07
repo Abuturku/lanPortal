@@ -21,7 +21,6 @@ public class NotesWeb extends HttpServlet {
 							+ "<p><a href=\"login\">Zur�ck</p>");
 			// Hier kommt noch der Redirect zu Lindas Login Denied Seite.
 		}
-		System.out.println(req.getParameter("noteID"));
 		resp.getWriter().write(req.getParameter("noteID"));
 		req.getRequestDispatcher("note.html").forward(req, resp);
 	}
@@ -29,8 +28,6 @@ public class NotesWeb extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		System.out.println("MUH:" + req + "BUH" + req.getParameter("noteID"));
-		// req.getRequestDispatcher("note.html#" + req.getParameter("noteID"))
-		// .forward(req, resp);
+		
 	}
 }
