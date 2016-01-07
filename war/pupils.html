@@ -101,6 +101,9 @@
 			}
 			
 			function selectStudent(studentID){
+				$('#note_txtArea_content').text('');
+				$('#btn_openNote').attr("onclick","openNote(0)");
+				
 				$.getJSON("/rest/user/userSchool/" + studentID, function(school){
 					$('#pupils_inpt_iName').prop("value", school.name);
 				})
@@ -177,16 +180,20 @@
 			}
 			
 			function showNote(noteID){
+				$('#note_txtArea_content').text('');
 				$.getJSON("/rest/note/" + noteID, function(note) {
 					$('#note_txtArea_content').text(note.text);
 					$('#btn_openNote').attr("onclick","openNote("+noteID+")");
 				})
-				
-				
 			}		 
-			 
+			
 			function openNote(noteID){
-				$.post("note",{noteID:noteID});
+				if(noteID==0){
+					alert("Bitte zuerst eine Notiz auswählen!");
+				}else{
+					location.href = "note?noteID=" + noteID;
+				}
+				
 			}
 		</script>
 	<header>

@@ -21,6 +21,8 @@ public class NotesWeb extends HttpServlet {
 							+ "<p><a href=\"login\">Zur�ck</p>");
 			// Hier kommt noch der Redirect zu Lindas Login Denied Seite.
 		}
+		System.out.println(req.getParameter("noteID"));
+		resp.getWriter().write(req.getParameter("noteID"));
 		req.getRequestDispatcher("note.html").forward(req, resp);
 	}
 

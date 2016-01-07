@@ -137,6 +137,9 @@
 			}
 			
 			function selectTeacher(teacherID){
+				$('#note_txtArea_content').text('');
+				$('#btn_openNote').attr("onclick","openNote(0)");
+				
 				$.getJSON("/rest/user/userSchool/" + teacherID, function(school){
 					$('#teachers_inpt_iName').prop("value", school.name);
 				})
@@ -171,6 +174,23 @@
 				})
 				$('#notes_table').show();
 				$('#previewcontent').show();				
+			}
+			
+			function showNote(noteID){
+				$('#note_txtArea_content').text('');
+				$.getJSON("/rest/note/" + noteID, function(note) {
+					$('#note_txtArea_content').text(note.text);
+					$('#btn_openNote').attr("onclick","openNote("+noteID+")");
+				})
+			}
+			
+			function openNote(noteID){
+				if(noteID==0){
+					alert("Bitte zuerst eine Notiz auswählen!");
+				}else{
+					$.post("note",{noteID:noteID});
+				}
+				
 			}
 			
 	</script>
