@@ -11,7 +11,7 @@ form{
     border: solid darkcyan 2px;
 	background: rgba(242, 242, 242, 0.7);
 	border-radius: 10px;
-	width: 13rem;
+	width: 20rem;
 }
 header{
     display: table;
@@ -50,7 +50,9 @@ p{
     color: black;
 	text-align: center;
 }
-
+p#login_kleingedrucktes{
+	font: italic 0.75em/2em arial,geneva,helvetica,sans-serif;
+}
 input[type="button"]{
     border-radius: 6px;
     font: bold 0.75em/2em arial,geneva,helvetica,sans-serif;
@@ -61,9 +63,9 @@ input[type="button"]{
 } 
 
 a{
-    color: aliceblue;
-    font: bold 0.75em/2em arial,geneva,helvetica,sans-serif;
-	float: right;
+    color: black;
+	font: 1em/2em arial,geneva,helvetica,sans-serif;
+	text-align: center;
 	margin-right: 1em;
 }
 
