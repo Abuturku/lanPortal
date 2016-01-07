@@ -12,6 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.google.appengine.api.datastore.KeyFactory;
+
 import de.lanGymnasium.datenstruktur.Clazz;
 import de.lanGymnasium.datenstruktur.ClazzUser;
 import de.lanGymnasium.datenstruktur.Filter;
@@ -288,6 +290,35 @@ public class FilterRestServlet {
 			}
 		} else {
 			clazzs = new ArrayList<Clazz>();
+		}
+
+		log.info("Gebe " + clazzs.size() + " Klassen zurueck");
+		return clazzs;
+	}
+
+	@SuppressWarnings("unchecked")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/clazzesTeacher")
+	public List<Clazz> filterClazzesFree(Filter filter) {
+		// Hier MUSS Schule gesetzt sein, damit �berhaupt gefiltert wird. Eine
+		// Filterung ohne Ber�cksichtigung der Schule w�rde das ganze
+		// nur un�bersichtlich machen
+
+		log.info("Suche Lehrer: " + filter.toString());
+		ArrayList<Clazz> clazzs = new ArrayList<Clazz>();
+		EntityManager em = EMF.createEntityManager();
+		Query query = em
+				.createQuery("SELECT c FROM ClazzUser c WHERE userID = "
+						+ filter.getTeacherID());
+		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
+		em.close();
+		em = EMF.createEntityManager();
+		for (ClazzUser clazzUser : clazzUsers) {
+			Clazz clazz = em.find(Clazz.class,
+					KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+			clazzs.add(clazz);
 		}
 
 		log.info("Gebe " + clazzs.size() + " Klassen zurueck");

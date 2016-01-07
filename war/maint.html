@@ -38,6 +38,8 @@
 			})
 			
 			getAllSchools();
+			getAllPupils();
+			getAllTeachers();
 		});
 	
 		function setUser(user){
@@ -112,6 +114,106 @@
 		
  		}
  
+ 		function appendPupil(pupil){
+			$('#maint_pupil_ddb_choose_pupil').append($('<option value=\"'+ pupil.key.id +'\">'+ pupil.firstName + ' ' +pupil.familyName +'</option>'));
+		}
+	
+		function getAllPupils(){
+			$.getJSON("/rest/user/pupils", function(data) {
+				
+				$.each(data, function(index, pupil) {
+					appendPupil(pupil);
+				})
+			})
+		}
+ 
+ 		function appendTeachers(teacher){
+			$('#maint_teacher_ddb_choose_teacher').append($('<option value=\"'+ teacher.key.id +'\">'+ teacher.firstName + ' ' +teacher.familyName +'</option>'));
+		}
+	
+		function getAllTeachers(){
+			$.getJSON("/rest/user/teachers", function(data) {
+				
+				$.each(data, function(index, teacher) {
+					appendTeachers(teacher);
+				})
+			})
+			
+		}
+		
+		function getClazzesFromSchoolPupil(){
+		
+			var schoolSelect = document.getElementById('maint_pupil_ddb_choose_school');
+			
+			var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+	
+			
+			var filterObject = {schoolID:filterSchool, grade:null, letter:null, teacherID:null, studentID:null};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			$.ajax({
+				url: "/rest/filter/clazzes",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(filterObject),
+				success: function(data) {
+					$('#maint_pupil_ddb_choose_class option').remove();
+					$('#maint_pupil_ddb_choose_class').append('<option value="null" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>');
+					$.each(data, function(index, clazz) { 
+						appendClazzFromSchoolPupil(clazz);
+					})
+				},
+				error: function() {
+					getClazzesFromSchoolPupil();
+				},
+				method: "POST",
+				mimeType: "application/json"
+			});
+		}
+		
+		function appendClazzFromSchoolPupil(clazz){
+			$('#maint_pupil_ddb_choose_class').append($('<option value=\"'+ clazz.key.id +'\">'+ clazz.grade + clazz.letter +'</option>'));
+		}
+		
+		function setSchoolSchoolName(){
+			var schoolSelect = document.getElementById('maint_school_ddb_choose_school');
+			$('#maint_inpt_instName').val(schoolSelect.options[schoolSelect.selectedIndex].text);
+		}
+		
+		function setTeacherSchoolAndName(){
+			var teacherSelect = document.getElementById('maint_teacher_ddb_choose_teacher');
+			
+			var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
+	
+			
+			var filterObject = {schoolID:null, grade:null, letter:null, teacherID:filterTeacher, studentID:null};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			$.ajax({
+				url: "/rest/filter/clazzesTeacher",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(filterObject),
+				success: function(data) {
+					$('#ClazzTable tr').remove();
+					$('#ClazzTable').append('<tr><td id="header"></td><td id="header">Klasse</td></tr>');
+					$.each(data, function(index, clazz) { 
+						setTeacherClassTableAndName(clazz);
+					})
+				},
+				error: function() {
+					getClazzesFromSchoolPupil();
+				},
+				method: "POST",
+				mimeType: "application/json"
+			});
+		}
+		
+		function setTeacherClassTableAndName(clazz){ 
+			$('#maint_teacher_ddb_choose_school').val(clazz.key.id);
+		}
 	</script>
 	<header>
 		<nav id="doc_navlist">
@@ -134,7 +236,7 @@
 			<form>
 				<div>
 					<em id="maintSchoolsFormContentLn1">Schule</em> <select
-						type="institution_ddb" id="maint_school_ddb_choose_school">
+						type="institution_ddb" id="maint_school_ddb_choose_school" onchange="setSchoolSchoolName()">
 
 						<option value="null" disabled selected hidden
 							id="maint_ddb_default">Schule w&aumlhlen</option>
@@ -239,8 +341,9 @@
 		<div id="maintForm">
 			<form>
 				<div>
-					<em id="maintSchoolsFormContentLn1">Lehrer</em> <select
-						type="teacher_ddb" id="maint_teacher_ddb_choose_teacher">
+					<em id="maintSchoolsFormContentLn1">Lehrer</em> 
+					<select
+						type="teacher_ddb" id="maint_teacher_ddb_choose_teacher" onchange="setTeacherSchoolAndName()">
 
 						<option value="null" disabled selected hidden
 							id="maint_ddb_default">Lehrer w&aumlhlen</option>
@@ -277,7 +380,7 @@
 					<div id="maintClassesTable">
 						<label for="maintFormField">Klasse</label>
 						<div id="table">
-							<table>
+							<table id="ClazzTable">
 								<tr>
 									<td id="header"></td>
 									<td id="header">Klasse</td>
@@ -328,7 +431,7 @@
 				<div>
 					<span id="maintSchoolsFormContentLn2"> <label
 						for="maintFormField">Schule</label> <select type="school_ddb"
-						id="maint_pupil_ddb_choose_school">
+						id="maint_pupil_ddb_choose_school" onchange="getClazzesFromSchoolPupil()">
 
 							<option value="null" disabled selected hidden
 								id="maint_ddb_default">Schule w&aumlhlen</option>
