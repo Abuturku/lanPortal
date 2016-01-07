@@ -37,7 +37,8 @@ public class FilterRestServlet {
 				.createQuery("SELECT u FROM User u WHERE teacher = false");
 		List<User> users = (List<User>) query.getResultList();
 		em.close();
-		if (!filter.getSchoolID().equals("null")) {
+		if (filter.getSchoolID() != null
+				&& !filter.getSchoolID().equals("null")) {
 			log.info("Filtere nach Schule");
 			users = filterSchool(filter.getSchoolID(), users);
 		}
@@ -45,11 +46,12 @@ public class FilterRestServlet {
 			log.info("Filtere nach Stufe");
 			users = filterGrade(filter.getGrade(), users);
 		}
-		if (!filter.getLetter().equals("null")) {
+		if (filter.getLetter() != null && !filter.getLetter().equals("null")) {
 			log.info("Filtere nach Buchstabe");
 			users = filterLetter(filter.getLetter(), users);
 		}
-		if (!filter.getTeacherID().equals("null")) {
+		if (filter.getTeacherID() != null
+				&& !filter.getTeacherID().equals("null")) {
 			log.info("Filtere nach Lehrer");
 			users = filterTeacher(filter.getTeacherID(), users);
 		}
@@ -187,7 +189,8 @@ public class FilterRestServlet {
 				.createQuery("SELECT u FROM User u WHERE teacher = true");
 		List<User> users = (List<User>) query.getResultList();
 		em.close();
-		if (!filter.getSchoolID().equals("null")) {
+		if (filter.getSchoolID() != null
+				&& !filter.getSchoolID().equals("null")) {
 			log.info("Filtere nach Schule");
 			users = filterSchool(filter.getSchoolID(), users);
 		}
@@ -195,11 +198,12 @@ public class FilterRestServlet {
 			log.info("Filtere nach Stufe");
 			users = filterGrade(filter.getGrade(), users);
 		}
-		if (!filter.getLetter().equals("null")) {
+		if (filter.getLetter() != null && !filter.getLetter().equals("null")) {
 			log.info("Filtere nach Buchstabe");
 			users = filterLetter(filter.getLetter(), users);
 		}
-		if (!filter.getStudentID().equals("null")) {
+		if (filter.getStudentID() != null
+				&& !filter.getStudentID().equals("null")) {
 			log.info("Filtere nach Schueler");
 			users = filterStudent(filter.getStudentID(), users);
 		}
@@ -251,7 +255,8 @@ public class FilterRestServlet {
 		log.info("Suche Lehrer: " + filter.toString());
 		List<Clazz> clazzs = null;
 
-		if (!filter.getSchoolID().equals("null")) {
+		if (filter.getSchoolID() != null
+				&& !filter.getSchoolID().equals("null")) {
 			log.info("Filtere nach Schule");
 
 			if (filter.getGrade() != 0) {
@@ -271,11 +276,13 @@ public class FilterRestServlet {
 				clazzs = (List<Clazz>) query.getResultList();
 				em.close();
 			}
-			if (!filter.getStudentID().equals("null")) {
+			if (filter.getStudentID() != null
+					&& !filter.getStudentID().equals("null")) {
 				log.info("Filtere nach Buchstabe");
 				clazzs = filterClazzUser(filter.getStudentID(), clazzs);
 			}
-			if (!filter.getTeacherID().equals("null")) {
+			if (filter.getTeacherID() != null
+					&& !filter.getTeacherID().equals("null")) {
 				log.info("Filtere nach Schueler");
 				clazzs = filterClazzUser(filter.getTeacherID(), clazzs);
 			}
