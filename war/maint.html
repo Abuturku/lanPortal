@@ -10,40 +10,42 @@
 	<script src="javascript/script.js"></script>
 	<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
-	var user;
-	var userSchool;
-	var footerEventCount;
-	
-	window.addEventListener("OnFooterLoaded", function(e) {
-		if(footerEventCount >= 1){ 
-			$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
-			
-			$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
-		}
-		else{
-			footerEventCount++;
-		}
-	})
-	
-	window.addEventListener("DOMContentLoaded", function(){
-		$.getJSON("/rest/user/loggedInUser", function(user) {
-			setUser(user);
+		var user;
+		var userSchool;
+		var footerEventCount;
+		
+		window.addEventListener("OnFooterLoaded", function(e) {
+			if(footerEventCount >= 1){ 
+				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
+				
+				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
+			}
+			else{
+				footerEventCount++;
+			}
 		})
 		
-		$.getJSON("/rest/user/userSchool", function(school) {
-			setUserSchool(school);
-			var evt = new CustomEvent("OnFooterLoaded", {});
-			window.dispatchEvent(evt);
-		})
-	});
-	
-	function setUser(user){
-		this.user = user;
-	}
-	
-	function setUserSchool(school){
-		this.userSchool = school;
-	}
+		window.addEventListener("DOMContentLoaded", function(){
+			$.getJSON("/rest/user/loggedInUser", function(user) {
+				setUser(user);
+				var evt = new CustomEvent("OnFooterLoaded", {});
+				window.dispatchEvent(evt);
+			})
+			
+			$.getJSON("/rest/user/userSchool", function(school) {
+				setUserSchool(school);
+				var evt = new CustomEvent("OnFooterLoaded", {});
+				window.dispatchEvent(evt);
+			})
+		});
+		
+		function setUser(user){
+			this.user = user;
+		}
+		
+		function setUserSchool(school){
+			this.userSchool = school;
+		}
 	</script>
 		<header>
 			<nav id="doc_navlist">

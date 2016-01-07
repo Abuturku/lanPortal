@@ -8,213 +8,215 @@
 	<script src="javascript/script.js"></script>
 	<script src="javascript/jquery-2.1.4.min.js"></script>
 	<script>
-	var user;
-	var userSchool;
-	var footerEventCount;
-	
-	window.addEventListener("OnFooterLoaded", function(e) {
-		if(footerEventCount >= 1){ 
-			$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
-			
-			$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
-		}
-		else{
-			footerEventCount++;
-		}
-	})
-	
-	window.addEventListener("DOMContentLoaded", function(){
-		$.getJSON("/rest/user/loggedInUser", function(user) {
-			setUser(user);
-		})
+		var user;
+		var userSchool;
+		var footerEventCount;
 		
-		$.getJSON("/rest/user/userSchool", function(school) {
-			setUserSchool(school);
-			var evt = new CustomEvent("OnFooterLoaded", {});
-			window.dispatchEvent(evt);
-		})
-		
-		$('#notes_table').hide();
-		$('#previewcontent').hide();
-		
-		getAllSchools();
-		getAllGrades();
-		getAllLetters();
-		getAllTeachers();
-		
-		setTimeout(checkPage, 3000);
-	});
-	
-	function setUser(user){
-		this.user = user;
-	}
-	
-	function setUserSchool(school){
-		this.userSchool = school;
-	}
-	
-	function checkPage(){
-		if($('#studentTable tr').length < 2){
-			filter();
-			setTimeout(checkPage, 1500);
-		}
-	}
-	
-	function appendSchool(school){
-		$('#ddb_inst').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
-	}
-
-	function getAllSchools(){
-		$.getJSON("/rest/school", function(data) {
-			$("#ddb_inst option").remove();
-			$('#ddb_inst').append($('<option value="null" selected id="pupils_ddbFilter_inst">Nach Schule filtern</option>'));
-			$.each(data, function(index, school) {
-				appendSchool(school);
-			})
-		})
-	}
-	
-	function appendGrade(grade){
-		$('#ddb_grade').append($('<option value=\"'+ grade +'\">'+ grade +'</option>'));
-	}
-
-	function getAllGrades(){
-		$.getJSON("/rest/clazz/grades", function(data) {
-			$("#ddb_grade option").remove();
-			$('#ddb_grade').append($('<option value="0" selected id="pupils_ddbFilter_grade">Nach Stufe filtern</option>'));
-			$.each(data, function(index, grade) {
-				appendGrade(grade);
-			})
-		})
-	}
-	
-	function appendLetters(letter){
-		$('#ddb_class').append($('<option value=\"'+ letter +'\">'+ letter +'</option>'));
-	}
-
-	function getAllLetters(){
-		$.getJSON("/rest/clazz/letters", function(data) {
-			$("#ddb_class option").remove();
-			$('#ddb_class').append($('<option value="null" selected id="pupils_ddbFilter_class">Nach Klasse filtern</option>'));
-			$.each(data, function(index, letter) {
-				appendLetters(letter);
-			})
-		})
-	}
-	
-	function appendTeachers(teacher){
-		$('#ddb_teacher').append($('<option value=\"'+ teacher.key.id +'\">'+ teacher.firstName + ' ' +teacher.familyName +'</option>'));
-	}
-
-	function getAllTeachers(){
-		$.getJSON("/rest/user/teachers", function(data) {
-			$("#ddb_teacher option").remove();
-			$('#ddb_teacher').append($('<option value="null" selected id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
-			setTimeout(filter, 500);
-			$.each(data, function(index, teacher) {
-				appendTeachers(teacher);
-			})
-		})
-		
-	}
-	
-	function appendStudent(student){
-		$('#studentTable').append($('<tr onclick="selectStudent(' + student.key.id + ')" id="' + student.key.id + '"><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
-	}
-	
-	function selectStudent(studentID){
-		$('#note_txtArea_content').text('');
-		$('#btn_openNote').attr("onclick","openNote(0)");
-		
-		$.getJSON("/rest/user/userSchool/" + studentID, function(school){
-			$('#pupils_inpt_iName').prop("value", school.name);
-		})
-		
-		$.getJSON("/rest/user/" + studentID, function(student) {
-			$('#pupils_inpt_fName').prop("value", student.firstName);
-			$('#pupils_inpt_lName').prop("value", student.familyName);
-		})
-		
-		$.getJSON("/rest/user/userClasses/" + studentID, function(data) {
-			$.each(data, function(index, clazz) {
-				$('#pupils_inpt_class').prop("value", "" + clazz.grade + clazz.letter);
-			})
-		})
-						
-		$.getJSON("/rest/note/studentNotes/" + studentID, function(data) {
-			$('#tab_notes_table tr').remove();
-			$('#tab_notes_table').append('<tr><td id="header">Erfassungszeitpunkt</td><td id="header">Lehrer</td></tr>');
-			$('#pupils_addNote').remove();
-			if(user.teacher){
-				$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"openNote(new, ' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
+		window.addEventListener("OnFooterLoaded", function(e) {
+			if(footerEventCount >= 1){ 
+				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
+				
+				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
 			}
-			$.each(data, function(index, note) { 
-				$.getJSON("/rest/user/" + note.teacher, function(teacher) { 
-					var date = new Date(note.timestamp);
-					$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
-							+ date.toLocaleString() + '</td><td>' + teacher.firstName + ' ' + teacher.familyName + '</td></tr>');
-				})
-				
+			else{
+				footerEventCount++;
+			}
+		})
+		
+		window.addEventListener("DOMContentLoaded", function(){
+			$.getJSON("/rest/user/loggedInUser", function(user) {
+				setUser(user);
+				var evt = new CustomEvent("OnFooterLoaded", {});
+				window.dispatchEvent(evt);
 			})
-		})
-		
-		$('#notes_table').show();
-		$('#previewcontent').show();
-		
-	}
-	
-	function filter(){
-		var schoolSelect = document.getElementById('ddb_inst');
-		var gradeSelect = document.getElementById('ddb_grade');
-		var letterSelect = document.getElementById('ddb_class');
-		var teacherSelect = document.getElementById('ddb_teacher');
-		
-		var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
-		var filterGrade = gradeSelect.options[gradeSelect.selectedIndex].value;
-		var filterLetter = letterSelect.options[letterSelect.selectedIndex].value;
-		var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
-		
-		var filterObject = {schoolID:filterSchool, grade:filterGrade, letter:filterLetter, teacherID:filterTeacher, studentID:null};
-		
-		$.ajaxSetup({
-			  contentType: "application/json; charset=utf-8"
+			
+			$.getJSON("/rest/user/userSchool", function(school) {
+				setUserSchool(school);
+				var evt = new CustomEvent("OnFooterLoaded", {});
+				window.dispatchEvent(evt);
+			})
+			
+			$('#notes_table').hide();
+			$('#previewcontent').hide();
+			
+			getAllSchools();
+			getAllGrades();
+			getAllLetters();
+			getAllTeachers();
+			
+			setTimeout(checkPage, 3000);
 		});
-		$.ajax({
-			url: "/rest/filter/students",
-			contentType: "application/json; charset=utf-8",
-			data: JSON.stringify(filterObject),
-			success: function(data) {
-				$('#studentTable tr').remove();
-				$('#studentTable').append('<tr><td id="header">Nachname</td><td id="header">Vorname</td></tr>');
-				$.each(data, function(index, student) { 
-					appendStudent(student);
-				})
-			},
-			error: function() {
-				filter();
-				
-			},
-			method: "POST",
-			mimeType: "application/json"
-		});
-	}
-	
-	function showNote(noteID){
-		$('#note_txtArea_content').text('');
-		$.getJSON("/rest/note/" + noteID, function(note) {
-			$('#note_txtArea_content').text(note.text);
-			$('#btn_openNote').attr("onclick","openNote("+noteID+")");
-		})
-	}		 
-	
-	function openNote(noteID, studentID){
-		if(noteID==0){
-			alert("Bitte zuerst eine Notiz auswählen!");
-		}else{
-			location.href = "note?noteID=" + noteID + "studentID=" + studentID;
+		
+		function setUser(user){
+			this.user = user;
 		}
-	}
-		</script>
+		
+		function setUserSchool(school){
+			this.userSchool = school;
+		}
+		
+		function checkPage(){
+			if($('#studentTable tr').length < 2){
+				filter();
+				setTimeout(checkPage, 1500);
+			}
+		}
+		
+		function appendSchool(school){
+			$('#ddb_inst').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
+		}
+	
+		function getAllSchools(){
+			$.getJSON("/rest/school", function(data) {
+				$("#ddb_inst option").remove();
+				$('#ddb_inst').append($('<option value="null" selected id="pupils_ddbFilter_inst">Nach Schule filtern</option>'));
+				$.each(data, function(index, school) {
+					appendSchool(school);
+				})
+			})
+		}
+		
+		function appendGrade(grade){
+			$('#ddb_grade').append($('<option value=\"'+ grade +'\">'+ grade +'</option>'));
+		}
+	
+		function getAllGrades(){
+			$.getJSON("/rest/clazz/grades", function(data) {
+				$("#ddb_grade option").remove();
+				$('#ddb_grade').append($('<option value="0" selected id="pupils_ddbFilter_grade">Nach Stufe filtern</option>'));
+				$.each(data, function(index, grade) {
+					appendGrade(grade);
+				})
+			})
+		}
+		
+		function appendLetters(letter){
+			$('#ddb_class').append($('<option value=\"'+ letter +'\">'+ letter +'</option>'));
+		}
+	
+		function getAllLetters(){
+			$.getJSON("/rest/clazz/letters", function(data) {
+				$("#ddb_class option").remove();
+				$('#ddb_class').append($('<option value="null" selected id="pupils_ddbFilter_class">Nach Klasse filtern</option>'));
+				$.each(data, function(index, letter) {
+					appendLetters(letter);
+				})
+			})
+		}
+		
+		function appendTeachers(teacher){
+			$('#ddb_teacher').append($('<option value=\"'+ teacher.key.id +'\">'+ teacher.firstName + ' ' +teacher.familyName +'</option>'));
+		}
+	
+		function getAllTeachers(){
+			$.getJSON("/rest/user/teachers", function(data) {
+				$("#ddb_teacher option").remove();
+				$('#ddb_teacher').append($('<option value="null" selected id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
+				setTimeout(filter, 500);
+				$.each(data, function(index, teacher) {
+					appendTeachers(teacher);
+				})
+			})
+			
+		}
+		
+		function appendStudent(student){
+			$('#studentTable').append($('<tr onclick="selectStudent(' + student.key.id + ')" id="' + student.key.id + '"><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
+		}
+		
+		function selectStudent(studentID){
+			$('#note_txtArea_content').text('');
+			$('#btn_openNote').attr("onclick","openNote(0)");
+			
+			$.getJSON("/rest/user/userSchool/" + studentID, function(school){
+				$('#pupils_inpt_iName').prop("value", school.name);
+			})
+			
+			$.getJSON("/rest/user/" + studentID, function(student) {
+				$('#pupils_inpt_fName').prop("value", student.firstName);
+				$('#pupils_inpt_lName').prop("value", student.familyName);
+			})
+			
+			$.getJSON("/rest/user/userClasses/" + studentID, function(data) {
+				$.each(data, function(index, clazz) {
+					$('#pupils_inpt_class').prop("value", "" + clazz.grade + clazz.letter);
+				})
+			})
+							
+			$.getJSON("/rest/note/studentNotes/" + studentID, function(data) {
+				$('#tab_notes_table tr').remove();
+				$('#tab_notes_table').append('<tr><td id="header">Erfassungszeitpunkt</td><td id="header">Lehrer</td></tr>');
+				$('#pupils_addNote').remove();
+				if(user.teacher){
+					$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"openNote(new, ' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
+				}
+				$.each(data, function(index, note) { 
+					$.getJSON("/rest/user/" + note.teacher, function(teacher) { 
+						var date = new Date(note.timestamp);
+						$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
+								+ date.toLocaleString() + '</td><td>' + teacher.firstName + ' ' + teacher.familyName + '</td></tr>');
+					})
+					
+				})
+			})
+			
+			$('#notes_table').show();
+			$('#previewcontent').show();
+			
+		}
+		
+		function filter(){
+			var schoolSelect = document.getElementById('ddb_inst');
+			var gradeSelect = document.getElementById('ddb_grade');
+			var letterSelect = document.getElementById('ddb_class');
+			var teacherSelect = document.getElementById('ddb_teacher');
+			
+			var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+			var filterGrade = gradeSelect.options[gradeSelect.selectedIndex].value;
+			var filterLetter = letterSelect.options[letterSelect.selectedIndex].value;
+			var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
+			
+			var filterObject = {schoolID:filterSchool, grade:filterGrade, letter:filterLetter, teacherID:filterTeacher, studentID:null};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			$.ajax({
+				url: "/rest/filter/students",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(filterObject),
+				success: function(data) {
+					$('#studentTable tr').remove();
+					$('#studentTable').append('<tr><td id="header">Nachname</td><td id="header">Vorname</td></tr>');
+					$.each(data, function(index, student) { 
+						appendStudent(student);
+					})
+				},
+				error: function() {
+					filter();
+					
+				},
+				method: "POST",
+				mimeType: "application/json"
+			});
+		}
+		
+		function showNote(noteID){
+			$('#note_txtArea_content').text('');
+			$.getJSON("/rest/note/" + noteID, function(note) {
+				$('#note_txtArea_content').text(note.text);
+				$('#btn_openNote').attr("onclick","openNote("+noteID+")");
+			})
+		}		 
+		
+		function openNote(noteID, studentID){
+			if(noteID==0){
+				alert("Bitte zuerst eine Notiz auswählen!");
+			}else{
+				location.href = "note?noteID=" + noteID + "&studentID=" + studentID;
+			}
+		}
+	</script>
 	<header>
 		<nav id="doc_navlist">
 			<ul>
