@@ -24,6 +24,7 @@
 		})
 		
 		window.addEventListener("DOMContentLoaded", function(){
+			footerEventCount=0;
 			$.getJSON("/rest/user/loggedInUser", function(user) {
 				setUser(user);
 				var evt = new CustomEvent("OnFooterLoaded", {});
@@ -91,14 +92,25 @@
 					})
 				},
 				error: function() {
-					//getClazzesFromSchool();
-					alert("MUH");
+					getClazzesFromSchool();
 				},
 				method: "POST",
 				mimeType: "application/json"
 			});
 		}
-	
+		
+		function getClazzesFromClazz(){
+			var clazzSelect = document.getElementById('maint_class_ddb_choose_class');
+			
+			var clazzID = clazzSelect.options[clazzSelect.selectedIndex].value;
+			
+			$.getJSON("/rest/clazz/"+clazzID, function(clazz) {
+	 			$('#maint_ddb_class_grade').val(clazz.grade);
+	 			$('#maint_ddb_class_token').val(clazz.letter);
+			})
+			
+		
+ 		}
  
 	</script>
 	<header>
@@ -161,7 +173,7 @@
 							<option value="null" disabled selected hidden id="">Schule
 								w&aumlhlen</option>
 					</select>
-					</span> <select type="teacher_ddb" id="maint_class_ddb_choose_class">
+					</span> <select type="teacher_ddb" id="maint_class_ddb_choose_class" onchange="getClazzesFromClazz()">
 						<option value="null" disabled selected hidden
 							id="maint_ddb_default">Klasse w&aumlhlen</option>
 						<option value="null" id="maint_ddb_new">Klasse
@@ -186,19 +198,19 @@
 							<option value="null" disabled selected hidden
 								id="maint_ddb_default">Stufe w&aumlhlen</option>
 
-							<option value="grade1">1</option>
-							<option value="grade2">2</option>
-							<option value="grade3">3</option>
-							<option value="grade4">4</option>
-							<option value="grade5">5</option>
-							<option value="grade6">6</option>
-							<option value="grade7">7</option>
-							<option value="grade8">8</option>
-							<option value="grade9">9</option>
-							<option value="grade10">10</option>
-							<option value="grade11">11</option>
-							<option value="grade12">12</option>
-							<option value="grade13">13</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							<option value="10">10</option>
+							<option value="11">11</option>
+							<option value="12">12</option>
+							<option value="13">13</option>
 					</select>
 					</span> <span id="maintSchoolsFormContentLn2"> <label
 						for="maintFormField">Buchstabe</label> <select
@@ -207,18 +219,18 @@
 							<option value="null" disabled selected hidden
 								id="maint_ddb_default">Buchstaben w&aumlhlen</option>
 
-							<option value="token1">a</option>
-							<option value="token2">b</option>
-							<option value="token3">c</option>
-							<option value="token4">d</option>
-							<option value="token5">e</option>
-							<option value="token6">f</option>
-							<option value="token7">g</option>
-							<option value="token8">h</option>
-							<option value="token9">i</option>
-							<option value="token10">j</option>
-							<option value="token11">k</option>
-							<option value="token12">l</option>
+							<option value="a">a</option>
+							<option value="b">b</option>
+							<option value="c">c</option>
+							<option value="d">d</option>
+							<option value="e">e</option>
+							<option value="f">f</option>
+							<option value="g">g</option>
+							<option value="h">h</option>
+							<option value="i">i</option>
+							<option value="j">j</option>
+							<option value="k">k</option>
+							<option value="l">l</option>
 					</select>
 					</span>
 				</div>
