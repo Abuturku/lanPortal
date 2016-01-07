@@ -26,6 +26,7 @@
 		})
 		
 		window.addEventListener("DOMContentLoaded", function(){
+			footerEventCount=0;
 			$.getJSON("/rest/user/loggedInUser", function(user) {
 				setUser(user);
 				var evt = new CustomEvent("OnFooterLoaded", {});
@@ -50,7 +51,15 @@
 		}
 		
 		function setFields(){
+			var noteID = getUrlParameter("noteID");
+			var userID = getUrlParameter("studentID");
 			
+			if(noteID == "new"){
+				var date = new Date();
+				$('#note_inpt_ts').prop("value", date.toLocaleString());
+			}
+			console.debug(noteID);
+			console.debug(date);
 		}
 		
 	</script>

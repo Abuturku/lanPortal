@@ -26,6 +26,7 @@
 		})
 		
 		window.addEventListener("DOMContentLoaded", function(){
+			footerEventCount=0;
 			$.getJSON("/rest/user/loggedInUser", function(user) {
 				setUser(user);
 				var evt = new CustomEvent("OnFooterLoaded", {});
