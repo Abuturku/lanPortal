@@ -287,10 +287,29 @@ div#pagecontent  #maintForm select{
 div#pagecontent option#maint_ddb_new {
 	background-color: lightgreen;
 }
+div#pagecontent  #maintForm select{
+	height: 1.7em;
+	display: inline-block;
+	margin-right: 1em;
+}
+div#pagecontent option#maint_ddb_new {
+	background-color: lightgreen;
+}
+div#pagecontent  #maintForm select{
+	height: 1.7em;
+	display: inline-block;
+	margin-right: 1em;
+}
+div#pagecontent option#maint_ddb_new {
+	background-color: lightgreen;
+}
 div#pagecontent  #maintSchoolsFormContentLn1{
 	display: inline-block;
 	margin-right: 1em;
 	height: 1.7em;
+	margin-right: 1em;
+	margin-right: 1em;
+	margin-right: 1em;
 	margin-right: 1em;
 	margin-right: 1em;
 }
