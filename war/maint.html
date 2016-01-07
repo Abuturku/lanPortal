@@ -35,6 +35,8 @@
 			var evt = new CustomEvent("OnFooterLoaded", {});
 			window.dispatchEvent(evt);
 		})
+		
+		getAllSchools();
 	});
 	
 	function setUser(user){
@@ -44,6 +46,59 @@
 	function setUserSchool(school){
 		this.userSchool = school;
 	}
+	
+	function appendSchool(school){
+		$('#maint_school_ddb_choose_school').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
+		$('#maint_class_ddb_school').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
+		$('#maint_teacher_ddb_choose_school').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'));
+		$('#maint_pupil_ddb_choose_school').append($('<option value=\"'+ school.key.id +'\">'+ school.name +'</option>'))
+	}
+
+	function getAllSchools(){
+		$.getJSON("/rest/school", function(data) {
+			$.each(data, function(index, school) {
+				appendSchool(school);
+			})
+		})
+	}
+	
+	function appendClazzFromSchool(clazz){
+		$('#maint_class_ddb_choose_class').append($('<option value=\"'+ clazz.key.id +'\">'+ clazz.grade + clazz.letter +'</option>'));
+	}
+	
+	function getClazzesFromSchool(){
+	
+		var schoolSelect = document.getElementById('maint_class_ddb_school');
+		
+		var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+
+		
+		var filterObject = {schoolID:filterSchool, grade:null, letter:null, teacherID:null, studentID:null};
+		
+		$.ajaxSetup({
+			  contentType: "application/json; charset=utf-8"
+		});
+		$.ajax({
+			url: "/rest/filter/clazzes",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(filterObject),
+			success: function(data) {
+				$('#maint_class_ddb_choose_class option').remove();
+				$('#maint_class_ddb_choose_class').append('<option value="null" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>');
+				$('#maint_class_ddb_choose_class').append('<option value="null" id="maint_ddb_new">Klasse registrieren</option>');
+				$.each(data, function(index, clazz) { 
+					appendClazzFromSchool(clazz);
+				})
+			},
+			error: function() {
+				//getClazzesFromSchool();
+				alert("MUH");
+			},
+			method: "POST",
+			mimeType: "application/json"
+		});
+	}
+	
 	</script>
 		<header>
 			<nav id="doc_navlist">
@@ -77,8 +132,8 @@
 					<div>
 						<em id="maintSchoolsFormContentLn1">Schule</em>
 						<select type="institution_ddb"  id="maint_school_ddb_choose_school">
-							<option value="" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
-							<option value="" id="maint_ddb_new">Schule registrieren</option>
+							<option value="null" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
+							<option value="null" id="maint_ddb_new">Schule registrieren</option>
 							</select>
 						<!--input type="button" value="Neue Schule registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterSchool(this.form)"/-->
 						<input type="button" value="Schule speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveSchool(this.form)"/>
@@ -104,13 +159,13 @@
 					<div>
 						<em id="maintSchoolsFormContentLn1">Klasse der Schule </em>
 						<span id="maintSchoolsFormContentLn2">
-							<select type="school_ddb"  id="maint_class_ddb_school">
-								<option value="" disabled selected hidden id="maint_class_ddb_school">Schule w&aumlhlen</option>
+							<select type="school_ddb"  id="maint_class_ddb_school"  onchange="getClazzesFromSchool()">
+								<option value="null" disabled selected hidden id="">Schule w&aumlhlen</option>
 							</select>
 						</span>
 						<select type="teacher_ddb"  id="maint_class_ddb_choose_class">
-							<option value="" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>
-							<option value="" id="maint_ddb_new">Klasse registrieren</option>
+							<option value="null" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>
+							<option value="null" id="maint_ddb_new">Klasse registrieren</option>
 						</select>
 						<!--input type="button" value="Neue Klasse registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterClass(this.form)"/-->
 						<input type="button" value="Klasse speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveClass(this.form)"/>
@@ -124,7 +179,7 @@
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Stufe</label>
 							<select type="class_grade_ddb"  id="maint_ddb_class_grade">
-								<option value="" disabled selected hidden id="maint_ddb_default">Stufe w&aumlhlen</option>
+								<option value="null" disabled selected hidden id="maint_ddb_default">Stufe w&aumlhlen</option>
 								<option value="grade1">1</option>
 								<option value="grade2">2</option>
 								<option value="grade3">3</option>
@@ -143,7 +198,7 @@
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Buchstabe</label>
 							<select type="class_grade_ddb"  id="maint_ddb_class_token">
-								<option value="" disabled selected hidden id="maint_ddb_default">Buchstaben w&aumlhlen</option>
+								<option value="null" disabled selected hidden id="maint_ddb_default">Buchstaben w&aumlhlen</option>
 								<option value="token1">a</option>
 								<option value="token2">b</option>
 								<option value="token3">c</option>
@@ -166,8 +221,8 @@
 					<div>
 						<em id="maintSchoolsFormContentLn1">Lehrer</em>
 						<select type="teacher_ddb"  id="maint_teacher_ddb_choose_teacher">
-							<option value="" disabled selected hidden id="maint_ddb_default">Lehrer w&aumlhlen</option>
-							<option value="" id="maint_ddb_new">Lehrer registrieren</option>
+							<option value="null" disabled selected hidden id="maint_ddb_default">Lehrer w&aumlhlen</option>
+							<option value="null" id="maint_ddb_new">Lehrer registrieren</option>
 						</select>
 						<!--input type="button" value="Neuen Lehrer registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterTeacher(this.form)"/-->
 						<input type="button" value="Lehrer speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveTeacher(this.form)"/>
@@ -176,7 +231,7 @@
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Schule</label>
 							<select type="school_ddb"  id="maint_teacher_ddb_choose_school">
-								<option value="" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
+								<option value="null" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
 							</select>
 						</span>
 						<!--span id="maintSchoolsFormContentLn2">
@@ -223,8 +278,8 @@
 					<div>
 						<em id="maintSchoolsFormContentLn1">Schüler</em>
 						<select type="pupil_ddb"  id="maint_pupil_ddb_choose_pupil">
-							<option value="" disabled selected hidden id="maint_ddb_default">Sch&uumller w&aumlhlen</option>
-							<option value="" id="maint_ddb_new">Sch&uumller registrieren</option>
+							<option value="null" disabled selected hidden id="maint_ddb_default">Sch&uumller w&aumlhlen</option>
+							<option value="null" id="maint_ddb_new">Sch&uumller registrieren</option>
 						</select>
 						<!--input type="button" value="Neuen Schüler registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterPupil(this.form)"/-->
 						<input type="button" value="Schüler speichern" id="maintSchoolsFormContentLn1" onclick="onclickSavePupil(this.form)"/>
@@ -233,7 +288,7 @@
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Schule</label>
 							<select type="school_ddb"  id="maint_pupil_ddb_choose_school">
-								<option value="" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
+								<option value="null" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
 							</select>
 						</span>
 						<!--span id="maintSchoolsFormContentLn2">
@@ -251,7 +306,7 @@
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Klasse</label>
 							<select type="class_ddb"  id="maint_pupil_ddb_choose_class">
-								<option value="" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>
+								<option value="null" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>
 							</select>
 						</span>
 					</div>
