@@ -78,9 +78,10 @@
 					<div>
 						<em id="maintSchoolsFormContentLn1">Schule</em>
 						<select type="institution_ddb"  id="maintSchoolsFormContentLn1">
-							<option value="" disabled selected hidden id="maint_ddb_default">Bestehende Schule bearbeiten</option>
-						</select>
-						<input type="button" value="Neue Schule registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterSchool(this.form)"/>
+							<option value="" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
+							<option value="" id="maint_ddb_new">Schule registrieren</option>
+							</select>
+						<!--input type="button" value="Neue Schule registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterSchool(this.form)"/-->
 						<input type="button" value="Schule speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveSchool(this.form)"/>
 					</div>
 					<div>
@@ -102,28 +103,29 @@
 			<div id="maintForm">
 				<form>
 					<div>
-						<em id="maintSchoolsFormContentLn1">Klasse</em>
+						<em id="maintSchoolsFormContentLn1">Klasse der Schule </em>
+						<span id="maintSchoolsFormContentLn2">
+							<select type="school_ddb"  id="maintSchoolsFormContentLn1">
+								<option value="" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
+							</select>
+						</span>
 						<select type="teacher_ddb"  id="maintSchoolsFormContentLn1">
-							<option value="" disabled selected hidden id="maint_ddb_default">Bestehende Klasse bearbeiten</option>
+							<option value="" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>
+							<option value="" id="maint_ddb_new">Klasse registrieren</option>
 						</select>
-						<input type="button" value="Neue Klasse registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterClass(this.form)"/>
+						<!--input type="button" value="Neue Klasse registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterClass(this.form)"/-->
 						<input type="button" value="Klasse speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveClass(this.form)"/>
 					</div>
 					<div>
-						<span id="maintSchoolsFormContentLn2">
-							<label for="maintFormField">Schule</label>
-							<select type="school_ddb"  id="maintSchoolsFormContentLn1">
-								<option value="" disabled selected hidden id="maint_ddb_default">Schule wählen</option>
-							</select>
-						</span>
-						<span id="maintSchoolsFormContentLn2">
+						
+						<!--span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Foto</label>
 							<input type="text" name="maintFormField" id="maint_inpt_class_setPicturePath" />
-						</span>
+						</span-->
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Stufe</label>
-							<select type="class_grade_ddb"  id="maintSchoolsFormContentLn1">
-								<option value="" disabled selected hidden id="maint_ddb_default">Stufe wählen</option>
+							<select type="class_grade_ddb"  id="maint_ddb_class_grade">
+								<option value="" disabled selected hidden id="maint_ddb_default">Stufe w&aumlhlen</option>
 								<option value="grade1">1</option>
 								<option value="grade2">2</option>
 								<option value="grade3">3</option>
@@ -140,8 +142,22 @@
 							</select>
 						</span>
 						<span id="maintSchoolsFormContentLn2">
-							<label for="maintFormField">Kürzel</label>
-							<input type="text" name="maintFormField" id="maint_inpt_cToken"/>
+							<label for="maintFormField">Buchstabe</label>
+							<select type="class_grade_ddb"  id="maint_ddb_class_token">
+								<option value="" disabled selected hidden id="maint_ddb_default">Buchstaben w&aumlhlen</option>
+								<option value="token1">a</option>
+								<option value="token2">b</option>
+								<option value="token3">c</option>
+								<option value="token4">d</option>
+								<option value="token5">e</option>
+								<option value="token6">f</option>
+								<option value="token7">g</option>
+								<option value="token8">h</option>
+								<option value="token9">i</option>
+								<option value="token10">j</option>
+								<option value="token11">k</option>
+								<option value="token12">l</option>
+							</select>
 						</span>
 					</div>
 				</form>
@@ -151,22 +167,23 @@
 					<div>
 						<em id="maintSchoolsFormContentLn1">Lehrer</em>
 						<select type="teacher_ddb"  id="maintSchoolsFormContentLn1">
-							<option value="" disabled selected hidden id="maint_ddb_default">Bestehenden Lehrer bearbeiten</option>
+							<option value="" disabled selected hidden id="maint_ddb_default">Lehrer w&aumlhlen</option>
+							<option value="" id="maint_ddb_new">Lehrer registrieren</option>
 						</select>
-						<input type="button" value="Neuen Lehrer registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterTeacher(this.form)"/>
+						<!--input type="button" value="Neuen Lehrer registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterTeacher(this.form)"/-->
 						<input type="button" value="Lehrer speichern" id="maintSchoolsFormContentLn1" onclick="onclickSaveTeacher(this.form)"/>
 					</div>
 					<div>
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Schule</label>
 							<select type="school_ddb"  id="maintSchoolsFormContentLn1">
-								<option value="" disabled selected hidden id="maint_ddb_default">Schule wählen</option>
+								<option value="" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
 							</select>
 						</span>
-						<span id="maintSchoolsFormContentLn2">
+						<!--span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Foto</label>
 							<input type="text" name="maintFormField" id="maint_inpt_teacher_setPicturePath" />
-						</span>
+						</span-->
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Vorname</label>
 							<input type="text" name="maintFormField" id="maint_inpt_tFirstname"/>
@@ -183,9 +200,12 @@
 										<td id="header"></td>
 										<td id="header">Klasse</td>
 									</tr>
-									<tr><td>[  ]</td><td>L0L</td></tr>
-									<tr><td>[x]</td><td>L0L</td></tr>
-									<tr><td>[  ]</td><td>L0L</td></tr>
+									<tr>
+										<td id="maint_class_checkbox"><input type="checkbox" id="check1"></td>
+										<td>1a</td>
+									</tr>
+									<tr><td>[x]</td><td>1b</td></tr>
+									<tr><td>[  ]</td><td>1c</td></tr>
 								</table>
 							</div>
 						</div>
@@ -204,22 +224,23 @@
 					<div>
 						<em id="maintSchoolsFormContentLn1">Schüler</em>
 						<select type="pupil_ddb"  id="maintSchoolsFormContentLn1">
-							<option value="" disabled selected hidden id="maint_ddb_default">Bestehenden Sch&uumler bearbeiten</option>
+							<option value="" disabled selected hidden id="maint_ddb_default">Sch&uumller w&aumlhlen</option>
+							<option value="" id="maint_ddb_new">Sch&uumller registrieren</option>
 						</select>
-						<input type="button" value="Neuen Schüler registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterPupil(this.form)"/>
+						<!--input type="button" value="Neuen Schüler registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterPupil(this.form)"/-->
 						<input type="button" value="Schüler speichern" id="maintSchoolsFormContentLn1" onclick="onclickSavePupil(this.form)"/>
 					</div>
 					<div>
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Schule</label>
 							<select type="school_ddb"  id="maintSchoolsFormContentLn1">
-								<option value="" disabled selected hidden id="maint_ddb_default">Schule wählen</option>
+								<option value="" disabled selected hidden id="maint_ddb_default">Schule w&aumlhlen</option>
 							</select>
 						</span>
-						<span id="maintSchoolsFormContentLn2">
+						<!--span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Foto</label>
 							<input type="text" name="maintFormField" id="maint_inpt_pupil_setPicturePath" />
-						</span>
+						</span-->
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Vorname</label>
 							<input type="text" name="maintFormField" id="maint_inpt_tFirstname"/>
@@ -231,7 +252,7 @@
 						<span id="maintSchoolsFormContentLn2">
 							<label for="maintFormField">Klasse</label>
 							<select type="class_ddb"  id="maintSchoolsFormContentLn1">
-								<option value="" disabled selected hidden id="maint_ddb_default">Klasse wählen</option>
+								<option value="" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>
 							</select>
 						</span>
 					</div>
