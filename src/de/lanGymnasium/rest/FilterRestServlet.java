@@ -296,34 +296,34 @@ public class FilterRestServlet {
 		return clazzs;
 	}
 
-	@SuppressWarnings("unchecked")
-	@POST
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/clazzesTeacher")
-	public List<Clazz> filterClazzesFree(Filter filter) {
-		// Hier MUSS Schule gesetzt sein, damit �berhaupt gefiltert wird. Eine
-		// Filterung ohne Ber�cksichtigung der Schule w�rde das ganze
-		// nur un�bersichtlich machen
-
-		log.info("Suche Lehrer: " + filter.toString());
-		ArrayList<Clazz> clazzs = new ArrayList<Clazz>();
-		EntityManager em = EMF.createEntityManager();
-		Query query = em
-				.createQuery("SELECT c FROM ClazzUser c WHERE userID = "
-						+ filter.getTeacherID());
-		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
-		em.close();
-		em = EMF.createEntityManager();
-		for (ClazzUser clazzUser : clazzUsers) {
-			Clazz clazz = em.find(Clazz.class,
-					KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
-			clazzs.add(clazz);
-		}
-
-		log.info("Gebe " + clazzs.size() + " Klassen zurueck");
-		return clazzs;
-	}
+	// @SuppressWarnings("unchecked")
+	// @POST
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @Consumes(MediaType.APPLICATION_JSON)
+	// @Path("/clazzesTeacher")
+	// public List<Clazz> filterClazzesFree(Filter filter) {
+	// // Hier MUSS Schule gesetzt sein, damit �berhaupt gefiltert wird. Eine
+	// // Filterung ohne Ber�cksichtigung der Schule w�rde das ganze
+	// // nur un�bersichtlich machen
+	//
+	// log.info("Suche Lehrer: " + filter.toString());
+	// ArrayList<Clazz> clazzs = new ArrayList<Clazz>();
+	// EntityManager em = EMF.createEntityManager();
+	// Query query = em
+	// .createQuery("SELECT c FROM ClazzUser c WHERE userID = "
+	// + filter.getTeacherID());
+	// List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
+	// em.close();
+	// em = EMF.createEntityManager();
+	// for (ClazzUser clazzUser : clazzUsers) {
+	// Clazz clazz = em.find(Clazz.class,
+	// KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+	// clazzs.add(clazz);
+	// }
+	//
+	// log.info("Gebe " + clazzs.size() + " Klassen zurueck");
+	// return clazzs;
+	// }
 
 	@SuppressWarnings("unchecked")
 	private List<Clazz> filterClazzUser(String user, List<Clazz> clazzs) {

@@ -142,7 +142,7 @@
 		}
 		
 		function getClazzesFromSchoolPupil(){
-		
+				
 			var schoolSelect = document.getElementById('maint_pupil_ddb_choose_school');
 			
 			var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
@@ -186,21 +186,112 @@
 			
 			var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
 	
+			$.getJSON("/rest/user/userSchool/"+filterTeacher, function(school) {
+	 			$('#maint_teacher_ddb_choose_school').val(school.key.id);
+	 		})
 			
-			var filterObject = {schoolID:null, grade:null, letter:null, teacherID:filterTeacher, studentID:null};
+			$.getJSON("/rest/user/"+filterTeacher, function(user) {
+	 			$('#maint_inpt_tFirstname').val(user.firstName);
+	 			$('#maint_inpt_tLastname').val(user.familyName);
+	 		})
+			
+			setTeacherClassTable();
+		}
+		
+		function setTeacherClassTable(){
+			var schoolSelect = document.getElementById('maint_teacher_ddb_choose_school');
+			
+			var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+		
+		
+			var filterObject = {schoolID:filterSchool, grade:null, letter:null, teacherID:null, studentID:null};
 			
 			$.ajaxSetup({
 				  contentType: "application/json; charset=utf-8"
 			});
 			$.ajax({
-				url: "/rest/filter/clazzesTeacher",
+				url: "/rest/filter/clazzes",
 				contentType: "application/json; charset=utf-8",
 				data: JSON.stringify(filterObject),
 				success: function(data) {
 					$('#ClazzTable tr').remove();
 					$('#ClazzTable').append('<tr><td id="header"></td><td id="header">Klasse</td></tr>');
 					$.each(data, function(index, clazz) { 
-						setTeacherClassTableAndName(clazz);
+						$('#ClazzTable').append('<tr><td id="maint_class_checkbox"><input type="checkbox" id="check'+clazz.key.id+'"></td><td value="'+clazz.key.id+'" id="header">'+clazz.grade+clazz.letter+'</td></tr>');
+					})
+				},
+				error: function() {
+					setTeacherClassTable();
+				},
+				method: "POST",
+				mimeType: "application/json"
+			});
+			
+			var teacherSelect = document.getElementById('maint_teacher_ddb_choose_teacher');
+			
+			var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
+			
+			var filterObjectTwo = {schoolID:filterSchool, grade:null, letter:null, teacherID:filterTeacher, studentID:null};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			$.ajax({
+				url: "/rest/filter/clazzes",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(filterObjectTwo),
+				success: function(data) {
+					$.each(data, function(index, clazz) { 
+						$('#check'+clazz.key.id).prop("checked", true)
+					})
+				},
+				error: function() {
+					setTeacherClassTable();
+				},
+				method: "POST",
+				mimeType: "application/json"
+			});
+		}
+		
+		function setPupilName(){
+			var pupilSelect = document.getElementById('maint_pupil_ddb_choose_pupil');
+			
+			var filterPupil = pupilSelect.options[pupilSelect.selectedIndex].value;
+				
+			$.getJSON("/rest/user/"+filterPupil, function(user) {
+	 			$('#maint_inpt_tFirstname_Schule').val(user.firstName);
+	 			$('#maint_inpt_tLastname_Schule').val(user.familyName);
+	 		})
+		
+			$.getJSON("/rest/user/userSchool/"+filterPupil, function(school) {
+	 			$('#maint_pupil_ddb_choose_school').val(school.key.id);
+	 		})
+	 		
+	 		 
+	 		setPupilClass();
+	 		
+		}
+		
+		function setPupilClass(){
+			var schoolSelect = document.getElementById('maint_pupil_ddb_choose_school');
+			
+			var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
+	
+			
+			var filterObject = {schoolID:filterSchool, grade:null, letter:null, teacherID:null, studentID:null};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			$.ajax({
+				url: "/rest/filter/clazzes",
+				contentType: "application/json; charset=utf-8",
+				data: JSON.stringify(filterObject),
+				success: function(data) {
+					$('#maint_pupil_ddb_choose_class option').remove();
+					$('#maint_pupil_ddb_choose_class').append('<option value="null" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>');
+					$.each(data, function(index, clazz) { 
+						 $('#maint_pupil_ddb_choose_class').append('<option value=\"'+ clazz.key.id +'\">'+ clazz.grade + clazz.letter +'</option>');
 					})
 				},
 				error: function() {
@@ -209,10 +300,17 @@
 				method: "POST",
 				mimeType: "application/json"
 			});
-		}
-		
-		function setTeacherClassTableAndName(clazz){ 
-			$('#maint_teacher_ddb_choose_school').val(clazz.key.id);
+			
+			var pupilSelect = document.getElementById('maint_pupil_ddb_choose_pupil');
+			
+			var filterPupil = pupilSelect.options[pupilSelect.selectedIndex].value;
+			
+			$.getJSON("/rest/user/userClasses/"+filterPupil, function(data) {
+				
+				$.each(data, function(index, clazz) {
+					$('#maint_pupil_ddb_choose_class').val(clazz.key.id);
+				})
+			})
 		}
 	</script>
 	<header>
@@ -236,7 +334,8 @@
 			<form>
 				<div>
 					<em id="maintSchoolsFormContentLn1">Schule</em> <select
-						type="institution_ddb" id="maint_school_ddb_choose_school" onchange="setSchoolSchoolName()">
+						type="institution_ddb" id="maint_school_ddb_choose_school"
+						onchange="setSchoolSchoolName()">
 
 						<option value="null" disabled selected hidden
 							id="maint_ddb_default">Schule w&aumlhlen</option>
@@ -275,7 +374,8 @@
 							<option value="null" disabled selected hidden id="">Schule
 								w&aumlhlen</option>
 					</select>
-					</span> <select type="teacher_ddb" id="maint_class_ddb_choose_class" onchange="getClazzesFromClazz()">
+					</span> <select type="teacher_ddb" id="maint_class_ddb_choose_class"
+						onchange="getClazzesFromClazz()">
 						<option value="null" disabled selected hidden
 							id="maint_ddb_default">Klasse w&aumlhlen</option>
 						<option value="null" id="maint_ddb_new">Klasse
@@ -341,9 +441,9 @@
 		<div id="maintForm">
 			<form>
 				<div>
-					<em id="maintSchoolsFormContentLn1">Lehrer</em> 
-					<select
-						type="teacher_ddb" id="maint_teacher_ddb_choose_teacher" onchange="setTeacherSchoolAndName()">
+					<em id="maintSchoolsFormContentLn1">Lehrer</em> <select
+						type="teacher_ddb" id="maint_teacher_ddb_choose_teacher"
+						onchange="setTeacherSchoolAndName()">
 
 						<option value="null" disabled selected hidden
 							id="maint_ddb_default">Lehrer w&aumlhlen</option>
@@ -359,7 +459,8 @@
 				<div>
 					<span id="maintSchoolsFormContentLn2"> <label
 						for="maintFormField">Schule</label> <select type="school_ddb"
-						id="maint_teacher_ddb_choose_school">
+						id="maint_teacher_ddb_choose_school"
+						onchange="setTeacherClassTable()">
 
 							<option value="null" disabled selected hidden
 								id="maint_ddb_default">Schule w&aumlhlen</option>
@@ -385,19 +486,6 @@
 									<td id="header"></td>
 									<td id="header">Klasse</td>
 								</tr>
-								<tr>
-									<td id="maint_class_checkbox"><input type="checkbox"
-										id="check1"></td>
-									<td>1a</td>
-								</tr>
-								<tr>
-									<td>[x]</td>
-									<td>1b</td>
-								</tr>
-								<tr>
-									<td>[ ]</td>
-									<td>1c</td>
-								</tr>
 							</table>
 						</div>
 					</div>
@@ -415,7 +503,8 @@
 			<form>
 				<div>
 					<em id="maintSchoolsFormContentLn1">Schüler</em> <select
-						type="pupil_ddb" id="maint_pupil_ddb_choose_pupil">
+						type="pupil_ddb" id="maint_pupil_ddb_choose_pupil"
+						onchange="setPupilName()">
 
 						<option value="null" disabled selected hidden
 							id="maint_ddb_default">Sch&uumller w&aumlhlen</option>
@@ -431,7 +520,7 @@
 				<div>
 					<span id="maintSchoolsFormContentLn2"> <label
 						for="maintFormField">Schule</label> <select type="school_ddb"
-						id="maint_pupil_ddb_choose_school" onchange="getClazzesFromSchoolPupil()">
+						id="maint_pupil_ddb_choose_school" onchange="setPupilClass()">
 
 							<option value="null" disabled selected hidden
 								id="maint_ddb_default">Schule w&aumlhlen</option>
@@ -444,10 +533,10 @@
 						</span-->
 					<span id="maintSchoolsFormContentLn2"> <label
 						for="maintFormField">Vorname</label> <input type="text"
-						name="maintFormField" id="maint_inpt_tFirstname" />
+						name="maintFormField" id="maint_inpt_tFirstname_Schule" />
 					</span> <span id="maintSchoolsFormContentLn2"> <label
 						for="maintFormField">Nachname</label> <input type="text"
-						name="maintFormField" id="maint_inpt_tLastname" />
+						name="maintFormField" id="maint_inpt_tLastname_Schule" />
 					</span> <span id="maintSchoolsFormContentLn2"> <label
 						for="maintFormField">Klasse</label> <select type="class_ddb"
 						id="maint_pupil_ddb_choose_class">
