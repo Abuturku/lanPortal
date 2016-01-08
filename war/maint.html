@@ -1,4 +1,4 @@
- 
+
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -72,6 +72,8 @@
 		
 		function getClazzesFromSchool(){
 		
+			
+		
 			var schoolSelect = document.getElementById('maint_class_ddb_school');
 			
 			var filterSchool = schoolSelect.options[schoolSelect.selectedIndex].value;
@@ -87,6 +89,8 @@
 				contentType: "application/json; charset=utf-8",
 				data: JSON.stringify(filterObject),
 				success: function(data) {
+					$('#maint_ddb_class_grade').val("null");
+	 				$('#maint_ddb_class_token').val("null");
 					$('#maint_class_ddb_choose_class option').remove();
 					$('#maint_class_ddb_choose_class').append('<option value="null" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>');
 					$('#maint_class_ddb_choose_class').append('<option value="null" id="maint_ddb_new">Klasse registrieren</option>');
@@ -179,24 +183,41 @@
 		
 		function setSchoolSchoolName(){
 			var schoolSelect = document.getElementById('maint_school_ddb_choose_school');
-			$('#maint_inpt_instName').val(schoolSelect.options[schoolSelect.selectedIndex].text);
+			
+			if(schoolSelect.options[schoolSelect.selectedIndex].value == "null"){
+				$('#maint_inpt_instName').val("");
+			}else{
+				$('#maint_inpt_instName').val(schoolSelect.options[schoolSelect.selectedIndex].text);
+			}
 		}
 		
 		function setTeacherSchoolAndName(){
+			
+			
 			var teacherSelect = document.getElementById('maint_teacher_ddb_choose_teacher');
 			
 			var filterTeacher = teacherSelect.options[teacherSelect.selectedIndex].value;
 	
-			$.getJSON("/rest/user/userSchool/"+filterTeacher, function(school) {
-	 			$('#maint_teacher_ddb_choose_school').val(school.key.id);
-	 		})
+	
+			if(filterTeacher == "null"){
+				$('#maint_teacher_ddb_choose_school').val("null");
+				$('#maint_inpt_tFirstname').val("");
+				$('#maint_inpt_tLastname').val("");
+				$('#ClazzTable tr').remove();
+				$('#ClazzTable').append('<tr><td id="header"></td><td id="header">Klasse</td></tr>');
+				
+			}else{
+				$.getJSON("/rest/user/userSchool/"+filterTeacher, function(school) {
+	 				$('#maint_teacher_ddb_choose_school').val(school.key.id);
+	 			})
 			
-			$.getJSON("/rest/user/"+filterTeacher, function(user) {
-	 			$('#maint_inpt_tFirstname').val(user.firstName);
-	 			$('#maint_inpt_tLastname').val(user.familyName);
-	 		})
-			
-			setTeacherClassTable();
+				$.getJSON("/rest/user/"+filterTeacher, function(user) {
+	 				$('#maint_inpt_tFirstname').val(user.firstName);
+	 				$('#maint_inpt_tLastname').val(user.familyName);
+	 			})
+				
+				setTeacherClassTable();
+			}
 		}
 		
 		function setTeacherClassTable(){
@@ -258,19 +279,26 @@
 			var pupilSelect = document.getElementById('maint_pupil_ddb_choose_pupil');
 			
 			var filterPupil = pupilSelect.options[pupilSelect.selectedIndex].value;
-				
-			$.getJSON("/rest/user/"+filterPupil, function(user) {
-	 			$('#maint_inpt_tFirstname_Schule').val(user.firstName);
-	 			$('#maint_inpt_tLastname_Schule').val(user.familyName);
-	 		})
+			
+			if(filterPupil == "null"){
+				$('#maint_pupil_ddb_choose_school').val("null");
+				$('#maint_inpt_tFirstname_Schule').val("");
+				$('#maint_inpt_tLastname_Schule').val("");
+				$('#maint_pupil_ddb_choose_class option').remove();
+				$('#maint_pupil_ddb_choose_class').append('<option value="null" disabled selected hidden id="maint_ddb_default">Klasse w&aumlhlen</option>');
+			}else{
+				$.getJSON("/rest/user/"+filterPupil, function(user) {
+	 				$('#maint_inpt_tFirstname_Schule').val(user.firstName);
+	 				$('#maint_inpt_tLastname_Schule').val(user.familyName);
+	 			})
 		
-			$.getJSON("/rest/user/userSchool/"+filterPupil, function(school) {
-	 			$('#maint_pupil_ddb_choose_school').val(school.key.id);
-	 		})
+				$.getJSON("/rest/user/userSchool/"+filterPupil, function(school) {
+	 				$('#maint_pupil_ddb_choose_school').val(school.key.id);
+	 			})
 	 		
 	 		 
-	 		setPupilClass();
-	 		
+	 			setPupilClass();
+	 		}
 		}
 		
 		function setPupilClass(){
