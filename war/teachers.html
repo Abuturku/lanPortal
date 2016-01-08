@@ -296,7 +296,6 @@
 				<div id="div_notes_table">
 					<span>
 						<label>Erstellte Notizen:</label>
-						<input type="button" value="Öffnen" id="btn_openNote" onclick="onclickTeacher_OpenNote()"/>
 					</span>
 					<div id="table">
 						<table id="tab_notes_table">
@@ -307,7 +306,13 @@
 							</tr>
 						</table>
 					</div>
-					<label>Vorschau Notiz:</label>
+					<span id="onlyForTeachersEyes">
+						<div id="note_btn_sla">
+							<input type="button" value="Bearbeiten Abbrechen" id="note_bt1" onclick="onclickReturnToPupils()"/>
+							<input type="button" value="Notiz löschen" id="note_bt2" onclick="onclickReturnToPupils()"/>
+							<input type="button" value="Änderungen Speichern" id="note_bt3" onclick="onclickSaveNote(this.form)"/>
+						</div>
+					</span>
 					<div id="preview_noteContent">
 						<textarea id="note_txtArea_content" readonly></textarea>
 					</div>
