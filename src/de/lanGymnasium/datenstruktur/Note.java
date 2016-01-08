@@ -13,27 +13,27 @@ public class Note implements INote {
 	private Key key;
 	
 	@OneToOne
-	private Long teacherID;
+	private Long teacher;
 	@OneToOne
-	private Long studentID;
+	private Long student;
 	private Date timestamp;
 	private String text;
 
 	public Note(Long teacher, Long student, Date date, String text) {
-		this.teacherID = teacher;
-		this.studentID = student;
+		this.teacher = teacher;
+		this.student = student;
 		this.timestamp = date;
 		this.text = text;
 	}
 
 	@Override
 	public Long getTeacher() {
-		return this.teacherID;
+		return this.teacher;
 	}
 
 	@Override
 	public Long getStudent() {
-		return this.studentID;
+		return this.student;
 	}
 
 	@Override

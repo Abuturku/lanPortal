@@ -12,8 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import com.google.appengine.api.datastore.KeyFactory;
-
 import de.lanGymnasium.datenstruktur.Clazz;
 import de.lanGymnasium.datenstruktur.ClazzUser;
 import de.lanGymnasium.datenstruktur.Filter;

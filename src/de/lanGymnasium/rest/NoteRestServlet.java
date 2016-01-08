@@ -9,6 +9,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -77,8 +78,8 @@ public class NoteRestServlet {
 		EntityManager em = EMF.createEntityManager();
 
 		Query q = em
-				.createQuery("SELECT n FROM Note n WHERE studentID = " + id);
-		log.info("Query: SELECT n FROM Note n WHERE studentID = " + id);
+				.createQuery("SELECT n FROM Note n WHERE student = " + id);
+		log.info("Query: SELECT n FROM Note n WHERE student = " + id);
 		@SuppressWarnings("unchecked")
 		List<Note> notes = (List<Note>) q.getResultList();
 		log.info("Notizenliste Größe: " + notes.size());
@@ -92,8 +93,8 @@ public class NoteRestServlet {
 	@Path("teacherNotes/{id}")
 	public List<Note> getTeacherNotes(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
-		Query q = em.createQuery("SELECT n FROM Note n WHERE teacherID = " + id);
-		log.info("Query: SELECT n FROM Note n WHERE teacherID = " + id);
+		Query q = em.createQuery("SELECT n FROM Note n WHERE teacher = " + id);
+		log.info("Query: SELECT n FROM Note n WHERE teacher = " + id);
 		@SuppressWarnings("unchecked")
 		List<Note> notes = (List<Note>) q.getResultList();
 		log.info("Notizenliste Größe: " + notes.size());
