@@ -25,6 +25,9 @@
 		
 		window.addEventListener("DOMContentLoaded", function(){
 			footerEventCount=0;
+			$('#notes_table').hide();
+			$('#previewcontent').hide();
+			
 			$.getJSON("/rest/user/loggedInUser", function(user) {
 				setUser(user);
 				var evt = new CustomEvent("OnFooterLoaded", {});
@@ -36,10 +39,7 @@
 				var evt = new CustomEvent("OnFooterLoaded", {});
 				window.dispatchEvent(evt);
 			})
-			
-			$('#notes_table').hide();
-			$('#previewcontent').hide();
-			
+
 			getAllSchools();
 			getAllGrades();
 			getAllLetters();
@@ -149,7 +149,7 @@
 				$('#tab_notes_table').append('<tr><td id="header">Erfassungszeitpunkt</td><td id="header">Lehrer</td></tr>');
 				$('#pupils_addNote').remove();
 				if(user.teacher){
-					$('#tab_notes_table').append('<tr id=\"pupils_addNote\"><td colspan=\"2\" onclick=\"openNote(new, ' + user.key.id + ')\"><em>--- Notiz hinzufügen ---</em></td></tr>');
+					$('#tab_notes_table').append('<tr id="pupils_addNote"><td colspan="2" onclick="openNote(' + -1 + ', ' + studentID + ')"><em>--- Notiz hinzufügen ---</em></td></tr>');
 				}
 				$.each(data, function(index, note) { 
 					$.getJSON("/rest/user/" + note.teacher, function(teacher) { 

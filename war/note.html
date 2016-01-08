@@ -13,6 +13,9 @@
 		var user;
 		var userSchool;
 		var footerEventCount;
+		var date;
+		var student;
+		var teacher;
 		
 		window.addEventListener("OnFooterLoaded", function(e) {
 			if(footerEventCount >= 1){ 
@@ -22,6 +25,20 @@
 			}
 			else{
 				footerEventCount++;
+			}
+		})
+		
+		window.addEventListener("OnDataLoaded", function (e) {
+			if(e.detail.userLoaded){
+				if(getUrlParameter("noteID") == -1){
+					$('#note_inpt_tName').prop("value", user.firstName + " " + user.familyName);
+				}
+			}
+			if(e.detail.studentLoaded){
+				$('#note_inpt_pName').prop("value", student.firstName + " " + student.familyName);
+			}
+			if(e.detail.teacherLoaded){
+				$('#note_inpt_tName').prop("value", teacher.firstName + " " + teacher.familyName);
 			}
 		})
 		
@@ -42,24 +59,60 @@
 			setFields();
 		});
 		
-		function setUser(user){
-			this.user = user;
-		}
-		
 		function setUserSchool(school){
 			this.userSchool = school;
 		}
 		
 		function setFields(){
 			var noteID = getUrlParameter("noteID");
-			var userID = getUrlParameter("studentID");
-			
-			if(noteID == "new"){
-				var date = new Date();
-				$('#note_inpt_ts').prop("value", date.toLocaleString());
+			var studentID = getUrlParameter("studentID");
+
+			if(noteID == -1){
+				$.getJSON("/rest/user/" + studentID, function(student) {
+					setStudent(student);
+					setDate();
+				})
 			}
-			console.debug(noteID);
-			console.debug(date);
+			else{
+				
+				$.getJSON("/rest/note/" + noteID, function(note) {
+					$.getJSON("/rest/teacher/" + note.teacher, function(teacher) {
+						setTeacher(teacher);
+					})
+					
+					var noteDate = new Date(note.timestamp);
+					$('#note_inpt_ts').prop("value", noteDate.toLocaleString());
+					
+					$('#note_txtArea_content').prop("value", note.text);
+					$.getJSON("/rest/user/" + note.student, function(student) {
+						setStudent(student);
+					})
+				})
+			}
+		}
+		
+		function setDate(){
+			date = new Date();
+			$('#note_inpt_ts').prop("value", date.toLocaleString());
+			setTimeout(setDate, 1000);
+		}
+		
+		function setUser(user){
+			this.user = user;
+			var evt = new CustomEvent("OnDataLoaded", {detail: {userLoaded:true, studentLoaded:false, teacherLoaded:false}});
+			window.dispatchEvent(evt);
+		}
+		
+		function setStudent(student){
+			this.student = student;
+			var evt = new CustomEvent("OnDataLoaded", {detail: {userLoaded:false, studentLoaded:true, teacherLoaded:false}});
+			window.dispatchEvent(evt);
+		}
+		
+		function setTeacher(teacher){
+			this.teacher = teacher;
+			var evt = new CustomEvent("OnDataLoaded", {detail: {userLoaded:false, studentLoaded:false, teacherLoaded:true}});
+			window.dispatchEvent(evt);
 		}
 		
 	</script>
