@@ -159,7 +159,7 @@
 					})
 				},
 				error: function() {
-					alert("Fehler!");
+					filter();
 				},
 				method: "POST",
 				mimeType: "application/json"
@@ -169,7 +169,13 @@
 		}
 		
 		function appendClass(clazz){
-			$('#classTable').append($('<tr onclick="selectClazz(' + clazz.key.id + ')" id="' + clazz.key.id + '"><td>' + clazz.grade + '</td><td>' + clazz.letter + '</td></tr>'))
+			$('#classTable').append($('<tr onclick="selectClazz(' + clazz.key.id + ')" id=""><td>' + clazz.grade + '</td><td>' + clazz.letter + '</td></tr>'))
+			$('#classTable tr').click(function(event) {
+				if(this.id == ""){
+					$('#classTable tr').attr("id", "");
+					this.id = "table_selected_row";
+				}
+			});
 		}
 		
 		function selectClazz(clazzID){

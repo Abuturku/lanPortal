@@ -13,9 +13,16 @@
 		var user;
 		var userSchool;
 		var footerEventCount;
+		var noteID;
+		var noteStudent;
+		var noteTeacher;
 		
 		window.addEventListener("OnFooterLoaded", function(e) {
 			if(footerEventCount >= 1){ 
+				if(!user.teacher){
+					$('#onlyForTeachersEyes').hide();
+					$('#note_txtArea_content').prop("readonly", true);
+				}
 				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
 				
 				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
@@ -157,12 +164,19 @@
 		}
 		
 		function appendTeacher(teacher){
-			$('#teacherTable').append($('<tr id="' + teacher.key.id + '" onclick="selectTeacher(' + teacher.key.id + ')"><td>' + teacher.familyName + '</td><td>' + teacher.firstName + '</td></tr>'))
+			$('#teacherTable').append($('<tr id="" onclick="selectTeacher(' + teacher.key.id + ')"><td>' + teacher.familyName + '</td><td>' + teacher.firstName + '</td></tr>'))
+			$('#teacherTable tr').click(function(event) {
+				if(this.id == ""){
+					$('#teacherTable tr').attr("id", "");
+					this.id = "table_selected_row";
+				}
+			});
 		}
 		
 		function selectTeacher(teacherID){
-			$('#note_txtArea_content').text('');
-			$('#btn_openNote').attr("onclick","openNote(0)");
+			$('#note_txtArea_content').val('');
+			$('#note_txtArea_content').hide();
+			$('#onlyForTeachersEyes').hide();
 			
 			$.getJSON("/rest/user/userSchool/" + teacherID, function(school){
 				$('#teachers_inpt_iName').prop("value", school.name);
@@ -190,30 +204,82 @@
 								var date = new Date(note.timestamp);
 								$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
 										+ date.toLocaleString() + '</td><td>' + student.firstName + ' ' + student.familyName + '</td><td>' + clazz.grade + clazz.letter + '</tr>');
+								
+								$('#tab_notes_table tr').click(function(event) {
+									if(this.id == "pupils_note"){
+										$('#tab_notes_table tr').attr("id", "pupils_note");
+										this.id = "table_selected_row";
+									}
+								});
 							})
 							
 						})
 					})
 				})
 			})
+			
+			
+			
 			$('#notes_table').show();
 			$('#previewcontent').show();				
 		}
 		
 		function showNote(noteID){
-			$('#note_txtArea_content').text('');
+			$('#note_txtArea_content').val('');
+			this.noteID = noteID;
 			$.getJSON("/rest/note/" + noteID, function(note) {
-				$('#note_txtArea_content').text(note.text);
-				$('#btn_openNote').attr("onclick","openNote("+noteID+")");
+				$('#note_txtArea_content').val(note.text);
+				noteStudent = note.student;
+				noteTeacher = note.teacher;
+				$('#note_txtArea_content').show();
 			})
-		}		 
+			$('#onlyForTeachersEyes').show();
+		}
 		
-		function openNote(noteID){
-			if(noteID==0){
-				alert("Bitte zuerst eine Notiz auswählen!");
-			}else{
-				location.href = "note?noteID=" + noteID + "&studentID=none";
+		function saveNote(){
+			if(noteTeacher != user.key.id){
+				alert("Sie können keine Notizen von anderen Lehrern bearbeiten!");
+				return;
 			}
+			var date = new Date();
+			var noteObject = {teacher:user.key.id, timestamp:date.getTime(), student:noteStudent, text:$('#note_txtArea_content').prop("value")};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			if(getUrlParameter("noteID") != -1){
+				$.ajax({
+					url: "/rest/note/" + noteID,
+					contentType: "application/json; charset=utf-8",
+					type: "DELETE", 
+					mimeType: "application/json",
+					success: function(data){
+					}
+				})
+			}
+			
+			$.ajax({
+				url: "/rest/note/",
+				contentType: "application/json; charset=utf-8",
+				type: "POST", 
+				mimeType: "application/json",
+				data: JSON.stringify(noteObject),
+				success: function(data){
+					selectTeacher(noteTeacher);
+				}
+			})
+		}
+		
+		function deleteNote(){
+			$.ajax({
+				url: "/rest/note/" + noteID,
+				contentType: "application/json; charset=utf-8",
+				type: "DELETE", 
+				mimeType: "application/json",
+				success: function(data){
+					selectTeacher(noteTeacher);
+				}
+			})
 		}
 	</script>
 		<header>
@@ -308,13 +374,12 @@
 					</div>
 					<span id="onlyForTeachersEyes">
 						<div id="note_btn_sla">
-							<input type="button" value="Bearbeiten Abbrechen" id="note_bt1" onclick="onclickReturnToPupils()"/>
-							<input type="button" value="Notiz löschen" id="note_bt2" onclick="onclickReturnToPupils()"/>
-							<input type="button" value="Änderungen Speichern" id="note_bt3" onclick="onclickSaveNote(this.form)"/>
+							<input type="button" value="Notiz löschen" id="note_bt2" onclick="deleteNote()"/>
+							<input type="button" value="Änderungen Speichern" id="note_bt3" onclick="saveNote()"/>
 						</div>
 					</span>
 					<div id="preview_noteContent">
-						<textarea id="note_txtArea_content" readonly></textarea>
+						<textarea id="note_txtArea_content"></textarea>
 					</div>
 				</div>
 			

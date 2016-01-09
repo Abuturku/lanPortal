@@ -1,1 +1,2 @@
 .classpath
+war/WEB-INF/appengine-web.xml

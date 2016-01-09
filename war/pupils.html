@@ -11,9 +11,16 @@
 		var user;
 		var userSchool;
 		var footerEventCount;
+		var noteID;
+		var noteStudent;
+		var noteTeacher;
 		
 		window.addEventListener("OnFooterLoaded", function(e) {
 			if(footerEventCount >= 1){ 
+				if(!user.teacher){
+					$('#onlyForTeachersEyes').hide();
+					$('#note_txtArea_content').prop("readonly", true);
+				}
 				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
 				
 				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
@@ -122,12 +129,20 @@
 		}
 		
 		function appendStudent(student){
-			$('#studentTable').append($('<tr onclick="selectStudent(' + student.key.id + ')" id="' + student.key.id + '"><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
+			$('#studentTable').append($('<tr onclick="selectStudent(' + student.key.id + ')" id=""><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
+			$('#studentTable tr').click(function(event) {
+				if(this.id == ""){
+					$('#studentTable tr').attr("id", "");
+					this.id = "table_selected_row";
+				}
+			});
 		}
 		
 		function selectStudent(studentID){
-			$('#note_txtArea_content').text('');
-			$('#btn_openNote').attr("onclick","openNote(0)");
+			$('#note_txtArea_content').val('');
+			$('#note_txtArea_content').show();
+			$('#onlyForTeachersEyes').show();
+			$('#note_bt2').hide();
 			
 			$.getJSON("/rest/user/userSchool/" + studentID, function(school){
 				$('#pupils_inpt_iName').prop("value", school.name);
@@ -136,6 +151,7 @@
 			$.getJSON("/rest/user/" + studentID, function(student) {
 				$('#pupils_inpt_fName').prop("value", student.firstName);
 				$('#pupils_inpt_lName').prop("value", student.familyName);
+				noteStudent = student.key.id;
 			})
 			
 			$.getJSON("/rest/user/userClasses/" + studentID, function(data) {
@@ -149,18 +165,25 @@
 				$('#tab_notes_table').append('<tr><td id="header">Erfassungszeitpunkt</td><td id="header">Lehrer</td></tr>');
 				$('#pupils_addNote').remove();
 				if(user.teacher){
-					$('#tab_notes_table').append('<tr id="pupils_addNote"><td colspan="2" onclick="openNote(' + -1 + ', ' + studentID + ')"><em>--- Notiz hinzufügen ---</em></td></tr>');
+					$('#tab_notes_table').append('<tr id="table_selected_row"><td colspan="2" onclick="newNote()"><em>--- Notiz hinzufügen ---</em></td></tr>');
 				}
 				$.each(data, function(index, note) { 
 					$.getJSON("/rest/user/" + note.teacher, function(teacher) { 
 						var date = new Date(note.timestamp);
 						$('#tab_notes_table').append('<tr id=\"pupils_note\" onclick=\"showNote(' + note.key.id + ')\"><td>' 
 								+ date.toLocaleString() + '</td><td>' + teacher.firstName + ' ' + teacher.familyName + '</td></tr>');
+						
+						$('#tab_notes_table tr').click(function(event) {
+							if(this.id == "pupils_note"){
+								$('#tab_notes_table tr').attr("id", "pupils_note");
+								this.id = "table_selected_row";
+							}
+						});
 					})
 					
 				})
 			})
-			
+
 			$('#notes_table').show();
 			$('#previewcontent').show();
 			
@@ -203,22 +226,71 @@
 		}
 		
 		function showNote(noteID){
-			$('#note_txtArea_content').text('');
-			$.getJSON("/rest/note/" + noteID, function (note) {
-				$('#note_txtArea_content').text(note.text);
-				$.getJSON("/rest/user/" + note.student, function(student) {
-					$('#btn_openNote').attr("onclick","openNote(" + note.key.id + ", " + student.key.id + "  )");
-				})
-			})
 			
-		}		 
+			$('#note_txtArea_content').val('');
+			this.noteID = noteID;
+			$.getJSON("/rest/note/" + noteID, function(note) {
+				$('#note_txtArea_content').val(note.text);
+				noteTeacher = note.teacher;
+				$('#note_txtArea_content').show();
+			})
+			$('#note_bt2').show();
+			$('#onlyForTeachersEyes').show();
+		}
 		
-		function openNote(noteID, studentID){
-			if(noteID==0){
-				alert("Bitte zuerst eine Notiz auswählen!");
-			}else{
-				location.href = "note?noteID=" + noteID + "&studentID=" + studentID;
+		function newNote(){
+			$('#note_txtArea_content').val('');
+			$('#note_txtArea_content').show();
+			$('#onlyForTeachersEyes').show();
+			$('#note_bt2').hide();
+			this.noteID = 0;
+			this.noteTeacher = user.key.id;
+		}
+		
+		function saveNote(){
+			if(noteTeacher != user.key.id){
+				alert("Sie können keine Notizen von anderen Lehrern bearbeiten!");
+				return;
 			}
+			var date = new Date();
+			var noteObject = {teacher:user.key.id, timestamp:date.getTime(), student:noteStudent, text:$('#note_txtArea_content').prop("value")};
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			if(noteID != 0){
+				$.ajax({
+					url: "/rest/note/" + noteID,
+					contentType: "application/json; charset=utf-8",
+					type: "DELETE", 
+					mimeType: "application/json",
+					success: function(data){
+					}
+				})
+			}
+			
+			$.ajax({
+				url: "/rest/note/",
+				contentType: "application/json; charset=utf-8",
+				type: "POST", 
+				mimeType: "application/json",
+				data: JSON.stringify(noteObject),
+				success: function(data){
+					selectStudent(noteStudent);
+				}
+			})
+		}
+		
+		function deleteNote(){
+			$.ajax({
+				url: "/rest/note/" + noteID,
+				contentType: "application/json; charset=utf-8",
+				type: "DELETE", 
+				mimeType: "application/json",
+				success: function(data){
+					selectStudent(noteStudent);
+				}
+			})
 		}
 	</script>
 	<header>
@@ -306,13 +378,12 @@
 				</div>
 				<span id="onlyForTeachersEyes">
 					<div id="note_btn_sla">
-						<input type="button" value="Bearbeiten Abbrechen" id="note_bt1" onclick="onclickReturnToPupils()"/>
-						<input type="button" value="Notiz löschen" id="note_bt2" onclick="onclickReturnToPupils()"/>
-						<input type="button" value="Änderungen Speichern" id="note_bt3" onclick="onclickSaveNote(this.form)"/>
+						<input type="button" value="Notiz löschen" id="note_bt2" onclick="deleteNote()"/>
+						<input type="button" value="Änderungen Speichern" id="note_bt3" onclick="saveNote()"/>
 					</div>
 				</span>
 				<div id="preview_noteContent">
-					<textarea id="note_txtArea_content" readonly></textarea>
+					<textarea id="note_txtArea_content"></textarea>
 				</div>
 			</div>
 
