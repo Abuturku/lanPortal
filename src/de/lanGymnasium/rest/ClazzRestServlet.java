@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -195,10 +196,28 @@ public class ClazzRestServlet {
 				+ clazz.getGrade() + " AND letter = '" + clazz.getLetter()
 				+ "' AND schoolID = " + clazz.getSchoolID());
 
-		@SuppressWarnings("unchecked")
 		List<Clazz> clazzs = query.getResultList();
 		em.close();
 
 		return clazzs.get(0);
+	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/edit/{id}")
+	public void editSchool(@PathParam("id") long id, Clazz clazz) {
+		log.info("Edit Clazz: " + id);
+		EntityManager em = EMF.createEntityManager();
+		Clazz foundClazz = em.find(Clazz.class,
+				KeyFactory.createKey("Clazz", id));
+		if (foundClazz != null) {
+			foundClazz.setGrade(clazz.getGrade());
+			foundClazz.setLetter(clazz.getLetter());
+			em.merge(foundClazz);
+		} else {
+			em.persist(clazz);
+		}
+
+		em.close();
 	}
 }

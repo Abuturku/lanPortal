@@ -40,13 +40,14 @@
 		});
 
 		window.addEventListener("OnSchoolCreated", function(e) {
-			if(e.detail.schoolKey == 1){
-				$.getJSON("/rest/school/schoolName/" + e.detail.schoolName, function(school) {
-					saveNewSchoolTeacher(school);
-				})
+			if (e.detail.schoolKey == 1) {
+				$.getJSON("/rest/school/schoolName/" + e.detail.schoolName,
+						function(school) {
+							saveNewSchoolTeacher(school);
+						})
 			}
 		});
-		
+
 		window.addEventListener("DOMContentLoaded", function() {
 			footerEventCount = 0;
 			$.getJSON("/rest/user/loggedInUser", function(user) {
@@ -432,13 +433,16 @@
 
 			var filterPupil = $('#maint_pupil_ddb_choose_pupil').val();
 
-			$.getJSON("/rest/user/userClasses/" + filterPupil, function(data) {
+			if (filterPupil != null && filterPupil != "null") {
+				$.getJSON("/rest/user/userClasses/" + filterPupil, function(
+						data) {
 
-				$.each(data, function(index, clazz) {
-					$('#maint_pupil_ddb_choose_class').val(clazz.key.id);
-					console.debug(clazz.key.id);
+					$.each(data, function(index, clazz) {
+						$('#maint_pupil_ddb_choose_class').val(clazz.key.id);
+						console.debug(clazz.key.id);
+					})
 				})
-			})
+			}
 		}
 
 		function saveSchool() {
@@ -457,50 +461,54 @@
 			});
 
 			$
-			.ajax({
-				url : "/rest/school/edit/" + schoolKey,
+					.ajax({
+						url : "/rest/school/edit/" + schoolKey,
+						contentType : "application/json; charset=utf-8",
+						type : "PUT",
+						mimeType : "application/json",
+						data : JSON.stringify(schoolObject),
+						success : function(data) {
+							var evt = new CustomEvent("OnSchoolCreated", {
+								detail : {
+									schoolKey : schoolKey,
+									schoolName : schoolObject.name
+								}
+							});
+							window.dispatchEvent(evt);
+							alert("Schule " + schoolObject.name
+									+ " wurde gespeichert.");
+						}
+					})
+		}
+
+		function saveNewSchoolClazz(school, teacher) {
+
+			var clazzObject = {
+				grade : 5,
+				letter : "a",
+				schoolID : school.key.id
+			};
+			console.debug(clazzObject);
+
+			$.ajaxSetup({
+				contentType : "application/json; charset=utf-8"
+			});
+
+			$.ajax({
+				url : "/rest/clazz/",
 				contentType : "application/json; charset=utf-8",
-				type : "PUT",
+				type : "POST",
 				mimeType : "application/json",
-				data : JSON.stringify(schoolObject),
+				data : JSON.stringify(clazzObject),
 				success : function(data) {
-					var evt = new CustomEvent("OnSchoolCreated", {detail:{schoolKey:schoolKey, schoolName:schoolObject.name}});
-					window.dispatchEvent(evt);
-					alert("Schule " + schoolObject.name
-							+ " wurde gespeichert.");
+					console.debug("Clazz wurde angelegt");
+					saveNewSchoolClazzUserOne(clazzObject, teacher);
 				}
 			})
+
 		}
-		
-		function saveNewSchoolClazz(school, teacher){
-			
-			var clazzObject = {
-					grade : 5,
-					letter : "a",
-					schoolID : school.key.id
-				};
-				console.debug(clazzObject);
-		
-				$.ajaxSetup({
-					contentType : "application/json; charset=utf-8"
-				});
-		
-					
-				$.ajax({
-					url : "/rest/clazz/",
-					contentType : "application/json; charset=utf-8",
-					type : "POST",
-					mimeType : "application/json",
-					data : JSON.stringify(clazzObject),
-					success : function(data) {
-						console.debug("Clazz wurde angelegt");
-						saveNewSchoolClazzUserOne(clazzObject, teacher);
-					}
-				})
-			
-		}
-		
-		function saveNewSchoolClazzUserOne(clazzObject, teacher){
+
+		function saveNewSchoolClazzUserOne(clazzObject, teacher) {
 			$.ajaxSetup({
 				contentType : "application/json; charset=utf-8"
 			});
@@ -508,18 +516,18 @@
 				url : "/rest/clazz/clazzWithoutID",
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(clazzObject),
-				success : function(clazz) { 
+				success : function(clazz) {
 					saveNewSchoolClazzUserTwo(clazz, teacher);
 				},
 				error : function() {
-					 
+
 				},
 				method : "POST",
 				mimeType : "application/json"
 			});
 		}
-			
-		function saveNewSchoolClazzUserTwo(clazzObject, teacherObject){
+
+		function saveNewSchoolClazzUserTwo(clazzObject, teacherObject) {
 			$.ajaxSetup({
 				contentType : "application/json; charset=utf-8"
 			});
@@ -527,19 +535,19 @@
 				url : "/rest/user/userWithoutID",
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(teacherObject),
-				success : function(teacher) { 
+				success : function(teacher) {
 					saveNewClazzUser(teacher.key.id, clazzObject.key.id)
 				},
 				error : function() {
-					 
+
 				},
 				method : "POST",
 				mimeType : "application/json"
-			}); 
-			
+			});
+
 		}
-		
-		function saveNewSchoolTeacher(school){
+
+		function saveNewSchoolTeacher(school) {
 			var teacherObject = {
 				familyName : $('#maint_inpt_instIniTeacher_fName').val(),
 				firstName : $('#maint_inpt_instIniTeacher_lName').val(),
@@ -560,23 +568,22 @@
 					console.debug("Lehrer wurde angelegt");
 					saveNewSchoolClazz(school, teacherObject);
 				}
-			})				
+			})
 		}
-		
-		function saveNewClazzUser(userID, clazzID){
-			
+
+		function saveNewClazzUser(userID, clazzID) {
+
 			var clazzUserObject = {
-					userID : userID,
-					clazzID : clazzID,
+				userID : userID,
+				clazzID : clazzID,
 			};
-			
-			
+
 			console.debug(clazzUserObject);
-	
+
 			$.ajaxSetup({
 				contentType : "application/json; charset=utf-8"
 			});
-			
+
 			$.ajax({
 				url : "/rest/clazzUser/",
 				contentType : "application/json; charset=utf-8",
@@ -587,7 +594,148 @@
 					console.debug("ClazzUser wurde angelegt");
 				}
 			})
-			
+
+		}
+
+		function saveClass() {
+			var schoolKey = $('#maint_class_ddb_school').val();
+			var classKey = $('#maint_class_ddb_choose_class').val();
+
+			if (classKey == null || classKey == "null") {
+				classKey = 1;
+			}
+
+			var clazzObject = {
+				grade : $('#maint_ddb_class_grade').val(),
+				letter : $('#maint_ddb_class_token').val(),
+				schoolID : schoolKey
+			};
+
+			if (schoolKey != null && schoolKey != "null") {
+				$.ajaxSetup({
+					contentType : "application/json; charset=utf-8"
+				});
+
+				$.ajax({
+					url : "/rest/clazz/edit/" + classKey,
+					contentType : "application/json; charset=utf-8",
+					type : "PUT",
+					mimeType : "application/json",
+					data : JSON.stringify(clazzObject),
+					success : function(data) {
+
+						alert("Klasse wurde gespeichert.");
+					}
+				})
+			}
+		}
+
+		function saveTeacher() {
+			var teacherKey = $('#maint_teacher_ddb_choose_teacher').val();
+			var schoolKey = $('#maint_teacher_ddb_choose_school').val();
+
+			if (teacherKey == null || teacherKey == "null") {
+				teacherKey = 1;
+			}
+
+			var teacherObject = {
+				familyName : $('#maint_inpt_tLastname').val(),
+				firstName : $('#maint_inpt_tFirstname').val(),
+				teacher : true
+			};
+
+			if (schoolKey != null && schoolKey != "null") {
+				$.ajaxSetup({
+					contentType : "application/json; charset=utf-8"
+				});
+
+				$.ajax({
+					url : "/rest/user/edit/" + teacherKey,
+					contentType : "application/json; charset=utf-8",
+					type : "PUT",
+					mimeType : "application/json",
+					data : JSON.stringify(teacherObject),
+					success : function(data) {
+
+						alert("Lehrer wurde gespeichert.");
+					}
+				})
+			}
+		}
+
+		function savePupil() {
+			var pupilKey = $('#maint_pupil_ddb_choose_pupil').val();
+			var schoolKey = $('#maint_pupil_ddb_choose_school').val();
+
+			if (pupilKey == null || pupilKey == "null") {
+				pupilKey = 1;
+			}
+
+			var pupilObject = {
+				familyName : $('#maint_inpt_tLastname_Schule').val(),
+				firstName : $('#maint_inpt_tFirstname_Schule').val(),
+				teacher : false
+			};
+
+			if (schoolKey != null && schoolKey != "null") {
+				$.ajaxSetup({
+					contentType : "application/json; charset=utf-8"
+				});
+
+				$.ajax({
+					url : "/rest/user/edit/" + pupilKey,
+					contentType : "application/json; charset=utf-8",
+					type : "PUT",
+					mimeType : "application/json",
+					data : JSON.stringify(pupilObject),
+					success : function() {
+						finUserToClass(pupilObject);
+						alert("Schueler wurde gespeichert.");
+					}
+				})
+			}
+		}
+		function finUserToClass(userObject) {
+			$.ajaxSetup({
+				contentType : "application/json; charset=utf-8"
+			});
+			$.ajax({
+				url : "/rest/user/userWithoutID",
+				contentType : "application/json; charset=utf-8",
+				data : JSON.stringify(userObject),
+				success : function(user) {
+					addUserToClass(user);
+				},
+				error : function() {
+
+				},
+				method : "POST",
+				mimeType : "application/json"
+			});
+		}
+
+		function addUserToClass(user) {
+			var classKey = $('#maint_pupil_ddb_choose_class').val();
+
+			var clazzUserObject = {
+				userID : user.key.id,
+				clazzID : classKey,
+			};
+
+			$.ajaxSetup({
+				contentType : "application/json; charset=utf-8"
+			});
+
+			$.ajax({
+				url : "/rest/clazzUser/",
+				contentType : "application/json; charset=utf-8",
+				type : "POST",
+				mimeType : "application/json",
+				data : JSON.stringify(clazzUserObject),
+				success : function(data) {
+					console.debug("ClazzUser wurde angelegt");
+				}
+			})
 		}
 	</script>
 	<header>
@@ -660,8 +808,7 @@
 					</select>
 					<!--input type="button" value="Neue Klasse registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterClass(this.form)"/-->
 					<input type="button" value="Klasse speichern"
-						id="maintSchoolsFormContentLn1"
-						onclick="onclickSaveClass(this.form)" />
+						id="maintSchoolsFormContentLn1" onclick="saveClass()" />
 				</div>
 				<div>
 
@@ -729,8 +876,7 @@
 					</select>
 					<!--input type="button" value="Neuen Lehrer registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterTeacher(this.form)"/-->
 					<input type="button" value="Lehrer speichern"
-						id="maintSchoolsFormContentLn1"
-						onclick="onclickSaveTeacher(this.form)" />
+						id="maintSchoolsFormContentLn1" onclick="saveTeacher()" />
 				</div>
 				<div>
 					<span id="maintSchoolsFormContentLn2"> <label
@@ -791,7 +937,7 @@
 					<!--input type="button" value="Neuen Schüler registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterPupil(this.form)"/-->
 					<input type="button" value="Schüler speichern"
 						id="maintSchoolsFormContentLn1"
-						onclick="onclickSavePupil(this.form)" />
+						onclick="savePupil()" />
 				</div>
 				<div>
 					<span id="maintSchoolsFormContentLn2"> <label

@@ -19,9 +19,9 @@ public class User implements IUser {
 	private Image picture;
 	private boolean teacher;
 	private String googleID;
-	
-	public User(String firstName, String familyName,String googleID, boolean isTeacher,
-			Image picture) {
+
+	public User(String firstName, String familyName, String googleID,
+			boolean isTeacher, Image picture) {
 		this.firstName = firstName;
 		this.familyName = familyName;
 		this.googleID = googleID;
@@ -88,9 +88,13 @@ public class User implements IUser {
 	public String getGoogleID() {
 		return this.googleID;
 	}
-	
-	public static List<User> removeTeachers(List<User> users){
-		for (Iterator<User> iter = users.listIterator();  iter.hasNext();) {
+
+	public void setTeacher(boolean teacher) {
+		this.teacher = teacher;
+	}
+
+	public static List<User> removeTeachers(List<User> users) {
+		for (Iterator<User> iter = users.listIterator(); iter.hasNext();) {
 			User u = iter.next();
 			if (u.isTeacher()) {
 				iter.remove();
@@ -98,9 +102,9 @@ public class User implements IUser {
 		}
 		return users;
 	}
-	
-	public static List<User> removeStudents(List<User> users){
-		for (Iterator<User> iter = users.listIterator();  iter.hasNext();) {
+
+	public static List<User> removeStudents(List<User> users) {
+		for (Iterator<User> iter = users.listIterator(); iter.hasNext();) {
 			User u = iter.next();
 			if (!u.isTeacher()) {
 				iter.remove();

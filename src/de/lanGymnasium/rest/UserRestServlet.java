@@ -10,6 +10,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -224,10 +225,30 @@ public class UserRestServlet {
 						+ user.getFirstName() + "' AND teacher = "
 						+ user.isTeacher());
 
-		@SuppressWarnings("unchecked")
 		List<User> users = query.getResultList();
 		em.close();
 
 		return users.get(0);
 	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/edit/{id}")
+	public void editUser(@PathParam("id") long id, User user) {
+		log.info("Edit Clazz: " + id);
+		EntityManager em = EMF.createEntityManager();
+		User foundUser = em.find(User.class, KeyFactory.createKey("User", id));
+		if (foundUser != null) {
+			foundUser.setFamilyName(user.getFamilyName());
+			foundUser.setFirstName(user.getFirstName());
+			foundUser.setTeacher(user.isTeacher());
+			em.merge(foundUser);
+		} else {
+			em.persist(user);
+		}
+
+		em.close();
+	}
+	
+	 
 }
