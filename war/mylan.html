@@ -9,16 +9,68 @@
     <body>
 	<script src="javascript/script.js"></script>
 	<script src="javascript/jquery-2.1.4.min.js"></script>
+	<script src="javascript/spin.js"></script>
 	<script>
 		var user;
 		var userSchool;
 		var footerEventCount;
+		//Spinner
+		var opts = {
+						  lines: 11 // The number of lines to draw
+						, length: 18 // The length of each line
+						, width: 14 // The line thickness
+						, radius: 23 // The radius of the inner circle
+						, scale: 1 // Scales overall size of the spinner
+						, corners: 1 // Corner roundness (0..1)
+						, color: '#000' // #rgb or #rrggbb or array of colors
+						, opacity: 0.25 // Opacity of the lines
+						, rotate: 0 // The rotation offset
+						, direction: 1 // 1: clockwise, -1: counterclockwise
+						, speed: 1 // Rounds per second
+						, trail: 60 // Afterglow percentage
+						, fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+						, zIndex: 2e9 // The z-index (defaults to 2000000000)
+						, className: 'spinner' // The CSS class to assign to the spinner
+						, top: '50%' // Top position relative to parent
+						, left: '50%' // Left position relative to parent
+						, shadow: false // Whether to render a shadow
+						, hwaccel: false // Whether to use hardware acceleration
+						, position: 'absolute' // Element positioning
+					}
+		var spinner = new Spinner(opts);
+		
 		
 		window.addEventListener("OnFooterLoaded", function(e) {
 			if(footerEventCount >= 1){ 
 				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
 				
 				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
+				
+				if(user.teacher){
+					$('#mylan_myTeachers').hide();
+					$('#mylan_myProfile').click(function() {
+						window.location.href="teachers?teacherID=" + user.key.id;
+					});
+					$('#mylan_myClasses').click(function() {
+						window.location.href="classes?teacherID=" + user.key.id;
+					});
+					$('#mylan_myPupils').click(function() {
+						window.location.href="pupils?teacherID=" + user.key.id;
+					});
+				}else{
+					$('#mylan_myClasses').hide();
+					$('#mylan_myPupils').hide();
+					$('#mylan_Maintenance').hide();
+					$('#mylan_myProfile').click(function() {
+						window.location.href="pupils?studentID=" + user.key.id;
+					});
+					$('#mylan_myTeachers').click(function() {
+						window.location.href="teachers?studentID=" + user.key.id;
+					})
+				}
+				
+				$('#mylan').show();
+				spinner.stop();
 			}
 			else{
 				footerEventCount++;
@@ -38,6 +90,8 @@
 				var evt = new CustomEvent("OnFooterLoaded", {});
 				window.dispatchEvent(evt);
 			})
+			var target = document.getElementById('pagecontent');
+			spinner.spin(target);
 		});
 		
 		function setUser(user){
@@ -78,25 +132,26 @@
 		
 		<div id="pagecontent">
 			<nav id="mylan_navlist">
-				<ul id="mylan">
+				<ul id="mylan" hidden>
 					<li id="mylan_Maintenance">
-						<a href='javascript:;' onclick='onclickMaintenance_mylan();'>Objekte verwalten</a>
+						<a href='javascript:;' onclick=''>Objekte verwalten</a>
 					</li>
 					<li id="mylan_myProfile">
-						<a href='javascript:;' onclick='onclickMyProfile_mylan();'>Mein Profil</a>
+						<a href='javascript:;' onclick=''>Mein Profil</a>
 					</li>
 					<li id="mylan_myTeachers">
-						<a href='javascript:;' onclick='onclickMyTeachers_mylan();'>Meine Lehrer</a>
+						<a href='javascript:;' onclick=''>Meine Lehrer</a>
 					</li>
 					<li id="mylan_myClasses">
-						<a href='javascript:;' onclick='onclickMyClasses_mylan();'>Meine Klassen</a>
+						<a href='javascript:;' onclick=''>Meine Klassen</a>
 					</li>
 					<li id="mylan_myPupils">
-						<a href='javascript:;' onclick='onclickMyPupils_mylan();'>Meine Schüler</a>
+						<a href='javascript:;' onclick=''>Meine Schüler</a>
 					</li>
-					<li id="mylan_changeMe">
-						<a href='javascript:;' onclick='onclickChangeMe_mylan();'>Meine Daten verwalten</a>
-					</li>
+<!-- 					Erstmal rausgenommen, weil zu aufwändig -->
+<!-- 					<li id="mylan_changeMe"> -->
+<!-- 						<a href='javascript:;' onclick='onclickChangeMe_mylan();'>Meine Daten verwalten</a> -->
+<!-- 					</li> -->
 				</ul>
 			</nav>
 		</div>

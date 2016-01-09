@@ -27,6 +27,10 @@
 		
 		window.addEventListener("OnDataLoaded", function(e) {
 			$('#ddb_inst').val(userSchool.key.id);
+			var urlTeacherID = getUrlParameter("teacherID");
+			if(urlTeacherID != undefined){
+				$('#ddb_teacher').val(urlTeacherID);
+			}
 			filter();
 		})
 	
@@ -169,6 +173,7 @@
 		}
 		
 		function appendClass(clazz){
+			$('#previewcontent').hide();
 			$('#classTable').append($('<tr onclick="selectClazz(' + clazz.key.id + ')" id=""><td>' + clazz.grade + '</td><td>' + clazz.letter + '</td></tr>'))
 			$('#classTable tr').click(function(event) {
 				if(this.id == ""){

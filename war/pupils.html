@@ -120,19 +120,24 @@
 			$.getJSON("/rest/user/teachers", function(data) {
 				$("#ddb_teacher option").remove();
 				$('#ddb_teacher').append($('<option value="null" selected id="pupils_ddbFilter_teacher">Nach Lehrer filtern</option>'));
-				setTimeout(filter, 500);
 				$.each(data, function(index, teacher) {
 					appendTeachers(teacher);
 				})
+				var urlTeacherID = getUrlParameter("teacherID");
+				if(urlTeacherID != undefined){
+					$('#ddb_teacher').val(urlTeacherID);
+				}
+				setTimeout(filter, 500);
 			})
 			
 		}
 		
 		function appendStudent(student){
-			$('#studentTable').append($('<tr onclick="selectStudent(' + student.key.id + ')" id=""><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
+			$('#previewcontent').hide();
+			$('#studentTable').append($('<tr onclick="selectStudent(' + student.key.id + ')" id="' + student.key.id + '"><td>' + student.familyName + '</td><td>' + student.firstName + '</td></tr>'))
 			$('#studentTable tr').click(function(event) {
-				if(this.id == ""){
-					$('#studentTable tr').attr("id", "");
+				if(this.id != "table_selected_row"){
+					$('#studentTable tr').attr("id", student.key.id);
 					this.id = "table_selected_row";
 				}
 			});
@@ -214,7 +219,11 @@
 					$('#studentTable').append('<tr><td id="header">Nachname</td><td id="header">Vorname</td></tr>');
 					$.each(data, function(index, student) { 
 						appendStudent(student);
-					})
+					});
+					var urlStudentID = getUrlParameter("studentID");
+					if(urlStudentID != undefined){
+						$('#'+urlStudentID).click();
+					}
 				},
 				error: function() {
 					filter();

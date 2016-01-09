@@ -121,10 +121,14 @@
 			$.getJSON("/rest/user/pupils", function(data) {
 				$("#ddb_pupil option").remove();
 				$('#ddb_pupil').append($('<option value="null" selected id="teachers_ddbFilter_pupil">Nach Schueler filtern</option>'));
-				setTimeout(filter(), 500);
 				$.each(data, function(index, pupil) {
 					appendPupil(pupil);
 				})
+				var urlStudentID = getUrlParameter("studentID");
+				if(urlStudentID != undefined){
+					$('#ddb_pupil').val(urlStudentID);
+				}
+				setTimeout(filter(), 500);
 			})
 		}
 		
@@ -154,6 +158,10 @@
 					$.each(data, function(index, teacher) { 
 						appendTeacher(teacher);
 					})
+					var urlTeacherID = getUrlParameter("teacherID");
+					if(urlTeacherID != undefined){
+						$('#'+urlTeacherID).click();
+					}
 				},
 				error: function() {
 					filter();
@@ -164,10 +172,11 @@
 		}
 		
 		function appendTeacher(teacher){
-			$('#teacherTable').append($('<tr id="" onclick="selectTeacher(' + teacher.key.id + ')"><td>' + teacher.familyName + '</td><td>' + teacher.firstName + '</td></tr>'))
+			$('#previewcontent').hide();
+			$('#teacherTable').append($('<tr id="' + teacher.key.id + '" onclick="selectTeacher(' + teacher.key.id + ')"><td>' + teacher.familyName + '</td><td>' + teacher.firstName + '</td></tr>'))
 			$('#teacherTable tr').click(function(event) {
-				if(this.id == ""){
-					$('#teacherTable tr').attr("id", "");
+				if(this.id != "table_selected_row"){
+					$('#teacherTable tr').attr("id", teacher.key.id);
 					this.id = "table_selected_row";
 				}
 			});
