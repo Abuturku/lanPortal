@@ -87,13 +87,12 @@ public class UserRestServlet {
 //		System.out.println("Suche user: " + queryString);
 		Query query = em.createQuery(queryString);
 
-		@SuppressWarnings("unchecked")
-		List<User> list = (List<User>) query.getResultList();
+		User user = (User) query.getSingleResult();
 		em.close();
 
 //		System.out.println("User gefunden: " + list.get(0).getKey());
 
-		return list.get(0);
+		return user;
 	}
 
 	@GET

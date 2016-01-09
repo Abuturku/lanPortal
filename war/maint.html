@@ -15,6 +15,10 @@
 		
 		window.addEventListener("OnFooterLoaded", function(e) {
 			if(footerEventCount >= 1){ 
+				if(user.teacher == false){
+					alert("Sie sind kein Lehrer");
+					location.replace("mylan");
+				}
 				$('#footer_txt_logininfo').prepend(document.createTextNode('Angemeldet im ' + userSchool.name + ' als '));
 				
 				$('#footer_txt_logininfo').append(document.createTextNode(user.firstName + ' ' + user.familyName));
@@ -339,6 +343,38 @@
 					console.debug(clazz.key.id);
 				})
 			})
+		}
+		
+		function saveSchool(){
+			var noteObject = {teacher:user.key.id, timestamp:date.getTime(), student:student.key.id, text:$('#note_txtArea_content').prop("value")};
+			console.debug(noteObject);
+			
+			$.ajaxSetup({
+				  contentType: "application/json; charset=utf-8"
+			});
+			if(getUrlParameter("noteID") != -1){
+				$.ajax({
+					url: "/rest/note/" + getUrlParameter("noteID"),
+					contentType: "application/json; charset=utf-8",
+					type: "DELETE", 
+					mimeType: "application/json",
+					success: function(data){
+					}
+				})
+			}
+			
+			
+			$.ajax({
+				url: "/rest/note/",
+				contentType: "application/json; charset=utf-8",
+				type: "POST", 
+				mimeType: "application/json",
+				data: JSON.stringify(noteObject),
+				success: function(data){
+					location.replace(document.referrer);
+				}
+			})
+			
 		}
 	</script>
 	<header>
