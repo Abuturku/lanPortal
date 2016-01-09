@@ -16,13 +16,12 @@ public class NotesWeb extends HttpServlet {
 			throws ServletException, IOException {
 		User user = LoginChecker.checkLogin(req, resp);
 		if (user == null) {
-			resp.getWriter()
-					.write("<p>Sie sind nicht im System registriert! Bitte wenden Sie sich an einen Administrator!</p><br> "
-							+ "<p><a href=\"login\">Zur�ck</p>");
-			// Hier kommt noch der Redirect zu Lindas Login Denied Seite.
+			resp.sendRedirect("loginFailed.html");
 		}
-		resp.getWriter().write(req.getParameter("noteID"));
-		req.getRequestDispatcher("note.html").forward(req, resp);
+		else{
+			req.getRequestDispatcher("note.html").forward(req, resp);
+		}
+		
 	}
 
 	@Override

@@ -22,11 +22,8 @@ public class Login extends HttpServlet {
 			log.info("User logged in with ID " + LoginChecker.getCurrentUserID());
 			resp.sendRedirect("mylan");
 		}else{
-			resp.getWriter().write("<p>Sie sind nicht im System registriert! Bitte wenden Sie sich an einen Administrator!</p><br> " 
-					+ "<p><a href=\"login\">Zurück</p>");
-			//Hier kommt noch der Redirect zu Lindas Login Denied Seite.
+			resp.sendRedirect("loginFailed.html");
 		}
-		//req.getRequestDispatcher("login.html").forward(req, resp);
 	}
 	
 	
