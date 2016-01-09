@@ -25,8 +25,9 @@ import de.lanGymnasium.lan.EMF;
 
 @Path("/clazz")
 public class ClazzRestServlet {
-	private static final Logger log = Logger.getLogger(UserRestServlet.class.getName());
-	
+	private static final Logger log = Logger.getLogger(UserRestServlet.class
+			.getName());
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Clazz> getClazzes() {
@@ -101,7 +102,7 @@ public class ClazzRestServlet {
 		return grades;
 
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/letters")
@@ -129,53 +130,75 @@ public class ClazzRestServlet {
 		}
 		return letters;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/schoolByClazz/{id}")
-	public School getSchoolByClazzId(@PathParam("id") Long id){
+	public School getSchoolByClazzId(@PathParam("id") Long id) {
 		EntityManager em = EMF.createEntityManager();
 		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", id));
 		em.clear();
-		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
+		School school = em.find(School.class,
+				KeyFactory.createKey("School", clazz.getSchoolID()));
 		em.close();
 		return school;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/usersByClazz/{id}")
-	public List<User> getUsersByClazz(@PathParam("id") Long id){
-		
+	public List<User> getUsersByClazz(@PathParam("id") Long id) {
+
 		List<ClazzUser> clazzUsers = getClazzUsersByClazzId(id);
 		List<User> users = new ArrayList<User>();
-		
+
 		EntityManager em = EMF.createEntityManager();
 		for (ClazzUser clazzUser : clazzUsers) {
-			User u = em.find(User.class, KeyFactory.createKey("User", clazzUser.getUserID()));
+			User u = em.find(User.class,
+					KeyFactory.createKey("User", clazzUser.getUserID()));
 			users.add(u);
 		}
 		log.info("users länge: " + users.size());
-		
-		
+
 		return users;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static List<Clazz> getClazzesBySchoolId(Long schoolID){
+	public static List<Clazz> getClazzesBySchoolId(Long schoolID) {
 		EntityManager em = EMF.createEntityManager();
-		Query query = em.createQuery("SELECT c FROM Clazz c WHERE schoolID = " + schoolID);
+		Query query = em.createQuery("SELECT c FROM Clazz c WHERE schoolID = "
+				+ schoolID);
 		List<Clazz> clazzes = (List<Clazz>) query.getResultList();
 		em.close();
 		return clazzes;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static List<ClazzUser> getClazzUsersByClazzId(Long clazzID){
+	public static List<ClazzUser> getClazzUsersByClazzId(Long clazzID) {
 		EntityManager em = EMF.createEntityManager();
-		Query query = em.createQuery("SELECT c FROM ClazzUser c WHERE clazzID = " + clazzID);
+		Query query = em
+				.createQuery("SELECT c FROM ClazzUser c WHERE clazzID = "
+						+ clazzID);
 		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
 		em.close();
 		return clazzUsers;
+	}
+
+	@SuppressWarnings("unchecked")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/clazzWithoutID")
+	public Clazz getClazzWithoutID(Clazz clazz) {
+		EntityManager em = EMF.createEntityManager();
+		Query query = em.createQuery("SELECT c FROM Clazz c WHERE grade = "
+				+ clazz.getGrade() + " AND letter = '" + clazz.getLetter()
+				+ "' AND schoolID = " + clazz.getSchoolID());
+
+		@SuppressWarnings("unchecked")
+		List<Clazz> clazzs = query.getResultList();
+		em.close();
+
+		return clazzs.get(0);
 	}
 }

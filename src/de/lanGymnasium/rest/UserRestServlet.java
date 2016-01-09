@@ -27,7 +27,8 @@ import de.lanGymnasium.lan.EMF;
 
 @Path("/user")
 public class UserRestServlet {
-	private static final Logger log = Logger.getLogger(UserRestServlet.class.getName());
+	private static final Logger log = Logger.getLogger(UserRestServlet.class
+			.getName());
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -84,13 +85,13 @@ public class UserRestServlet {
 		String queryString = "SELECT u FROM User u  WHERE googleID = '"
 				+ userService.getCurrentUser().getUserId() + "'";
 
-//		System.out.println("Suche user: " + queryString);
+		// System.out.println("Suche user: " + queryString);
 		Query query = em.createQuery(queryString);
 
 		User user = (User) query.getSingleResult();
 		em.close();
 
-//		System.out.println("User gefunden: " + list.get(0).getKey());
+		// System.out.println("User gefunden: " + list.get(0).getKey());
 
 		return user;
 	}
@@ -100,69 +101,74 @@ public class UserRestServlet {
 	@Path("/userSchool")
 	public School getLoggedInUserSchool() {
 		User user = getLoggedInUser();
-		
+
 		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = "
 				+ user.getKey().getId();
 		EntityManager em = EMF.createEntityManager();
 		Query query = em.createQuery(queryString);
 		em.clear();
-		
+
 		@SuppressWarnings("unchecked")
 		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
 
-		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUsers.get(0).getClazzID()));
+		Clazz clazz = em.find(Clazz.class,
+				KeyFactory.createKey("Clazz", clazzUsers.get(0).getClazzID()));
 		em.clear();
-		
-		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
-		
+
+		School school = em.find(School.class,
+				KeyFactory.createKey("School", clazz.getSchoolID()));
+
 		return school;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/userSchool/{id}")
 	public School getUserSchool(@PathParam("id") Long id) {
-		
+
 		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = " + id;
 		EntityManager em = EMF.createEntityManager();
 		Query query = em.createQuery(queryString);
 		em.clear();
-		
+
 		@SuppressWarnings("unchecked")
 		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
 		log.info("clazzUser: " + clazzUsers.get(0).getKey());
-		
-		Clazz clazz = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUsers.get(0).getClazzID()));
+
+		Clazz clazz = em.find(Clazz.class,
+				KeyFactory.createKey("Clazz", clazzUsers.get(0).getClazzID()));
 		em.clear();
 		log.info("clazz: " + clazz.getKey());
-		School school = em.find(School.class, KeyFactory.createKey("School", clazz.getSchoolID()));
-		
+		School school = em.find(School.class,
+				KeyFactory.createKey("School", clazz.getSchoolID()));
+
 		return school;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/userClasses/{id}")
-	public List<Clazz> getUserClazzes(@PathParam("id") Long id){
+	public List<Clazz> getUserClazzes(@PathParam("id") Long id) {
 		String queryString = "SELECT c FROM ClazzUser c  WHERE userID = " + id;
 		EntityManager em = EMF.createEntityManager();
 		Query query = em.createQuery(queryString);
 		em.clear();
-		
+
 		@SuppressWarnings("unchecked")
 		List<ClazzUser> clazzUsers = (List<ClazzUser>) query.getResultList();
-		
+
 		List<Clazz> clazzes = new ArrayList<Clazz>();
-		
+
 		for (ClazzUser clazzUser : clazzUsers) {
-			Clazz c = em.find(Clazz.class, KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
+			Clazz c = em.find(Clazz.class,
+					KeyFactory.createKey("Clazz", clazzUser.getClazzID()));
 			em.clear();
 			clazzes.add(c);
 		}
-		
+
 		return clazzes;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/teachers")
@@ -177,13 +183,13 @@ public class UserRestServlet {
 
 		ArrayList<User> teachers = new ArrayList<User>();
 		for (User user : userList) {
-			if(user.isTeacher()){
+			if (user.isTeacher()) {
 				teachers.add(user);
 			}
 		}
 		return teachers;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/pupils")
@@ -198,10 +204,30 @@ public class UserRestServlet {
 
 		ArrayList<User> pupil = new ArrayList<User>();
 		for (User user : userList) {
-			if(!user.isTeacher()){
+			if (!user.isTeacher()) {
 				pupil.add(user);
 			}
 		}
 		return pupil;
+	}
+
+	@SuppressWarnings("unchecked")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/userWithoutID")
+	public User getUserWithoutID(User user) {
+		EntityManager em = EMF.createEntityManager();
+		Query query = em
+				.createQuery("SELECT u FROM User u WHERE familyName = '"
+						+ user.getFamilyName() + "' AND firstName = '"
+						+ user.getFirstName() + "' AND teacher = "
+						+ user.isTeacher());
+
+		@SuppressWarnings("unchecked")
+		List<User> users = query.getResultList();
+		em.close();
+
+		return users.get(0);
 	}
 }

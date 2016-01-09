@@ -8,24 +8,28 @@ import javax.persistence.Id;
 import com.google.appengine.api.datastore.Key;
 
 @Entity
-public class School implements ISchool{
-	
+public class School implements ISchool {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
-	
+
 	private String name;
-	
+
 	@Override
 	public String getName() {
 		return this.name;
 	}
-	
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public School(String name) {
 		this.name = name;
 	}
-	
-	public Key getKey(){
+
+	public Key getKey() {
 		return this.key;
 	}
 }
