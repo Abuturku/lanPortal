@@ -1,6 +1,5 @@
 package de.lanGymnasium.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,12 +15,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.mortbay.log.Log;
-
 import com.google.appengine.api.datastore.KeyFactory;
 
 import de.lanGymnasium.datenstruktur.School;
-import de.lanGymnasium.datenstruktur.User;
 import de.lanGymnasium.lan.EMF;
 
 @Path("/school")

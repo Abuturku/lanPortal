@@ -79,6 +79,9 @@
 		
 		window.addEventListener("DOMContentLoaded", function(){
 			footerEventCount=0;
+			var target = document.getElementById('pagecontent');
+			spinner.spin(target);
+			
 			$.getJSON("/rest/user/loggedInUser", function(user) {
 				setUser(user);
 				var evt = new CustomEvent("OnFooterLoaded", {});
@@ -90,8 +93,7 @@
 				var evt = new CustomEvent("OnFooterLoaded", {});
 				window.dispatchEvent(evt);
 			})
-			var target = document.getElementById('pagecontent');
-			spinner.spin(target);
+
 		});
 		
 		function setUser(user){
