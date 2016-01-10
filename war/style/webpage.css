@@ -252,12 +252,6 @@ div#div_notes_table div#note_btn_sla {
 	text-align: center;
 	margin: 0.5em;
 }
-div#div_notes_table div#note_btn_sla #note_bt1{
-	float: left;
-}
-div#div_notes_table div#note_btn_sla #note_bt3{
-	float: right;
-}
 div#preview_noteContent {
 	height: 25%;
 }
