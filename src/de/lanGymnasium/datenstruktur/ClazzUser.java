@@ -6,14 +6,14 @@ import javax.persistence.*;
 
 import com.google.appengine.api.datastore.Key;
 
-
 @Entity
 public class ClazzUser {
-	private static final Logger log = Logger.getLogger(ClazzUser.class.getName());
+	private static final Logger log = Logger.getLogger(ClazzUser.class
+			.getName());
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Key key;
-	
+
 	private Long clazzID;
 	private Long userID;
 
@@ -34,4 +34,13 @@ public class ClazzUser {
 		this.clazzID = clazz;
 		this.userID = user;
 	}
+
+	public void setUserID(long userID) {
+		this.userID = userID;
+	}
+
+	public void setClazzID(long clazzID) {
+		this.clazzID = clazzID;
+	}
+
 }

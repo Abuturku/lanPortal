@@ -9,6 +9,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -16,7 +17,10 @@ import javax.ws.rs.core.MediaType;
 
 import com.google.appengine.api.datastore.KeyFactory;
 
+import de.lanGymnasium.datenstruktur.Clazz;
 import de.lanGymnasium.datenstruktur.ClazzUser;
+import de.lanGymnasium.datenstruktur.Note;
+import de.lanGymnasium.datenstruktur.School;
 import de.lanGymnasium.lan.EMF;
 
 @Path("/clazzUser")
@@ -72,4 +76,61 @@ public class ClazzUserRestServlet {
 		return clazzUser;
 	}
 
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/edit/{id}")
+	public void editClazzUser(@PathParam("id") long id, ClazzUser clazzUser) {
+		log.info("Edit ClazzUser: " + id);
+
+		EntityManager em = EMF.createEntityManager();
+		ClazzUser foundClazzUser = em.find(ClazzUser.class,
+				KeyFactory.createKey("ClazzUser", id));
+		if (foundClazzUser != null) {
+			foundClazzUser.setClazzID(clazzUser.getClazzID());
+			foundClazzUser.setUserID(clazzUser.getUserID());
+			em.merge(foundClazzUser);
+		} else {
+			em.persist(clazzUser);
+		}
+
+		em.close();
+	}
+
+	@SuppressWarnings("unchecked")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/clazzUserWithoutID")
+	public ClazzUser getClazzUserWithoutID(ClazzUser clazzUser) {
+		EntityManager em = EMF.createEntityManager();
+		Query query = em
+				.createQuery("SELECT c FROM ClazzUser c WHERE userID = "
+						+ clazzUser.getUserID() + " AND clazzID = "
+						+ clazzUser.getClazzID());
+		log.info("Suche ClazzUser mit userID: " + clazzUser.getUserID()
+				+ " und clazzID: " + clazzUser.getClazzID());
+		List<ClazzUser> clazzUsers = query.getResultList();
+		em.close();
+		if (clazzUsers.size() == 0) {
+			return null;
+		}
+		return clazzUsers.get(0);
+	}
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/deleteWithUserID/{id}")
+	public void deleteWithUserID(@PathParam("id") long userID) {
+		EntityManager em = EMF.createEntityManager();
+		Query query = em
+				.createQuery("SELECT c FROM ClazzUser c WHERE userID = "
+						+ userID);
+		log.info("Loesche alle ClazzUser des Users: " + userID);
+		@SuppressWarnings("unchecked")
+		List<ClazzUser> clazzUserList = query.getResultList();
+		em.close();
+		for (ClazzUser clazzUser : clazzUserList) {
+			deleteClazzUser(clazzUser.getKey().getId());
+		}
+	}
 }

@@ -656,10 +656,90 @@
 					mimeType : "application/json",
 					data : JSON.stringify(teacherObject),
 					success : function(data) {
-
+						deleteAllClazzUser(teacherKey);
+						
 						alert("Lehrer wurde gespeichert.");
 					}
 				})
+			}
+		}
+		
+		function saveTeacherClazzs(teacherID){
+			$('#ClazzTable input:checked').each(function(){
+				
+			
+			
+				var clazzUserObject = {
+					userID : teacherID,
+					clazzID : $(this).attr('id').substring(5)
+				};
+			
+				$.ajaxSetup({
+					contentType : "application/json; charset=utf-8"
+				});
+				$.ajax({
+					url : "/rest/clazzUser/clazzUserWithoutID",
+					contentType : "application/json; charset=utf-8",
+					data : JSON.stringify(clazzUserObject),
+					success : function(clazzUser) {
+						if(clazzUser == null || clazzUser == "null"){
+							addClazzUser(clazzUserObject)
+						}
+					},
+					error : function() {
+	
+					},
+					method : "POST",
+					mimeType : "application/json"
+				});
+				
+			})
+			
+				 
+		}
+		
+		function deleteAllClazzUser(userid){
+			 
+			if(userid != null){
+				 
+
+				$.ajaxSetup({
+					contentType : "application/json; charset=utf-8"
+				});
+			
+				$.ajax({
+					url : "/rest/clazzUser/deleteWithUserID/" + userid,
+					contentType : "application/json; charset=utf-8",
+					type : "PUT",
+					mimeType : "application/json",
+					success : function() {
+						console.debug("ClazzUser gelöscht");
+						saveTeacherClazzs(userid)
+					}
+				})
+			}
+		}
+		
+		function addClazzUser(clazzUserObject){
+			 
+			if(clazzUserObject != null){
+			
+				console.debug("ClazzUser userID: " + clazzUserObject.userID + " clazzID: " + clazzUserObject.clazzID + " wird angelegt");
+				 $.ajaxSetup({
+					contentType : "application/json; charset=utf-8"
+				});
+
+				$.ajax({
+					url : "/rest/clazzUser/",
+					contentType : "application/json; charset=utf-8",
+					type : "POST",
+					mimeType : "application/json",
+					data : JSON.stringify(clazzUserObject),
+					success : function(data) {
+						console.debug("ClazzUser wurde angelegt");
+					}
+				})
+ 
 			}
 		}
 
@@ -689,13 +769,13 @@
 					mimeType : "application/json",
 					data : JSON.stringify(pupilObject),
 					success : function() {
-						finUserToClass(pupilObject);
+						findUserToClass(pupilObject);
 						alert("Schueler wurde gespeichert.");
 					}
 				})
 			}
 		}
-		function finUserToClass(userObject) {
+		function findUserToClass(userObject) {
 			$.ajaxSetup({
 				contentType : "application/json; charset=utf-8"
 			});
@@ -704,7 +784,7 @@
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(userObject),
 				success : function(user) {
-					addUserToClass(user);
+					deleteAllClazzUser(user.key.id);
 				},
 				error : function() {
 
@@ -714,11 +794,11 @@
 			});
 		}
 
-		function addUserToClass(user) {
+		function addUserToClass(userID) {
 			var classKey = $('#maint_pupil_ddb_choose_class').val();
 
 			var clazzUserObject = {
-				userID : user.key.id,
+				userID : userID,
 				clazzID : classKey,
 			};
 
@@ -736,6 +816,28 @@
 					console.debug("ClazzUser wurde angelegt");
 				}
 			})
+		}
+		
+		function deleteAllClazzUser(userid){
+			 
+			if(userid != null){
+				 
+
+				$.ajaxSetup({
+					contentType : "application/json; charset=utf-8"
+				});
+			
+				$.ajax({
+					url : "/rest/clazzUser/deleteWithUserID/" + userid,
+					contentType : "application/json; charset=utf-8",
+					type : "PUT",
+					mimeType : "application/json",
+					success : function() {
+						console.debug("ClazzUser gelöscht");
+						addUserToClass(userid)
+					}
+				})
+			}
 		}
 	</script>
 	<header>
@@ -936,8 +1038,7 @@
 					</select>
 					<!--input type="button" value="Neuen Schüler registrieren" id="maintSchoolsFormContentLn1" onclick="onclickRegisterPupil(this.form)"/-->
 					<input type="button" value="Schüler speichern"
-						id="maintSchoolsFormContentLn1"
-						onclick="savePupil()" />
+						id="maintSchoolsFormContentLn1" onclick="savePupil()" />
 				</div>
 				<div>
 					<span id="maintSchoolsFormContentLn2"> <label
