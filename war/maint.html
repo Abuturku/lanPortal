@@ -634,17 +634,31 @@
 			var teacherKey = $('#maint_teacher_ddb_choose_teacher').val();
 			var schoolKey = $('#maint_teacher_ddb_choose_school').val();
 
-			if (teacherKey == null || teacherKey == "null") {
-				teacherKey = 1;
-			}
-
 			var teacherObject = {
 				familyName : $('#maint_inpt_tLastname').val(),
 				firstName : $('#maint_inpt_tFirstname').val(),
 				teacher : true
 			};
 
-			if (schoolKey != null && schoolKey != "null") {
+			if (teacherKey == null || teacherKey == "null") {
+				teacherKey = 1;
+				if(schoolKey != null && schoolKey != "null"){
+					$.ajaxSetup({
+						contentType : "application/json; charset=utf-8"
+					});
+	
+					$.ajax({
+						url : "/rest/user/",
+						contentType : "application/json; charset=utf-8",
+						type : "POST",
+						mimeType : "application/json",
+						data : JSON.stringify(teacherObject),
+						success : function(data) {
+							console.debug("Lehrer wurde angelegt");
+						}
+					})
+				}
+			}else if (schoolKey != null && schoolKey != "null" && teacherKey != 1) {
 				$.ajaxSetup({
 					contentType : "application/json; charset=utf-8"
 				});
@@ -656,6 +670,7 @@
 					mimeType : "application/json",
 					data : JSON.stringify(teacherObject),
 					success : function(data) {
+						console.debug(teacherKey);
 						deleteAllClazzUser(teacherKey);
 						
 						alert("Lehrer wurde gespeichert.");
@@ -665,6 +680,7 @@
 		}
 		
 		function saveTeacherClazzs(teacherID){
+			console.debug("saveTeacherClazzs "+ teacherID);
 			$('#ClazzTable input:checked').each(function(){
 				
 			
@@ -673,7 +689,7 @@
 					userID : teacherID,
 					clazzID : $(this).attr('id').substring(5)
 				};
-			
+				console.debug(clazzUserObject); 
 				$.ajaxSetup({
 					contentType : "application/json; charset=utf-8"
 				});
@@ -699,7 +715,7 @@
 		}
 		
 		function deleteAllClazzUser(userid){
-			 
+			console.debug("deleteAllClazzUser " + userid);
 			if(userid != null){
 				 
 
@@ -784,7 +800,7 @@
 				contentType : "application/json; charset=utf-8",
 				data : JSON.stringify(userObject),
 				success : function(user) {
-					deleteAllClazzUser(user.key.id);
+					deleteAllClazzUserPupil(user.key.id);
 				},
 				error : function() {
 
@@ -818,7 +834,7 @@
 			})
 		}
 		
-		function deleteAllClazzUser(userid){
+		function deleteAllClazzUserPupil(userid){
 			 
 			if(userid != null){
 				 
